@@ -86,9 +86,16 @@ abstract contract TestCommon is TestUtils, EndWithStopPrank {
         return new ProtocolToken();
     }
 
+<<<<<<< HEAD
     function _deployERC20UpgradeableProxyNonDeterministic(address _protocolToken, address _proxyOwner) public returns (ProtocolTokenProxy _tokenProxy){
         return new ProtocolTokenProxy(_protocolToken, _proxyOwner, "");
     }
+=======
+    // function _deployAppManagerAndHandler() public returns (AppManager _appManager) {
+    //     appManager = new AppManager(msg.sender, "ProtocolApp", false); 
+    //     return (appManager); 
+    // }
+>>>>>>> f1f98a4 (Build Protocol Token)
 
     function _deployAppManagerAndHandler() public  returns (AppManager _appManager, ProtocolApplicationHandler _appHandler) {
         // This is needed for setting the permissions on the token intialize function 
