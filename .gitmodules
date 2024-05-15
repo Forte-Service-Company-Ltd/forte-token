@@ -20,3 +20,7 @@
 [submodule "lib/tron"]
 	path = lib/tron
 	url = https://github.com/thrackle-io/tron
+	branch = Tron_Dependancies_Test
+[submodule "lib/axelar-gmp-sdk-solidity"]
+	path = lib/axelar-gmp-sdk-solidity
+	url = https://github.com/axelarnetwork/axelar-gmp-sdk-solidity
