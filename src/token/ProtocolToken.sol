@@ -11,6 +11,7 @@ import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/UUPSUpgradeable
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "tron/src/client/token/IProtocolTokenHandler.sol";
 import "tron/src/client/token/ProtocolTokenCommonU.sol";
+import "tron/src/client/token/handler/diamond/ERC20HandlerMainFacet.sol";
 
 
 
@@ -21,7 +22,7 @@ import "tron/src/client/token/ProtocolTokenCommonU.sol";
  * @notice Protocol ERC20 Upgradeable for gaming liquidity 
  */
 
-contract ProtocolToken is Initializable, ERC20Upgradeable, ERC20BurnableUpgradeable, OwnableUpgradeable, ERC20PermitUpgradeable, UUPSUpgradeable, ProtocolTokenCommonU  {
+contract ProtocolToken is Initializable, ERC20Upgradeable, ERC20BurnableUpgradeable, OwnableUpgradeable, ERC20PermitUpgradeable, UUPSUpgradeable, ProtocolTokenCommonU, ReentrancyGuard  {
     address public handlerAddress;
     IProtocolTokenHandler handler;
 
@@ -59,5 +60,16 @@ contract ProtocolToken is Initializable, ERC20Upgradeable, ERC20BurnableUpgradea
         _mint(to, amount);
     }
 
-
+    /**
+     * @dev Function called before any token transfers to confirm transfer is within rules of the protocol
+     * @param from sender address
+     * @param to recipient address
+     * @param amount number of tokens to be transferred
+     */
+    // slither-disable-next-line calls-loop
+    function _beforeTokenTransfer(address from, address to, uint256 amount) internal override {
+        /// Rule Processor Module Check
+        require(ERC20HandlerMainFacet(handlerAddress).checkAllRules(balanceOf(from), balanceOf(to), from, to, _msgSender(), amount));
+        super._beforeTokenTransfer(from, to, amount);
+    }
 }
