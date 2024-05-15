@@ -31,7 +31,7 @@ contract ProtocolToken is Initializable, ERC20Upgradeable, ERC20BurnableUpgradea
     }
 
 
-   function initialize(string memory _nameProto, string memory _symbolProto, address _appManagerAddress) external initializer {
+   function initialize(string memory _nameProto, string memory _symbolProto, address _appManagerAddress) external appAdministratorOnly(_appManagerAddress) initializer {
     __ERC20_init(_nameProto, _symbolProto); 
     __ERC20Burnable_init();
     __Ownable_init();

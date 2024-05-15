@@ -11,9 +11,8 @@ pragma solidity ^0.8.24;
 import "forge-std/Test.sol";
 import "test/token/EndWithStopPrank.sol"; 
 import "tron/src/protocol/economic/IRuleProcessor.sol";
-import "tron/src/client/application/AppManager.sol";
-import "tron/src/client/application/ProtocolApplicationHandler.sol"; 
-import "tron/src/client/token/handler/diamond/IHandlerDiamond.sol";
+// import "tron/src/client/application/AppManager.sol";
+//import "tron/src/client/token/handler/diamond/IHandlerDiamond.sol";
 import "src/token/ProtocolToken.sol";
 import "src/token/ProtocolTokenProxy.sol";
 
@@ -27,8 +26,7 @@ abstract contract testCommon {
     IRuleProcessor public ruleProcessor;
     ProtocolToken public protocolToken; 
     ProtocolTokenProxy public protocolTokenProxy; 
-    AppManager public appManager; 
-    ProtocolApplicationHandler public appHandler; 
+    // AppManager public appManager; 
 
 
     bool public testDeployments = true;
@@ -51,11 +49,10 @@ abstract contract testCommon {
         
     }
 
-    function _deployAppManagerAndHandler() public returns (AppManager _appManager, ProtocolApplicationHandler _appHandler) {
-        appManager = new AppManager(msg.sender, "ProtocolApp", false); 
-        appHandler = new ProtocolApplicationHandler(address(IRuleProcessor), address(appManager)); 
-        return (appManager, appHandler); 
-    }
+    // function _deployAppManagerAndHandler() public returns (AppManager _appManager) {
+    //     appManager = new AppManager(msg.sender, "ProtocolApp", false); 
+    //     return (appManager); 
+    // }
 
     function setUpTokenWithHandler() public {
 
