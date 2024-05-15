@@ -13,3 +13,6 @@
 [submodule "lib/tron"]
 	path = lib/tron
 	url = https://github.com/thrackle-io/tron
+[submodule "lib/tron.git"]
+	path = lib/tron.git
+	url = https://github.com/thrackle-io/tron.git
