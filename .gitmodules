@@ -15,3 +15,4 @@
 [submodule "lib/tron"]
 	path = lib/tron
 	url = https://github.com/thrackle-io/tron
+	branch = Tron_Dependancies_Test
