@@ -9,9 +9,10 @@ import "openzeppelin-contracts-upgradeable/contracts/access/OwnableUpgradeable.s
 import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/Initializable.sol";
 import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "tron/src/client/token/IProtocolTokenHandler.sol";
-import "tron/src/client/token/ProtocolTokenCommonU.sol";
-import "tron/src/client/token/handler/diamond/ERC20HandlerMainFacet.sol";
+import "tron/client/application/AppManager.sol";
+// import "tron/client/application/ProtocolApplicationHandler.sol";
+import "tron/client/token/IProtocolTokenHandler.sol";
+import "tron/client/token/ProtocolTokenCommonU.sol";
 
 
 
@@ -56,7 +57,7 @@ contract ProtocolToken is Initializable, ERC20Upgradeable, ERC20BurnableUpgradea
      */
     function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
 
-    function mint(address to, uint256 amount) public onlyOwner {
+    function mint(address to, uint256 amount) public appAdministratorOnly(appManagerAddress) {
         _mint(to, amount);
     }
 
@@ -69,7 +70,7 @@ contract ProtocolToken is Initializable, ERC20Upgradeable, ERC20BurnableUpgradea
     // slither-disable-next-line calls-loop
     function _beforeTokenTransfer(address from, address to, uint256 amount) internal override {
         /// Rule Processor Module Check
-        require(ERC20HandlerMainFacet(handlerAddress).checkAllRules(balanceOf(from), balanceOf(to), from, to, _msgSender(), amount));
+        require(IProtocolTokenHandler(handlerAddress).checkAllRules(balanceOf(from), balanceOf(to), from, to, _msgSender(), amount));
         super._beforeTokenTransfer(from, to, amount);
     }
 }

@@ -10,9 +10,13 @@ pragma solidity ^0.8.24;
 import "src/token/ProtocolToken.sol";
 import "src/token/ProtocolTokenProxy.sol";
 import "test/token/EndWithStopPrank.sol"; 
-// import "tron/src/protocol/economic/IRuleProcessor.sol";
-// import "tron/src/client/application/AppManager.sol";
-import "tron/src/client/token/handler/diamond/IHandlerDiamond.sol";
+// import "tron/client/application/AppManager.sol";
+// import "tron/client/token/handler/diamond/HandlerDiamond.sol";
+import "tron/protocol/economic/ruleProcessor/ruleProcessorDiamond.sol";
+import "tron/client/pricing/ProtocolERC721Pricing.sol";
+import "tron/client/pricing/ProtocolERC20Pricing.sol";
+import "tron/example/OracleApproved.sol";
+import "tron/example/OracleDenied.sol";
 
 
 
@@ -22,10 +26,8 @@ import "tron/src/client/token/handler/diamond/IHandlerDiamond.sol";
  */
 abstract contract testCommon {
 
-    IRuleProcessor public ruleProcessor;
     ProtocolToken public protocolToken; 
     ProtocolTokenProxy public protocolTokenProxy; 
-    // AppManager public appManager; 
 
 
     bool public testDeployments = true;
@@ -36,22 +38,22 @@ abstract contract testCommon {
         }
     }
 
-    function deployRuleProcessorDiamond() public {
+    function _deployERC20Upgradeable() public returns (ProtocolToken _protocolToken){
+        return new ProtocolToken();
+    }
+
+    function _deployERC20UpgradeableProxy(address _protocolToken, address _proxyOwner) public returns (ProtocolTokenProxy _tokenProxy){
+        return new ProtocolTokenProxy(_protocolToken, _proxyOwner, "");
+    }
+
+    function _deployAppManagerAndHandler() public  {
+        // This is needed for setting the permissions on the token intialize function 
 
     }
 
-    function _deployERC20Upgradeable() public returns (ProtocolToken _token){
-        
-    }
+    function _deployTokenWithHandler() public {
 
-    function _deployERC20UpgradeableProxy() public returns (ProtocolToken _tokenProxy){
-        
     }
-
-    // function _deployAppManagerAndHandler() public returns (AppManager _appManager) {
-    //     appManager = new AppManager(msg.sender, "ProtocolApp", false); 
-    //     return (appManager); 
-    // }
 
     function setUpTokenWithHandler() public {
 
