@@ -8,8 +8,15 @@ remappings = [
     "ds-test/=lib/forge-std/lib/ds-test/src/",
     "@openzeppelin/=lib/openzeppelin-contracts/",
     "@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
-    "tron/=lib/tron/src"
+    "tron/=lib/tron/src",
+    "axelar-gmp-sdk-solidity/=lib/axelar-gmp-sdk-solidity/contracts/",
 ]
+
+[rpc_endpoints]
+local_chain_1 = "http://localhost:8545"
+local_chain_2 = "http://localhost:8546"
+amoy_chain = "https://rpc-amoy.polygon.technology"
+sepolia_chain = "https://ethereum-sepolia-rpc.publicnode.com"
 
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
