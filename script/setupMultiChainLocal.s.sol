@@ -57,7 +57,7 @@ contract SetupMultiChainLocal is Script {
     }
 
     function _deployToken() internal {
-        tokenAddr = create3Deployer.deploy(token.bytecode, keccak256("SMELLING_SALTS"));
+        // tokenAddr = create3Deployer.deploy(token.bytecode, keccak256("SMELLING_SALTS"));
     }
 
     function _buildMultiChainSpinup() internal {
