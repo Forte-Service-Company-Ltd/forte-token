@@ -21,14 +21,12 @@ contract SetupMultiChainLocal is Script {
         console.log("privateKey: %s", privateKey);
         console.log("ownerAddress: %s", ownerAddress);
 
-        vm.startBroadcast();
         try this.mainScriptLogic(){
             console.log("Logic Success");
         } catch Error(string memory reason) {
             console.log("Error: %s", reason);
             _tearDownMultiChainSpinup();
         }
-        vm.stopBroadcast();
     }
 
     function mainScriptLogic() external {
@@ -38,11 +36,11 @@ contract SetupMultiChainLocal is Script {
     }
 
     function _deployMultiChain() internal {
-        vm.createSelectFork(vm.rpcUrl("local_chain_1"));
+        vm.createSelectFork(vm.rpcUrl("amoy_chain"));
         _deployCreate3();
         _deployAxelarGateway("AMOY_AXELAR_GATEWAY");
         _deployToken();
-        vm.createSelectFork(vm.rpcUrl("local_chain_2"));
+        vm.createSelectFork(vm.rpcUrl("sepolia_chain"));
         _deployCreate3();
         _deployAxelarGateway("ETH_SEPOLIA_AXELAR_GATEWAY");
         _deployToken();
