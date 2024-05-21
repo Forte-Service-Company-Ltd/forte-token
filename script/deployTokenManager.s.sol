@@ -37,12 +37,11 @@ contract DeployTokenManager is Script {
     function deployTokenManager() external {
         console.log("deployTokenManager");
         // 0x534d454c4c494e475f53414c5453 is bytes32("SMELLING_SALTS")
-        bytes memory addrPlacement = abi.encode(ownerAddress);
         bytes32 tokenId = tokenService.deployTokenManager(
             bytes32(0x534d454c4c494e475f53414c5453000000000000000000000000000000000000),
             "", 
             ITokenManagerType.TokenManagerType.LOCK_UNLOCK, 
-            abi.encode(addrPlacement, waveAddress),
+            abi.encode(ownerAddress, waveAddress),
             .01 ether
         );
 
