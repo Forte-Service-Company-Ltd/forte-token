@@ -8,7 +8,10 @@ remappings = [
     "ds-test/=lib/forge-std/lib/ds-test/src/",
     "@openzeppelin/=lib/openzeppelin-contracts/",
     "@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
-    "tron/=lib/tron/src"
+    "tron/=lib/tron/src",
+    "tronLib/=lib/tron/lib",
+    "tronTest/=lib/tron/test",
+    "tronScripts/=lib/tron/script"
 ]
 
 
