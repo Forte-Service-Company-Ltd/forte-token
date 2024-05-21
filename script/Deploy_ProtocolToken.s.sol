@@ -25,7 +25,6 @@ contract ProtocolTokenDeployScript is Script {
     function setUp() public {}
 
     function run() public {
-
         privateKey = vm.envUint("DEPLOYMENT_OWNER_KEY");
         ownerAddress = vm.envAddress("DEPLOYMENT_OWNER");
         vm.startBroadcast(privateKey);
