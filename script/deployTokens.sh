@@ -11,18 +11,18 @@ OUTPUTFILE="test_env"
 ENV_FILE=".env"
 source $ENV_FILE
 echo "################################################################"
-echo Deploy parent token to ETH mainnet
+echo Deploy parent token to ETH sepolia
 echo $ETH_RPC_URL
 echo "################################################################"
 echo
-forge script script/deployTokens.s.sol --rpc-url $ETH_RPC_URL
+forge script script/deployToken.s.sol --rpc-url sepolia_chain
 
 echo "################################################################"
-echo Deploy child token to Polygon
+echo Deploy child token to Base Sepolia 
 echo $POLYGON_RPC_URL
 echo "################################################################"
 echo
-forge script script/deployTokens.s.sol --rpc-url $POLYGON_RPC_URL
+forge script script/deployToken.s.sol --rpc-url base_sepolia_chain
 
 echo "################################################################"
 echo Deploy an Axelar TokenManager to ETH mainnet
