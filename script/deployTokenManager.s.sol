@@ -6,25 +6,23 @@ import "axelar-gmp-sdk-solidity/deploy/Create3Deployer.sol";
 
 import "src/token/Wave.sol";
 
-contract DeployToken is Script {
+contract DeployTokenManager is Script {
 
     uint privateKey;
     address ownerAddress;
-    address minterAddress;
 
-    Wave wave;
+    address waveAddress;
 
 
     function run() public {
         console.log("Deploy a Token");
         privateKey = vm.envUint("DEPLOYMENT_OWNER_KEY");
         ownerAddress = vm.envAddress("DEPLOYMENT_OWNER");
-        minterAddress = vm.envAddress("DEPLOYMENT_MINTER");
+        waveAddress = vm.envAddress("TOKEN_ADDRESS");
 
         vm.startBroadcast(privateKey);
         try this.deployToken(){
             console.log("Logic Success");
-            console.log("WAVE_ADDRESS=%s", address(wave));
         } catch Error(string memory reason) {
             console.log("Error: %s", reason);
         }
