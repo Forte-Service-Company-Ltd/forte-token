@@ -3,7 +3,9 @@ pragma solidity ^0.8.24;
 
 import "forge-std/Script.sol";
 
-import "interchain-token-service/InterchainTokenService.sol";
+// note: needed to avoid conflict with ERC20 interface in OpenZeppelin
+import {InterchainTokenService} from "interchain-token-service/InterchainTokenService.sol";
+import {ITokenManagerType} from "interchain-token-service/interfaces/ITokenManagerType.sol";
 
 import "src/token/Wave.sol";
 
@@ -37,14 +39,16 @@ contract DeployTokenManager is Script {
         // 0x534d454c4c494e475f53414c5453 is bytes32("SMELLING_SALTS")
         bytes memory addrPlacement = abi.encode(ownerAddress);
         bytes32 tokenId = tokenService.deployTokenManager(
-            bytes32(0x534d454c4c494e475f53414c5453),
+            bytes32(0x534d454c4c494e475f53414c5453000000000000000000000000000000000000),
             "", 
-            2, 
-            abi.encode(("bytes", "address"), addrPlacement, waveAddress),
+            ITokenManagerType.TokenManagerType.LOCK_UNLOCK, 
+            abi.encode(addrPlacement, waveAddress),
             .01 ether
         );
 
-        console.log("TOKEN_ID=%s", tokenId);
+        console.log("TOKEN_ID=");
+        console.logBytes32(tokenId);
+
     }
 }
 

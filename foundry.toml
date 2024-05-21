@@ -16,6 +16,7 @@ remappings = [
     "tronTest/=lib/tron/test",
     "tronScripts/=lib/tron/script",
     "axelar-gmp-sdk-solidity/=lib/axelar-gmp-sdk-solidity/contracts/",
+    "@axelar-network/axelar-gmp-sdk-solidity/=lib/axelar-gmp-sdk-solidity"
 ]
 
 [rpc_endpoints]
