@@ -10,7 +10,7 @@ contract DeployToken is Script {
     address ownerAddress;
     address minterAddress;
 
-    Wave wave;
+    //Wave wave;
 
 
     function run() public {
@@ -22,7 +22,7 @@ contract DeployToken is Script {
         vm.startBroadcast(privateKey);
         try this.deployToken(){
             console.log("Logic Success");
-            console.log("WAVE_ADDRESS=%s", address(wave));
+            //console.log("WAVE_ADDRESS=%s", address(wave));
         } catch Error(string memory reason) {
             console.log("Error: %s", reason);
         }
@@ -31,7 +31,7 @@ contract DeployToken is Script {
 
     function deployToken() external {
         // 0x534d454c4c494e475f53414c5453 is bytes32("SMELLING_SALTS")
-        wave = new Wave{salt: bytes32(0x534d454c4c494e475f53414c5453000000000000000000000000000000000000)}(ownerAddress, minterAddress);
+        //wave = new Wave{salt: bytes32(0x534d454c4c494e475f53414c5453000000000000000000000000000000000000)}(ownerAddress, minterAddress);
     }
 }
 

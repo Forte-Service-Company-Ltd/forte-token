@@ -4,3 +4,5 @@ ds-test/=lib/forge-std/lib/ds-test/src/
 @openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/
 axelar-gmp-sdk-solidity/=lib/axelar-gmp-sdk-solidity/contracts/
 interchain-token-service/=lib/interchain-token-service/contracts/
+@axelar-network/axelar-cgp-solidity=lib/interchain-token-service/node_modules/@axelar-network/axelar-cgp-solidity/
+

@@ -19,7 +19,7 @@ contract SendTokenCrossChain is Script {
     bytes destinationAddress;
     uint amount;
 
-    Wave wave;
+    //Wave wave;
     InterchainTokenService tokenService;
 
     function run() public {
