@@ -3,10 +3,12 @@ pragma solidity ^0.8.24;
 
 import "forge-std/Test.sol";
 
-import "src/token/Wave2.sol";
+import "src/token/Wave.sol";
 
 // note: needed to avoid conflict with ERC20 interface in OpenZeppelin
 import {InterchainTokenService} from "interchain-token-service/InterchainTokenService.sol";
+
+// note: these were used to put logs into the ITS and be able to track and debug errors along the way
 import {ITokenManagerType} from "interchain-token-service/interfaces/ITokenManagerType.sol";
 import {TokenManagerDeployer} from "interchain-token-service/utils/TokenManagerDeployer.sol";
 import {TokenHandler} from "interchain-token-service/TokenHandler.sol";
@@ -23,7 +25,7 @@ contract BridgeTokenTest is Test {
     address minterAddress;
     bytes32 tokenId;
 
-    Wave2 wave;
+    Wave wave;
     InterchainTokenService tokenService;
 
     function setUp() public {
@@ -53,7 +55,7 @@ contract BridgeTokenTest is Test {
         // console.log("expected tokenID: ");
 
         bytes32 expectedTokenId = tokenService.interchainTokenId(ownerAddress, salt);
-        wave = new Wave2{salt: salt}("Wave2", "WTK", 18, address(tokenService), expectedTokenId);
+        wave = new Wave{salt: salt}(ownerAddress, minterAddress);
         console.logBytes32(expectedTokenId);
         
         console.log("expected token manager address: ", tokenService.tokenManagerAddress(expectedTokenId));
@@ -79,7 +81,9 @@ contract BridgeTokenTest is Test {
 
         console.log("TOKEN_ID=");
         console.logBytes32(tokenId);
+        vm.startPrank(minterAddress);
         wave.mint(ownerAddress, 100 ether);
+        vm.stopPrank();
     }
 
     function testSendTokenCrossChain() public {
