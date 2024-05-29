@@ -4,7 +4,12 @@ pragma solidity ^0.8.24;
 import "forge-std/Test.sol";
 
 import "src/token/Wave.sol";
+import {ProtocolToken} from "src/token/ProtocolToken.sol";
 
+import {AppManager} from "tron/client/application/AppManager.sol";
+import {RuleProcessorDiamond} from "tron/protocol/economic/ruleProcessor/RuleProcessorDiamond.sol";
+import {ProtocolApplicationHandler} from "tron/client/application/ProtocolApplicationHandler.sol";
+import {ERC20HandlerMainFacet} from "tron/client/token/handler/diamond/ERC20HandlerMainFacet.sol";
 // note: needed to avoid conflict with ERC20 interface in OpenZeppelin
 import {InterchainTokenService} from "interchain-token-service/InterchainTokenService.sol";
 
@@ -24,16 +29,22 @@ contract BridgeTokenTest is Test {
     address ownerAddress;
     address minterAddress;
     bytes32 tokenId;
+    bytes32 salt;
 
-    Wave wave;
+    ProtocolToken wave;
     InterchainTokenService tokenService;
+
+    AppManager appManager;
 
     function setUp() public {
         privateKey = vm.envUint("DEPLOYMENT_OWNER_KEY");
         ownerAddress = vm.envAddress("DEPLOYMENT_OWNER");
         minterAddress = vm.envAddress("DEPLOYMENT_MINTER");
         vm.createSelectFork("sepolia_chain");
-        bytes32 salt = bytes32(0x534d454c4c494e475f53414c5453000000000000000000000000000000000000);
+        salt = bytes32(0x534d454c4c494e475f53414c5453000000000000000000000000000000000000);
+
+
+
 
         tokenService = InterchainTokenService(vm.envAddress("INTERCHAIN_TOKEN_SERVICE"));
 
@@ -55,7 +66,9 @@ contract BridgeTokenTest is Test {
         // console.log("expected tokenID: ");
 
         bytes32 expectedTokenId = tokenService.interchainTokenId(ownerAddress, salt);
-        wave = new Wave{salt: salt}(ownerAddress, minterAddress);
+        
+        setUpProtocolToken();
+        //new Wave{salt: salt}(ownerAddress, minterAddress);
         console.logBytes32(expectedTokenId);
         
         console.log("expected token manager address: ", tokenService.tokenManagerAddress(expectedTokenId));
@@ -81,9 +94,23 @@ contract BridgeTokenTest is Test {
 
         console.log("TOKEN_ID=");
         console.logBytes32(tokenId);
-        vm.startPrank(minterAddress);
+        vm.startPrank(ownerAddress);
         wave.mint(ownerAddress, 100 ether);
         vm.stopPrank();
+    }
+
+    function setUpProtocolToken() internal {
+        RuleProcessorDiamond ruleProcessorDiamond = new RuleProcessorDiamond();
+        appManager = new AppManager(ownerAddress, "Wave", false);
+        ProtocolApplicationHandler protocolApplicationHandler = new ProtocolApplicationHandler(address(ruleProcessorDiamond), address(appManager));
+        vm.startPrank(ownerAddress);
+        appManager.addAppAdministrator(ownerAddress);
+        vm.stopPrank();
+        wave = new ProtocolToken{salt: salt}();
+        wave.initialize("Wave", "WAVE", address(appManager));
+        ERC20HandlerMainFacet erc20HandlerMainFacet = new ERC20HandlerMainFacet();
+        erc20HandlerMainFacet.initialize(address(ruleProcessorDiamond), address(appManager), address(wave));
+        wave.connectHandlerToToken(address(erc20HandlerMainFacet));
     }
 
     function testSendTokenCrossChain() public {
