@@ -7,7 +7,7 @@ import "src/token/Wave.sol";
 import {ProtocolToken} from "src/token/ProtocolToken.sol";
 
 import {AppManager} from "tron/client/application/AppManager.sol";
-import {RuleProcessorDiamond} from "tron/protocol/economic/ruleProcessor/RuleProcessorDiamond.sol";
+import {RuleProcessorDiamond, RuleProcessorDiamondArgs, FacetCut} from "tron/protocol/economic/ruleProcessor/RuleProcessorDiamond.sol";
 import {ProtocolApplicationHandler} from "tron/client/application/ProtocolApplicationHandler.sol";
 import {ERC20HandlerMainFacet} from "tron/client/token/handler/diamond/ERC20HandlerMainFacet.sol";
 // note: needed to avoid conflict with ERC20 interface in OpenZeppelin
@@ -100,17 +100,28 @@ contract BridgeTokenTest is Test {
     }
 
     function setUpProtocolToken() internal {
-        RuleProcessorDiamond ruleProcessorDiamond = new RuleProcessorDiamond();
+        FacetCut[] memory cuts = new FacetCut[](0);
+        RuleProcessorDiamond ruleProcessorDiamond = new RuleProcessorDiamond(cuts, RuleProcessorDiamondArgs({
+            init: address(0),
+            initCalldata: bytes("")
+        }));
+
         appManager = new AppManager(ownerAddress, "Wave", false);
         ProtocolApplicationHandler protocolApplicationHandler = new ProtocolApplicationHandler(address(ruleProcessorDiamond), address(appManager));
+        
         vm.startPrank(ownerAddress);
         appManager.addAppAdministrator(ownerAddress);
-        vm.stopPrank();
+        appManager.addAppAdministrator(minterAddress);
         wave = new ProtocolToken{salt: salt}();
         wave.initialize("Wave", "WAVE", address(appManager));
         ERC20HandlerMainFacet erc20HandlerMainFacet = new ERC20HandlerMainFacet();
-        erc20HandlerMainFacet.initialize(address(ruleProcessorDiamond), address(appManager), address(wave));
         wave.connectHandlerToToken(address(erc20HandlerMainFacet));
+        //wave.mint(minterAddress, 100 ether);
+        vm.stopPrank();
+
+        vm.startPrank(minterAddress);
+        //erc20HandlerMainFacet.initialize(address(ruleProcessorDiamond), address(appManager), address(wave));
+        vm.stopPrank();
     }
 
     function testSendTokenCrossChain() public {
