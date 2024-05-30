@@ -25,6 +25,7 @@ contract ProtocolTokenDeployScript is Script {
     function setUp() public {}
 
     function run() public {
+
         privateKey = vm.envUint("DEPLOYMENT_OWNER_KEY");
         ownerAddress = vm.envAddress("DEPLOYMENT_OWNER");
         vm.startBroadcast(privateKey);
@@ -37,9 +38,9 @@ contract ProtocolTokenDeployScript is Script {
         vm.startBroadcast(appConfigAdminKey);
 
         /// Create ERC20 Upgradeable and Proxy 
-        ProtocolToken waveToken = new ProtocolToken();
+        ProtocolToken waveToken = new ProtocolToken{salt: keccak256(vm.envBytes("SALT_STRING"))}();
         bytes memory callData = abi.encodeWithSelector(waveToken.initialize.selector, address(appConfigAdminAddress), address(applicationAppManager));
-        ProtocolTokenProxy waveTokenProxy = new ProtocolTokenProxy(address(waveToken), appConfigAdminAddress, callData); 
+        ProtocolTokenProxy waveTokenProxy = new ProtocolTokenProxy{salt: keccak256(vm.envBytes("SALT_STRING"))}(address(waveToken), appConfigAdminAddress, callData); 
 
         ProtocolToken(address(waveTokenProxy)).initialize("Wave", "WAVE",address(applicationAppManager));
 

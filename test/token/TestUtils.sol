@@ -211,7 +211,6 @@ contract TestUtils is Test, EnabledActionPerRuleArray {
     }
 
 }
-// TODO Remove once Asset Handler import issues are resolved 
 // Note This is an unsafe contract implementation and should not be used to test the validity of the Protocol Rules or asset handler 
 contract DummyAssetHandler is IProtocolTokenHandler {
 

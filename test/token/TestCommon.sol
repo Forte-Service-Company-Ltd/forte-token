@@ -17,7 +17,7 @@ import "tron/example/OracleApproved.sol";
 import "tron/example/OracleDenied.sol";
 import {AppManager} from "tron/client/application/AppManager.sol";
 import {ProtocolApplicationHandler} from "tron/client/application/ProtocolApplicationHandler.sol";
-
+import {DummyAMM} from "tronTest/client/token/TestTokenCommon.sol";
 
 
 /**
@@ -35,7 +35,13 @@ abstract contract TestCommon is TestUtils, EndWithStopPrank {
     DummyAssetHandler public assetHandlerTest; 
     OracleApproved public oracleApproved; 
     OracleDenied public oracleDenied; 
-    bool public testDeployments = true;
+    DummyAMM public tokenAmm;
+    ProtocolToken public testToken; 
+    ProtocolTokenProxy public testTokenProxy; 
+    ProtocolERC20Pricing public erc20Pricer;
+    ProtocolERC721Pricing public erc721Pricer;
+
+    bool public testDeployments;
 
     // common addresses
     address superAdmin = address(0xDaBEEF);
@@ -94,7 +100,7 @@ abstract contract TestCommon is TestUtils, EndWithStopPrank {
         return _createERC20HandlerDiamond(); 
     }
 
-    function setUpTokenWithHandler() public {
+    function setUpTokenWithHandler() public endWithStopPrank {
         vm.startPrank(superAdmin);
         // set a non zero address as rule processor for local testing
         ruleProcessorDiamond = _createRulesProcessorDiamond();
