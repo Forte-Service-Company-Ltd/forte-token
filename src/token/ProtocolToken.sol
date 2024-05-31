@@ -20,7 +20,7 @@ import "tron/client/token/ProtocolTokenCommonU.sol";
 contract ProtocolToken is Initializable, ERC20Upgradeable, ERC20BurnableUpgradeable, OwnableUpgradeable, ERC20PermitUpgradeable, UUPSUpgradeable, ProtocolTokenCommonU, ReentrancyGuard  {
     address public handlerAddress;
     IProtocolTokenHandler handler;
-     uint256[50] reservedStorage;
+    uint256[50] reservedStorage;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
