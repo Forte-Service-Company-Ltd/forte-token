@@ -4,9 +4,9 @@ pragma solidity ^0.8.24;
 import "openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
 /**
- * @title ApplicationERC721UProxy
- * @author @ShaneDuncan602, @oscarsernarosero, @TJ-Everett
- * @notice This is an example ERC721Proxy implementation that App Devs can use.
+ * @title ApplicationERC20UProxy
+ * @author @ShaneDuncan602, @TJ-Everett, @mpetersoCode55, @VoR0220, @Palmerg4 
+ * @notice This is an example ERC20UProxy implementation that App Devs can use.
  */
 
 /**

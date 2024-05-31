@@ -6,32 +6,33 @@ import "test/token/TestArrays.sol";
 import "test/token/ERC20UCommonTests.t.sol";
 
 /**
- * @title ERC20 Upgradeable Fork Tests
+ * @title ERC20 Upgradeable Fork Tests for Sepolia network 
  * @author @ShaneDuncan602, @TJ-Everett, @mpetersoCode55, @VoR0220, @Palmerg4 
- * @dev This is the fork tests for ERC20U protocol integration.
+ * @dev This is the fork tests for ERC20U protocol integration on the sepolia testnet.
 
  * Test Command: 
  * Set env FORK_TEST variable to "true"
- * Set your AMOY_RPC_URL for amoy test net 
+ * Set your SEPOLIA_RPC_URL for Sepolia test net 
  * Run command forge test --ffi --fork-url $RPC_URL
  */
-contract ProtocolTokenProtocolIntegrationTest is TestCommon, TestArrays, DummyAMM, ERC20UCommonTests {
+contract ForkTestERC20UTest is TestCommon, TestArrays, DummyAMM, ERC20UCommonTests {
     function setUp() public endWithStopPrank {
        // set blocktime as deployment block for rule processor so tests are from a clean state
        // Set Fork Test variable to true in env if running fork tests 
         if (vm.envBool("FORK_TEST") == true) {
-            vm.createSelectFork(vm.envString("AMOY_RPC_URL"));
-            superAdmin = vm.envAddress("AMOY_DEPLOYMENT_OWNER");
+            vm.createSelectFork(vm.envString("SEPOLIA_RPC_URL"));
+            superAdmin = vm.envAddress("SEPOLIA_DEPLOYMENT_OWNER");
             vm.stopPrank(); 
-            vm.startPrank(vm.envAddress("AMOY_DEPLOYMENT_OWNER")); 
+            vm.startPrank(vm.envAddress("SEPOLIA_DEPLOYMENT_OWNER")); 
             // set rule processor diamond address 
-            ruleProcessorDiamond = RuleProcessorDiamond(payable(vm.envAddress("RULE_PROCESSOR_DIAMOND")));
+            ruleProcessorDiamond = RuleProcessorDiamond(payable(vm.envAddress("SEPOLIA_RULE_PROCESSOR_DIAMOND")));
             // set up app manager and handler address 
-            appManager = AppManager(vm.envAddress("APP_MANAGER"));
+            appManager = new AppManager(superAdmin, "Wave", false);
+            appHandler = new ProtocolApplicationHandler(vm.envAddress("SEPOLIA_RULE_PROCESSOR_DIAMOND"), address(appManager));
             appManager.addAppAdministrator(appAdministrator);
+            switchToAppAdministrator();
             appManager.addRuleAdministrator(ruleAdmin);
-            appHandler = ProtocolApplicationHandler(vm.envAddress("APP_HANDLER"));
-            appManager.setNewApplicationHandlerAddress(vm.envAddress("APP_HANDLER"));
+            appManager.setNewApplicationHandlerAddress(address(appHandler));
             // set asset handler diamond address 
             vm.warp(Blocktime);
             handlerDiamond = _createERC20HandlerDiamond();
