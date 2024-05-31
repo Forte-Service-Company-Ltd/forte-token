@@ -23,7 +23,9 @@ import {TokenManager} from "interchain-token-service/token-manager/TokenManager.
 
 import {Create3Deployer} from "axelar-gmp-sdk-solidity/deploy/Create3Deployer.sol";
 
-contract BridgeTokenTest is Test {
+import {TestCommon} from "test/token/TestCommon.sol";
+
+contract BridgeTokenTest is TestCommon {
 
     uint privateKey;
     address ownerAddress;
@@ -33,8 +35,6 @@ contract BridgeTokenTest is Test {
 
     ProtocolToken wave;
     InterchainTokenService tokenService;
-
-    AppManager appManager;
 
     function setUp() public {
         privateKey = vm.envUint("DEPLOYMENT_OWNER_KEY");
@@ -67,13 +67,13 @@ contract BridgeTokenTest is Test {
 
         bytes32 expectedTokenId = tokenService.interchainTokenId(ownerAddress, salt);
         
-        setUpProtocolToken();
+        setUpTokenWithHandler();
         //new Wave{salt: salt}(ownerAddress, minterAddress);
         console.logBytes32(expectedTokenId);
         
         console.log("expected token manager address: ", tokenService.tokenManagerAddress(expectedTokenId));
         bytes memory ownerAddressBytes = abi.encodePacked(ownerAddress);
-        bytes memory params = abi.encode(ownerAddressBytes, address(wave));
+        bytes memory params = abi.encode(ownerAddressBytes, address(protocolTokenProxy));
         console.logBytes(params);
         tokenId = tokenService.deployTokenManager(
             salt,
@@ -94,35 +94,35 @@ contract BridgeTokenTest is Test {
 
         console.log("TOKEN_ID=");
         console.logBytes32(tokenId);
-        vm.startPrank(ownerAddress);
-        wave.mint(ownerAddress, 100 ether);
+        switchToAppAdministrator();
+        ProtocolToken(address(protocolTokenProxy)).mint(ownerAddress, 100 ether);
         vm.stopPrank();
     }
 
-    function setUpProtocolToken() internal {
-        FacetCut[] memory cuts = new FacetCut[](0);
-        RuleProcessorDiamond ruleProcessorDiamond = new RuleProcessorDiamond(cuts, RuleProcessorDiamondArgs({
-            init: address(0),
-            initCalldata: bytes("")
-        }));
+    // function setUpProtocolToken() internal {
+    //     FacetCut[] memory cuts = new FacetCut[](0);
+    //     RuleProcessorDiamond ruleProcessorDiamond = new RuleProcessorDiamond(cuts, RuleProcessorDiamondArgs({
+    //         init: address(0),
+    //         initCalldata: bytes("")
+    //     }));
 
-        appManager = new AppManager(ownerAddress, "Wave", false);
-        ProtocolApplicationHandler protocolApplicationHandler = new ProtocolApplicationHandler(address(ruleProcessorDiamond), address(appManager));
+    //     appManager = new AppManager(ownerAddress, "Wave", false);
+    //     ProtocolApplicationHandler protocolApplicationHandler = new ProtocolApplicationHandler(address(ruleProcessorDiamond), address(appManager));
         
-        vm.startPrank(ownerAddress);
-        appManager.addAppAdministrator(ownerAddress);
-        appManager.addAppAdministrator(minterAddress);
-        wave = new ProtocolToken{salt: salt}();
-        wave.initialize("Wave", "WAVE", address(appManager));
-        ERC20HandlerMainFacet erc20HandlerMainFacet = new ERC20HandlerMainFacet();
-        wave.connectHandlerToToken(address(erc20HandlerMainFacet));
-        //wave.mint(minterAddress, 100 ether);
-        vm.stopPrank();
+    //     vm.startPrank(ownerAddress);
+    //     appManager.addAppAdministrator(ownerAddress);
+    //     appManager.addAppAdministrator(minterAddress);
+    //     wave = new ProtocolToken{salt: salt}();
+    //     wave.initialize("Wave", "WAVE", address(appManager));
+    //     ERC20HandlerMainFacet erc20HandlerMainFacet = new ERC20HandlerMainFacet();
+    //     wave.connectHandlerToToken(address(erc20HandlerMainFacet));
+    //     //wave.mint(minterAddress, 100 ether);
+    //     vm.stopPrank();
 
-        vm.startPrank(minterAddress);
-        //erc20HandlerMainFacet.initialize(address(ruleProcessorDiamond), address(appManager), address(wave));
-        vm.stopPrank();
-    }
+    //     vm.startPrank(minterAddress);
+    //     //erc20HandlerMainFacet.initialize(address(ruleProcessorDiamond), address(appManager), address(wave));
+    //     vm.stopPrank();
+    // }
 
     function testSendTokenCrossChain() public {
         string memory destinationChain = "base-sepolia"; //vm.envString("DESTINATION_CHAIN")
@@ -130,7 +130,7 @@ contract BridgeTokenTest is Test {
         uint amount = 1 ether; //vm.envUint("AMOUNT");
 
         vm.startPrank(ownerAddress);
-        wave.approve(address(tokenService), amount);
+        ProtocolToken(address(protocolTokenProxy)).approve(address(tokenService), amount);
         tokenService.interchainTransfer(
             tokenId,
             destinationChain,
