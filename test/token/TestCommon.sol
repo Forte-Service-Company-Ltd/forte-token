@@ -67,7 +67,7 @@ abstract contract TestCommon is TestUtils, EndWithStopPrank {
 
     uint256 constant ATTO = 10 ** 18;
 
-    uint64 Blocktime = 1769924800;
+    uint64 Blocktime = 7598888;
     modifier ifDeploymentTestsEnabled() {
         if (testDeployments) {
             _;
@@ -75,10 +75,18 @@ abstract contract TestCommon is TestUtils, EndWithStopPrank {
     }
 
     function _deployERC20Upgradeable() public returns (ProtocolToken _protocolToken){
-        return new ProtocolToken();
+        return new ProtocolToken{salt: keccak256(vm.envBytes("SALT_STRING"))}();
     }
 
     function _deployERC20UpgradeableProxy(address _protocolToken, address _proxyOwner) public returns (ProtocolTokenProxy _tokenProxy){
+        return new ProtocolTokenProxy{salt: keccak256(vm.envBytes("SALT_STRING"))}(_protocolToken, _proxyOwner, "");
+    }
+
+    function _deployERC20UpgradeableNonDeterministic() public returns (ProtocolToken _protocolToken){
+        return new ProtocolToken();
+    }
+
+    function _deployERC20UpgradeableProxyNonDeterministic(address _protocolToken, address _proxyOwner) public returns (ProtocolTokenProxy _tokenProxy){
         return new ProtocolTokenProxy(_protocolToken, _proxyOwner, "");
     }
 
@@ -121,6 +129,17 @@ abstract contract TestCommon is TestUtils, EndWithStopPrank {
         ProtocolToken(address(protocolTokenProxy)).initialize("Wave", "WAVE", address(appManager)); 
         ProtocolToken(address(protocolTokenProxy)).connectHandlerToToken(address(handlerDiamond)); 
         appManager.registerToken("WAVE", address(protocolTokenProxy));
+
+        oracleApproved = new OracleApproved();
+        oracleDenied = new OracleDenied();
+
+        erc20Pricer = new ProtocolERC20Pricing();
+        erc20Pricer.setSingleTokenPrice(address(protocolTokenProxy), 1 * (10 ** 18));
+        erc721Pricer = new ProtocolERC721Pricing();
+        switchToRuleAdmin();
+        appHandler.setERC20PricingAddress(address(erc20Pricer)); 
+        appHandler.setNFTPricingAddress(address(erc721Pricer)); 
+        vm.warp(Blocktime);
     }
     
 

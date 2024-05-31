@@ -9,6 +9,10 @@ import {DummyAMM} from "tronTest/client/token/TestTokenCommon.sol";
 
 abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
 /// all test function should use ifDeploymentTestsEnabled endWithStopPrank() modifiers
+    
+    function testERC20Upgradeable_OwnershipOfProxy_Positive() public ifDeploymentTestsEnabled endWithStopPrank { 
+        assertEq(appAdministrator, ProtocolToken(address(protocolTokenProxy)).owner());
+    }
     function testERC20Upgradeable_MintToSuperAdmin_Postive() public ifDeploymentTestsEnabled endWithStopPrank {
         switchToAppAdministrator(); 
         uint256 balanceBeforeMint = ProtocolToken(address(protocolTokenProxy)).balanceOf(superAdmin); 
@@ -392,7 +396,7 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
         ProtocolToken(address(protocolTokenProxy)).transfer(user2, 100);
         switchToAppAdministrator(); 
         vm.expectRevert(abi.encodeWithSignature("OverMaxTradingVolume()"));
-        ProtocolToken(address(protocolTokenProxy)).transfer(user1, 1000);
+        ProtocolToken(address(protocolTokenProxy)).transfer(user2, 1000);
 
     }
 
@@ -520,9 +524,9 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
         ProtocolToken(address(protocolTokenProxy)).approve(address(tokenAmm), 1000000); 
 
         // create second token for AMM swaps 
-        testToken = _deployERC20Upgradeable(); 
+        testToken = _deployERC20UpgradeableNonDeterministic(); 
         // deploy proxy 
-        testTokenProxy = _deployERC20UpgradeableProxy(address(testToken), proxyOwner); 
+        testTokenProxy = _deployERC20UpgradeableProxyNonDeterministic(address(testToken), proxyOwner); 
         
         switchToAppAdministrator(); 
         ProtocolToken(address(testTokenProxy)).initialize("Test", "TEST", address(appManager)); 

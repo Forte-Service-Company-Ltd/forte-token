@@ -12,7 +12,7 @@ import "test/token/ERC20UCommonTests.t.sol";
 
  * Test Command: 
  * Set env FORK_TEST variable to "true"
- * Set your AMOY_RPC_URL for amoy test net 
+ * Set your SEPOLIA_RPC_URL for Sepolia test net 
  * Run command forge test --ffi --fork-url $RPC_URL
  */
 contract ForkTestERC20UTest is TestCommon, TestArrays, DummyAMM, ERC20UCommonTests {
@@ -21,18 +21,18 @@ contract ForkTestERC20UTest is TestCommon, TestArrays, DummyAMM, ERC20UCommonTes
        // Set Fork Test variable to true in env if running fork tests 
         if (vm.envBool("FORK_TEST") == true) {
             vm.createSelectFork(vm.envString("SEPOLIA_RPC_URL"));
-            Blocktime = 7598888; 
             superAdmin = vm.envAddress("SEPOLIA_DEPLOYMENT_OWNER");
             vm.stopPrank(); 
             vm.startPrank(vm.envAddress("SEPOLIA_DEPLOYMENT_OWNER")); 
             // set rule processor diamond address 
             ruleProcessorDiamond = RuleProcessorDiamond(payable(vm.envAddress("SEPOLIA_RULE_PROCESSOR_DIAMOND")));
             // set up app manager and handler address 
-            appManager = AppManager(vm.envAddress("SEPOLIA_APP_MANAGER"));
+            appManager = new AppManager(superAdmin, "Wave", false);
+            appHandler = new ProtocolApplicationHandler(vm.envAddress("SEPOLIA_RULE_PROCESSOR_DIAMOND"), address(appManager));
             appManager.addAppAdministrator(appAdministrator);
+            switchToAppAdministrator();
             appManager.addRuleAdministrator(ruleAdmin);
-            appHandler = ProtocolApplicationHandler(vm.envAddress("SEPOLIA_APP_HANDLER"));
-            appManager.setNewApplicationHandlerAddress(vm.envAddress("SEPOLIA_APP_HANDLER"));
+            appManager.setNewApplicationHandlerAddress(address(appHandler));
             // set asset handler diamond address 
             vm.warp(Blocktime);
             handlerDiamond = _createERC20HandlerDiamond();

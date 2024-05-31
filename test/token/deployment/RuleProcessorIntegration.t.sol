@@ -21,7 +21,6 @@ contract ProtocolTokenProtocolIntegrationTest is TestCommon, TestArrays, DummyAM
        // Set Fork Test variable to true in env if running fork tests 
         if (vm.envBool("FORK_TEST") == true) {
             vm.createSelectFork(vm.envString("AMOY_RPC_URL"));
-            Blocktime = 7598888; 
             superAdmin = vm.envAddress("AMOY_DEPLOYMENT_OWNER");
             vm.stopPrank(); 
             vm.startPrank(vm.envAddress("AMOY_DEPLOYMENT_OWNER")); 
