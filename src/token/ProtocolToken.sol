@@ -7,7 +7,6 @@ import "openzeppelin-contracts-upgradeable/contracts/token/ERC20/ERC20Upgradeabl
 import "openzeppelin-contracts-upgradeable/contracts/access/OwnableUpgradeable.sol";
 import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/Initializable.sol";
 import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/UUPSUpgradeable.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "tron/client/token/IProtocolTokenHandler.sol";
 import "tron/client/token/ProtocolTokenCommonU.sol";
 
@@ -17,7 +16,7 @@ import "tron/client/token/ProtocolTokenCommonU.sol";
  * @notice Protocol ERC20 Upgradeable for gaming liquidity 
  */
 
-contract ProtocolToken is Initializable, ERC20Upgradeable, ERC20BurnableUpgradeable, OwnableUpgradeable, ERC20PermitUpgradeable, UUPSUpgradeable, ProtocolTokenCommonU, ReentrancyGuard  {
+contract ProtocolToken is Initializable, ERC20Upgradeable, ERC20BurnableUpgradeable, OwnableUpgradeable, ERC20PermitUpgradeable, UUPSUpgradeable, ProtocolTokenCommonU  {
     address public handlerAddress;
     IProtocolTokenHandler handler;
     uint256[50] reservedStorage;
