@@ -34,15 +34,15 @@ contract ProtocolTokenDeployScript is Script {
         /// switch to the config admin
         appConfigAdminKey = vm.envUint("CONFIG_APP_ADMIN_KEY");
         appConfigAdminAddress = vm.envAddress("CONFIG_APP_ADMIN");
-        vm.startBroadcast(appConfigAdminKey);
 
         /// Create ERC20 Upgradeable and Proxy 
-        ProtocolToken waveToken = new ProtocolToken{salt: keccak256(vm.envBytes("SALT_STRING"))}();
-        bytes memory callData = abi.encodeWithSelector(waveToken.initialize.selector, address(appConfigAdminAddress), address(applicationAppManager));
-        ProtocolTokenProxy waveTokenProxy = new ProtocolTokenProxy{salt: keccak256(vm.envBytes("SALT_STRING"))}(address(waveToken), appConfigAdminAddress, callData); 
-
-        ProtocolToken(address(waveTokenProxy)).initialize("Wave", "WAVE",address(applicationAppManager));
-
+        ProtocolToken waveToken = new ProtocolToken{salt: keccak256(abi.encodePacked(vm.envString("SALT_STRING")))}();
+        vm.stopBroadcast();
+        vm.startBroadcast(appConfigAdminKey);
+        bytes memory callData = abi.encodeWithSelector(waveToken.initialize.selector, "Wave", "WAVE",address(applicationAppManager));
+        ProtocolTokenProxy waveTokenProxy = new ProtocolTokenProxy{salt: keccak256(abi.encodePacked(vm.envString("SALT_STRING")))}(address(waveToken), appConfigAdminAddress, callData); 
+        // note: Create2 is taking admin control, need to find a way to get around giving create2 deployer from foundry control possibly by making our own create2 deployer or by briefly giving it access and immediately removing it. 
+        // more thoughts: potentially import different modifier onto the initialze function to make it not check msg.sender but tx.origin, but this might conflict with gnosis safe wallets
         vm.stopBroadcast();
     }
 }

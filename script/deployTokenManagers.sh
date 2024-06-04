@@ -1,8 +1,8 @@
 #!/bin/bash
 
 echo "################################################################"
-echo Transaction output will be located in transaction_output.txt
-echo a env file will be created with all of the relevant address exports at .test_env
+echo Transaction output will be broadcasted in the broadcast folder under the deployTokenManager.s.sol folder.
+echo Search for the appropriate ChainID to see the results of each transaction.
 echo "################################################################"
 echo
 
@@ -14,13 +14,13 @@ source $ENV_FILE
 echo "################################################################"
 echo Deploy an Axelar TokenManager to ETH sepolia
 echo $ETH_RPC_URL
-forge script script/deployTokenManager.s.sol --fork-url sepolia_chain
+forge script script/deployTokenManager.s.sol --ffi -vvv --non-interactive --rpc-url sepolia_chain --broadcast --gasPrice 20
 echo "################################################################"
 
 
 echo "################################################################"
 echo Deploy an Axelar TokenManager to Base sepolia
 echo $ETH_RPC_URL
-forge script script/deployTokenManager.s.sol --fork-url base_sepolia_chain
+forge script script/deployTokenManager.s.sol --ffi -vvv --non-interactive --rpc-url base_sepolia_chain --broadcast --gasPrice 20
 echo "################################################################"
 

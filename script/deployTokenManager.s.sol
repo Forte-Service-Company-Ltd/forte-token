@@ -7,7 +7,7 @@ import "forge-std/Script.sol";
 import {InterchainTokenService} from "interchain-token-service/InterchainTokenService.sol";
 import {ITokenManagerType} from "interchain-token-service/interfaces/ITokenManagerType.sol";
 
-import "src/token/Wave.sol";
+import {ProtocolToken} from "src/token/ProtocolToken.sol";
 
 contract DeployTokenManager is Script {
 
@@ -15,6 +15,7 @@ contract DeployTokenManager is Script {
     address ownerAddress;
     address waveAddress;
     InterchainTokenService tokenService;
+    bytes32 salt;
 
 
     function run() public {
@@ -23,31 +24,33 @@ contract DeployTokenManager is Script {
         ownerAddress = vm.envAddress("DEPLOYMENT_OWNER");
         waveAddress = vm.envAddress("TOKEN_ADDRESS");
         tokenService = InterchainTokenService(vm.envAddress("INTERCHAIN_TOKEN_SERVICE"));
+        salt = keccak256(abi.encode(vm.envString("SALT_STRING")));
 
         
         vm.startBroadcast(privateKey);
-        try this.deployTokenManager(){
-            console.log("Logic Success");
-        } catch Error(string memory reason) {
-            console.log("Error: %s", reason);
-        }
-        vm.stopBroadcast();
-    }
-
-    function deployTokenManager() external {
-        console.log("deployTokenManager");
-        // 0x534d454c4c494e475f53414c5453 is bytes32("SMELLING_SALTS")
+        
         bytes32 tokenId = tokenService.deployTokenManager(
-            bytes32(0x534d454c4c494e475f53414c5453000000000000000000000000000000000000),
+            salt,
             "", 
             ITokenManagerType.TokenManagerType.LOCK_UNLOCK, 
-            abi.encode(ownerAddress, waveAddress),
-            .01 ether
+            abi.encode(abi.encodePacked(ownerAddress), waveAddress),
+            0
         );
 
         console.log("TOKEN_ID=");
         console.logBytes32(tokenId);
+        address tokenManagerAddress = tokenService.tokenManagerAddress(tokenId);
+        console.log("TOKEN_MANAGER_ADDRESS=", tokenManagerAddress);
+    
+        tokenService.deployTokenManager(
+            salt, 
+            vm.envString("DESTINATION_CHAIN"),
+            ITokenManagerType.TokenManagerType.LOCK_UNLOCK,
+            abi.encode(abi.encodePacked(ownerAddress), vm.envAddress("FOREIGN_TOKEN_ADDRESS")), 
+            0.01 ether // note: this may need to be adjusted depending on network conditions
+        );
 
+        vm.stopBroadcast();
     }
 }
 

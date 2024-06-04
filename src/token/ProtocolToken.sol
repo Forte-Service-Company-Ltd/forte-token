@@ -24,7 +24,7 @@ contract ProtocolToken is Initializable, ERC20Upgradeable, ERC20BurnableUpgradea
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
-        //_disableInitializers();
+        _disableInitializers();
     }
 
     /**

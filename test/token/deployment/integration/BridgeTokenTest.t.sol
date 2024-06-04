@@ -41,40 +41,17 @@ contract BridgeTokenTest is TestCommon {
         ownerAddress = vm.envAddress("DEPLOYMENT_OWNER");
         minterAddress = vm.envAddress("DEPLOYMENT_MINTER");
         vm.createSelectFork("sepolia_chain");
-        salt = bytes32(0x534d454c4c494e475f53414c5453000000000000000000000000000000000000);
-
-
-
+        salt = bytes32(keccak256(abi.encode(vm.envString("SALT_STRING"))));
 
         tokenService = InterchainTokenService(vm.envAddress("INTERCHAIN_TOKEN_SERVICE"));
-
-        // trying to set up with the ability to create logging
-        // Create3Deployer create3Deployer = new Create3Deployer();
-        // address itsPredictedAddress = create3Deployer.deployedAddress(type(InterchainTokenService).creationCode, ownerAddress, salt);
-        // console.log("itsPredictedAddress: ", itsPredictedAddress);
-        // InterchainToken interchainToken = new InterchainToken(itsPredictedAddress);
-        // tokenService = new InterchainTokenService(
-        //     address(new TokenManagerDeployer()),
-        //     address(new InterchainTokenDeployer(address(interchainToken))),
-        //     address(vm.envAddress("ETH_SEPOLIA_AXELAR_GATEWAY")),
-        //     address(0xbE406F0189A0B4cf3A05C286473D23791Dd44Cc6),
-        //     address(0x83a93500d23Fbc3e82B410aD07A6a9F7A0670D66),
-        //     "ethereum-sepolia",
-        //     address(new TokenManager(itsPredictedAddress)),
-        //     address(new TokenHandler(vm.envAddress("ETH_SEPOLIA_AXELAR_GATEWAY")))
-        // );
-        // console.log("expected tokenID: ");
 
         bytes32 expectedTokenId = tokenService.interchainTokenId(ownerAddress, salt);
         
         setUpTokenWithHandler();
-        //new Wave{salt: salt}(ownerAddress, minterAddress);
-        console.logBytes32(expectedTokenId);
-        
-        console.log("expected token manager address: ", tokenService.tokenManagerAddress(expectedTokenId));
+
         bytes memory ownerAddressBytes = abi.encodePacked(ownerAddress);
         bytes memory params = abi.encode(ownerAddressBytes, address(protocolTokenProxy));
-        console.logBytes(params);
+
         tokenId = tokenService.deployTokenManager(
             salt,
             "", 
@@ -92,42 +69,14 @@ contract BridgeTokenTest is TestCommon {
             0.01 ether
         );
 
-        console.log("TOKEN_ID=");
-        console.logBytes32(tokenId);
         switchToAppAdministrator();
         ProtocolToken(address(protocolTokenProxy)).mint(ownerAddress, 100 ether);
         vm.stopPrank();
     }
 
-    // function setUpProtocolToken() internal {
-    //     FacetCut[] memory cuts = new FacetCut[](0);
-    //     RuleProcessorDiamond ruleProcessorDiamond = new RuleProcessorDiamond(cuts, RuleProcessorDiamondArgs({
-    //         init: address(0),
-    //         initCalldata: bytes("")
-    //     }));
-
-    //     appManager = new AppManager(ownerAddress, "Wave", false);
-    //     ProtocolApplicationHandler protocolApplicationHandler = new ProtocolApplicationHandler(address(ruleProcessorDiamond), address(appManager));
-        
-    //     vm.startPrank(ownerAddress);
-    //     appManager.addAppAdministrator(ownerAddress);
-    //     appManager.addAppAdministrator(minterAddress);
-    //     wave = new ProtocolToken{salt: salt}();
-    //     wave.initialize("Wave", "WAVE", address(appManager));
-    //     ERC20HandlerMainFacet erc20HandlerMainFacet = new ERC20HandlerMainFacet();
-    //     wave.connectHandlerToToken(address(erc20HandlerMainFacet));
-    //     //wave.mint(minterAddress, 100 ether);
-    //     vm.stopPrank();
-
-    //     vm.startPrank(minterAddress);
-    //     //erc20HandlerMainFacet.initialize(address(ruleProcessorDiamond), address(appManager), address(wave));
-    //     vm.stopPrank();
-    // }
-
     function testSendTokenCrossChain() public {
-        string memory destinationChain = "base-sepolia"; //vm.envString("DESTINATION_CHAIN")
-        bytes memory destinationAddress = abi.encodePacked(ownerAddress); //vm.envBytes("DESTINATION_ADDRESS");
-        uint amount = 1 ether; //vm.envUint("AMOUNT");
+        string memory destinationChain = "base-sepolia";
+        bytes memory destinationAddress = abi.encodePacked(ownerAddress);
 
         vm.startPrank(ownerAddress);
         ProtocolToken(address(protocolTokenProxy)).approve(address(tokenService), amount);
