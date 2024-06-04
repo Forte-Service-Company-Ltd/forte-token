@@ -41,6 +41,7 @@ contract ProtocolTokenDeployScript is Script {
         vm.startBroadcast(appConfigAdminKey);
         bytes memory callData = abi.encodeWithSelector(waveToken.initialize.selector, "Wave", "WAVE",address(applicationAppManager));
         ProtocolTokenProxy waveTokenProxy = new ProtocolTokenProxy{salt: keccak256(abi.encodePacked(vm.envString("SALT_STRING")))}(address(waveToken), appConfigAdminAddress, callData); 
+        console.log("Wave Token Proxy Address: ", address(waveTokenProxy));
         // note: Create2 is taking admin control, need to find a way to get around giving create2 deployer from foundry control possibly by making our own create2 deployer or by briefly giving it access and immediately removing it. 
         // more thoughts: potentially import different modifier onto the initialze function to make it not check msg.sender but tx.origin, but this might conflict with gnosis safe wallets
         vm.stopBroadcast();

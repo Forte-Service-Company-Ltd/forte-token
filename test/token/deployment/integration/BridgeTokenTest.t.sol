@@ -3,25 +3,10 @@ pragma solidity ^0.8.24;
 
 import "forge-std/Test.sol";
 
-import "src/token/Wave.sol";
 import {ProtocolToken} from "src/token/ProtocolToken.sol";
-
-import {AppManager} from "tron/client/application/AppManager.sol";
-import {RuleProcessorDiamond, RuleProcessorDiamondArgs, FacetCut} from "tron/protocol/economic/ruleProcessor/RuleProcessorDiamond.sol";
-import {ProtocolApplicationHandler} from "tron/client/application/ProtocolApplicationHandler.sol";
-import {ERC20HandlerMainFacet} from "tron/client/token/handler/diamond/ERC20HandlerMainFacet.sol";
 // note: needed to avoid conflict with ERC20 interface in OpenZeppelin
 import {InterchainTokenService} from "interchain-token-service/InterchainTokenService.sol";
-
-// note: these were used to put logs into the ITS and be able to track and debug errors along the way
 import {ITokenManagerType} from "interchain-token-service/interfaces/ITokenManagerType.sol";
-import {TokenManagerDeployer} from "interchain-token-service/utils/TokenManagerDeployer.sol";
-import {TokenHandler} from "interchain-token-service/TokenHandler.sol";
-import {InterchainTokenDeployer} from "interchain-token-service/utils/InterchainTokenDeployer.sol";
-import {InterchainToken} from "interchain-token-service/interchain-token/InterchainToken.sol";
-import {TokenManager} from "interchain-token-service/token-manager/TokenManager.sol";
-
-import {Create3Deployer} from "axelar-gmp-sdk-solidity/deploy/Create3Deployer.sol";
 
 import {TestCommon} from "test/token/TestCommon.sol";
 
@@ -60,14 +45,17 @@ contract BridgeTokenTest is TestCommon {
             0
         );
 
+        assertEq(tokenId, expectedTokenId);
 
-        tokenService.deployTokenManager(
+        bytes32 tokenId2 = tokenService.deployTokenManager(
             salt, 
             "base-sepolia",
             ITokenManagerType.TokenManagerType.LOCK_UNLOCK,
             params, 
             0.01 ether
         );
+
+        assertEq(tokenId2, tokenId);
 
         switchToAppAdministrator();
         ProtocolToken(address(protocolTokenProxy)).mint(ownerAddress, 100 ether);
@@ -77,6 +65,7 @@ contract BridgeTokenTest is TestCommon {
     function testSendTokenCrossChain() public {
         string memory destinationChain = "base-sepolia";
         bytes memory destinationAddress = abi.encodePacked(ownerAddress);
+        uint amount = 1 ether; // 10^18
 
         vm.startPrank(ownerAddress);
         ProtocolToken(address(protocolTokenProxy)).approve(address(tokenService), amount);
