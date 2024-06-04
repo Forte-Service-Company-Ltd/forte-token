@@ -36,7 +36,6 @@ ERC20 Upgradeable functions for mint, burn, transfer, total supply, and zero add
 ## Fork Tests 
 Fork testing was conducted on two chains, Polygon Amoy testnet and Ethereum Sepolia testnet. 
 [Amoy Fork Testing](../../../test/token/deployment/RuleProcessorIntegration.t.sol)
-
 [Sepolia Fork Testing](../../../test/token/deployment/ForkTestERC20U.t.sol)
 
 Fork testing requires the `FORK_TEST` env bool be set to `"true"` and that a valid `RPC_URL` is set for each chain. 
@@ -57,4 +56,4 @@ Rule setting and processing as well as role based account controls are tested th
 
 <!-- These are the header links -->
 [version-image]: https://img.shields.io/badge/Version-1.0.0-brightgreen?style=for-the-badge&logo=appveyor
-[version-url]: https://github.com/thrackle-io/rules-protocol
+[version-url]: https://github.com/thrackle-io/pacman

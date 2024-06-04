@@ -13,7 +13,7 @@ import "tron/client/token/ProtocolTokenCommonU.sol";
 /**
  * @title ERC20 Upgradable Protocol Token Contract
  * @author @ShaneDuncan602, @TJ-Everett, @VoR0220, @Palmerg4
- * @notice Protocol ERC20 Upgradeable for gaming liquidity 
+ * @notice Protocol ERC20 Upgradeable to provide liquidity for Web3 economies
  */
 
 contract ProtocolToken is Initializable, ERC20Upgradeable, ERC20BurnableUpgradeable, OwnableUpgradeable, ERC20PermitUpgradeable, UUPSUpgradeable, ProtocolTokenCommonU  {
@@ -27,7 +27,7 @@ contract ProtocolToken is Initializable, ERC20Upgradeable, ERC20BurnableUpgradea
     }
 
     /**
-     * @dev Initializer sets the name, symbol and the App Manager and Handler Address
+     * @dev Initializer sets the name, symbol and the App Manager Address
      * @notice This function should be called in an "atomic" deploy script when deploying an ERC20Upgradeable contract. 
      * "Front Running" is possible if this function is called individually after the ERC20Upgradeable proxy is deployed. 
      * It is critical to ensure your deploy process mitigates this risk.

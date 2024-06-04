@@ -1,3 +1,3 @@
 ## Pacman
 
-Upgradeable token solution for cross platform gaming liquidity. 
+Upgradeable token solution for cross platform web3 economic liquidity. 

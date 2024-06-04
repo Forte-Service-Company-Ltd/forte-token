@@ -16,7 +16,7 @@
 
 
 ## Purpose 
-Wave is an ERC20 Upgradeable token and allows for the logic contract to be updated overtime. Wave token will utilize existing rules protocol architecure: the asset handler, application manager and handler, and the rule processor diamond. The Application Manager controlls the permissioning roles that guard certain functions within the token.  
+Wave is an ERC20 Upgradeable token and allows for the logic contract to be updated overtime. Wave token will utilize existing rules protocol architecure: the asset handler, application manager and handler, and the rule processor diamond. The Application Manager controls the permissioning roles that guard certain functions within the token.  
 
 
 ## Ownership of Token
@@ -26,16 +26,16 @@ Wave will be owned by a multi-signature safe contract owned by the [Team](mailto
 ## Token Information
 - Deployments: 
     - Ethereum Mainnet: <Mainnet Address>
-    - Plygon POS: <Polygon Address> 
+    - Polygon POS: <Polygon Address> 
 - Name: Wave 
 - Symbol: WAVE 
 - Initial Minted Supply: 0 
 - Total Supply: Uncapped (mintable/ burnable)
 - Decimals: 18 
-- Minting privilages are controlled by Application Manager RBAC Roles. 
+- Minting privileges are controlled by Application Manager RBAC Roles. 
 
 ## Integration with Rule Processor Diamond 
-Wave token utilizes the Rules Procotol `_checkAllRules()` hook in the `_beforeTokenTransfer()` of the token. Wave token will be connected to its own asset handler diamond, application manager and application handler contracts. The [Protocol Token](../../../src/token/ProtocolToken.sol) contract inherhits both the `IProtocolTokenHandler.sol` interface and `ProtocolTokenCommonU.sol` contract.
+Wave token utilizes the Rules Procotol `_checkAllRules()` hook in the `_beforeTokenTransfer()` of the token. Wave token will be connected to its own asset handler diamond, application manager and application handler contracts. The [Wave Token](../../../src/token/ProtocolToken.sol) contract inherhits both the `IProtocolTokenHandler.sol` interface and `ProtocolTokenCommonU.sol` contract.
 
 The `IProtocolTokenHandler.sol` interface is for the token to call the `_checkAllRules()` hook. Once an asset handler diamond address has been connected to the token, any [rules](../../../lib/tron/docs/userGuides/rules/README.md) that are set to active within that asset handler diamond will be checked upon transfer of the token. 
 
@@ -63,7 +63,7 @@ modifier ifAdmin()
 
 ## Proxy Pattern 
 
-The Wave token utilizes an Upgradeable Proxy Pattern that adheres to the [ERC1967 standard](https://eips.ethereum.org/EIPS/eip-1967). The [Protocol Token Proxy](../../../src/token/ProtocolTokenProxy.sol) is the proxy contract for the [Protocol Token](../../../src/token/ProtocolToken.sol). 
+The Wave token utilizes an Upgradeable Proxy Pattern that adheres to the [ERC1967 standard](https://eips.ethereum.org/EIPS/eip-1967). The [Wave Token Proxy](../../../src/token/ProtocolTokenProxy.sol) is the proxy contract for the [Wave Token](../../../src/token/ProtocolToken.sol). 
 
 The Token Proxy will first check if the calling address is the admin for the contract. If the caller is not the admin, the call is then passed to the logic contract via a `delegateCall`. If the caller is the admin of the token proxy, they must call one of the functions within the Proxy contract and cannot call functions inside of the logic contract. Calls to the logic contract by the proxy admin will revert with "TransparentUpgradeableProxy: admin cannot fallback to proxy target". 
 
@@ -75,7 +75,7 @@ function upgradeTo(address newImplementation) external ifAdmin
 ```
 Or the function:
 ```solidity
-function upgradeToAndCall(address newImplementation, bytes calldata data)
+function upgradeToAndCall(address newImplementation, bytes calldata data)  external payable ifAdmin
 ```
 Both upgrade functions use the [ifAdmin](#token-permissions) modifier. 
 

@@ -1,5 +1,5 @@
 # ProtocolTokenProxy
-[Git Source](https://github.com/thrackle-io/pacman/blob/077e8e97d564fd0f631cb54b1a570daaaa0671de/src/token/ProtocolTokenProxy.sol)
+[Git Source](https://github.com/thrackle-io/pacman/blob/08f0c72272e84003db52dec3b8b914a0f3d12a67/src/token/ProtocolTokenProxy.sol)
 
 **Inherits:**
 ERC1967Proxy

@@ -15,7 +15,7 @@
    ````
    git clone [repository-url]
    cd [repo-directory]
-   git update-index --assume-unchanged .env
+   cp .env.copy .env 
    ````
 4. Build the project(this will also create all the submodules)
    ````

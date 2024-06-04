@@ -1,13 +1,13 @@
 # ProtocolToken
-[Git Source](https://github.com/thrackle-io/pacman/blob/077e8e97d564fd0f631cb54b1a570daaaa0671de/src/token/ProtocolToken.sol)
+[Git Source](https://github.com/thrackle-io/pacman/blob/08f0c72272e84003db52dec3b8b914a0f3d12a67/src/token/ProtocolToken.sol)
 
 **Inherits:**
-Initializable, ERC20Upgradeable, ERC20BurnableUpgradeable, OwnableUpgradeable, ERC20PermitUpgradeable, UUPSUpgradeable, ProtocolTokenCommonU, ReentrancyGuard
+Initializable, ERC20Upgradeable, ERC20BurnableUpgradeable, OwnableUpgradeable, ERC20PermitUpgradeable, UUPSUpgradeable, ProtocolTokenCommonU
 
 **Author:**
 @ShaneDuncan602, @TJ-Everett, @VoR0220, @Palmerg4
 
-Protocol ERC20 Upgradeable for gaming liquidity
+Protocol ERC20 Upgradeable to provide liquidity for Web3 economies
 
 
 ## State Variables
@@ -46,7 +46,7 @@ This function should be called in an "atomic" deploy script when deploying an ER
 "Front Running" is possible if this function is called individually after the ERC20Upgradeable proxy is deployed.
 It is critical to ensure your deploy process mitigates this risk.
 
-*Initializer sets the name, symbol and the App Manager and Handler Address*
+*Initializer sets the name, symbol and the App Manager Address*
 
 
 ```solidity
