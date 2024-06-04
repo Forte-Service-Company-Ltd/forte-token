@@ -8,12 +8,12 @@ import {ApplicationAppManager} from "tron/example/application/ApplicationAppMana
 
 /**
  * @title ERC20 Upggradeable Protocol Token  Script
+ * @author @ShaneDuncan602 @VoR0220 @Palmerg4 @TJ-Everett
  * @dev This script will deploy an ERC20 Upgradeable fungible token and Proxy.
  * @notice Deploys an application ERC20U and Proxy.
  * ** Requires .env variables to be set with correct addresses **
  * Run Script:
- * forge script example/script/Application_Deploy_01_AppManager.s.sol --ffi --rpc-url $RPC_URL --broadcast -vvvv
-
+ * forge script script/deployProtocolToken.s.sol --ffi --rpc-url $RPC_URL --broadcast -vvvv
  */
 
 contract ProtocolTokenDeployScript is Script {

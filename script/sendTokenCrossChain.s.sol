@@ -9,6 +9,14 @@ import {ProtocolToken} from "src/token/ProtocolToken.sol";
 import {InterchainTokenService} from "interchain-token-service/InterchainTokenService.sol";
 
 
+/**
+ * @title Send Protocol Tokens Cross Chain Script
+ * @author @ShaneDuncan602 @VoR0220 @Palmerg4 @TJ-Everett
+ * @dev This script will send protocol tokens to the specified address on a foreign chain
+ * @notice This is used to send tokens to the foreign chain token manager for bridging.
+ * forge script script/sendTokenCrossChain.s.sol --ffi --rpc-url $RPC_URL --broadcast -vvvv
+ */
+
 contract SendTokenCrossChain is Script {
 
     uint privateKey;

@@ -4,6 +4,14 @@ pragma solidity ^0.8.24;
 import "forge-std/Script.sol";
 import "src/token/ProtocolToken.sol";
 
+/**
+ * @title Mint Protocol Tokens Script
+ * @author @ShaneDuncan602 @VoR0220 @Palmerg4 @TJ-Everett
+ * @dev This script will mint protocol tokens to the specified address
+ * @notice This mints a specified amount to a specific address. This is particularly useful to set up the foreign chain token manager for bridging.
+ * forge script script/mintProtocolTokens.s.sol --ffi --rpc-url $RPC_URL --broadcast -vvvv
+ */
+
 contract MintProtocolTokens is Script {
 
     uint256 appConfigAdminKey;

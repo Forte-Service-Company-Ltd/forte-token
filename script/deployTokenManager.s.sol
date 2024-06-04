@@ -9,6 +9,18 @@ import {ITokenManagerType} from "interchain-token-service/interfaces/ITokenManag
 
 import {ProtocolToken} from "src/token/ProtocolToken.sol";
 
+
+/**
+ * @title Deploy Token Manager
+ * @author @ShaneDuncan602 @VoR0220 @Palmerg4 @TJ-Everett
+ * @dev This script will deploy an Axelar Interchain Token Service Token Manager
+ * @notice This token manager is used to manage the flow of tokens between chains.
+ * Be sure to mint tokens on the foreign chain that is not the main distribution point.
+ * ** Requires .env variables to be set with correct addresses **
+ * Run Script:
+ * forge script script/deployTokenManager.s.sol --ffi --rpc-url $RPC_URL --broadcast -vvvv
+ */
+
 contract DeployTokenManager is Script {
 
     uint privateKey;
