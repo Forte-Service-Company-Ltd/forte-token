@@ -8,12 +8,12 @@ import {ApplicationAppManager} from "tron/example/application/ApplicationAppMana
 
 /**
  * @title ERC20 Upggradeable Protocol Token  Script
+ * @author @ShaneDuncan602 @VoR0220 @Palmerg4 @TJ-Everett
  * @dev This script will deploy an ERC20 Upgradeable fungible token and Proxy.
  * @notice Deploys an application ERC20U and Proxy.
  * ** Requires .env variables to be set with correct addresses **
  * Run Script:
- * forge script example/script/Application_Deploy_01_AppManager.s.sol --ffi --rpc-url $RPC_URL --broadcast -vvvv
-
+ * forge script script/deployProtocolToken.s.sol --ffi --rpc-url $RPC_URL --broadcast -vvvv
  */
 
 contract ProtocolTokenDeployScript is Script {
@@ -25,7 +25,6 @@ contract ProtocolTokenDeployScript is Script {
     function setUp() public {}
 
     function run() public {
-
         privateKey = vm.envUint("DEPLOYMENT_OWNER_KEY");
         ownerAddress = vm.envAddress("DEPLOYMENT_OWNER");
         vm.startBroadcast(privateKey);
@@ -35,15 +34,16 @@ contract ProtocolTokenDeployScript is Script {
         /// switch to the config admin
         appConfigAdminKey = vm.envUint("CONFIG_APP_ADMIN_KEY");
         appConfigAdminAddress = vm.envAddress("CONFIG_APP_ADMIN");
-        vm.startBroadcast(appConfigAdminKey);
 
         /// Create ERC20 Upgradeable and Proxy 
-        ProtocolToken waveToken = new ProtocolToken{salt: keccak256(vm.envBytes("SALT_STRING"))}();
-        bytes memory callData = abi.encodeWithSelector(waveToken.initialize.selector, address(appConfigAdminAddress), address(applicationAppManager));
-        ProtocolTokenProxy waveTokenProxy = new ProtocolTokenProxy{salt: keccak256(vm.envBytes("SALT_STRING"))}(address(waveToken), appConfigAdminAddress, callData); 
-
-        ProtocolToken(address(waveTokenProxy)).initialize("Wave", "WAVE",address(applicationAppManager));
-
+        ProtocolToken waveToken = new ProtocolToken{salt: keccak256(abi.encodePacked(vm.envString("SALT_STRING")))}();
+        vm.stopBroadcast();
+        vm.startBroadcast(appConfigAdminKey);
+        bytes memory callData = abi.encodeWithSelector(waveToken.initialize.selector, "Wave", "WAVE",address(applicationAppManager));
+        ProtocolTokenProxy waveTokenProxy = new ProtocolTokenProxy{salt: keccak256(abi.encodePacked(vm.envString("SALT_STRING")))}(address(waveToken), appConfigAdminAddress, callData); 
+        console.log("Wave Token Proxy Address: ", address(waveTokenProxy));
+        // note: Create2 is taking admin control, need to find a way to get around giving create2 deployer from foundry control possibly by making our own create2 deployer or by briefly giving it access and immediately removing it. 
+        // more thoughts: potentially import different modifier onto the initialze function to make it not check msg.sender but tx.origin, but this might conflict with gnosis safe wallets
         vm.stopBroadcast();
     }
 }

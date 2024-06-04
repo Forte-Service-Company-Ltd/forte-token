@@ -1,3 +1,6 @@
+[profile.local]
+eth-rpc-url = 'http://localhost:8545'
+
 [profile.default]
 src = "src"
 out = "out"
@@ -11,8 +14,17 @@ remappings = [
     "tron/=lib/tron/src",
     "tronLib/=lib/tron/lib",
     "tronTest/=lib/tron/test",
-    "tronScripts/=lib/tron/script"
+    "tronScripts/=lib/tron/script",
+    "axelar-gmp-sdk-solidity/=lib/axelar-gmp-sdk-solidity/contracts/",
+    "@axelar-network/axelar-gmp-sdk-solidity/=lib/axelar-gmp-sdk-solidity"
 ]
+
+[rpc_endpoints]
+local_chain_1 = "http://localhost:8545"
+local_chain_2 = "http://localhost:8546"
+amoy_chain = "https://rpc-amoy.polygon.technology"
+sepolia_chain = "https://ethereum-sepolia-rpc.publicnode.com"
+base_sepolia_chain = "https://base-sepolia.blockpi.network/v1/rpc/public"
 
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
