@@ -9,11 +9,56 @@ import {DummyAMM} from "tronTest/client/token/TestTokenCommon.sol";
 
 abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
 /// all test function should use ifDeploymentTestsEnabled endWithStopPrank() modifiers
-    
-    // Tests needed - RBAC ROLES: Granting/revoking + ConnectTokenToHandler only Token Admin role
     function testERC20Upgradeable_OwnershipOfProxy_Positive() public ifDeploymentTestsEnabled endWithStopPrank { 
         assertEq(appAdministrator, ProtocolToken(address(protocolTokenProxy)).owner());
     }
+
+    function testERC20Upgradeable_TokenRoleGranting_Positive() public ifDeploymentTestsEnabled endWithStopPrank { 
+        switchToAppAdministrator(); 
+        ProtocolToken(address(protocolTokenProxy)).grantRole(MINTER_ROLE, user1);
+        assertTrue(ProtocolToken(address(protocolTokenProxy)).hasRole(MINTER_ROLE, user1));
+    }
+
+    function testERC20Upgradeable_TokenRoleGranting_Negative() public ifDeploymentTestsEnabled endWithStopPrank { 
+        switchToSuperAdmin(); 
+        vm.expectRevert(abi.encodePacked("AccessControl: account ", StringsUpgradeable.toHexString(superAdmin), " is missing role 0x9e262e26e9d5bf97da5c389e15529a31bb2b13d89967a4f6eab01792567d5fd6"));
+        ProtocolToken(address(protocolTokenProxy)).grantRole(MINTER_ROLE, user1);
+        assertFalse(ProtocolToken(address(protocolTokenProxy)).hasRole(MINTER_ROLE, user1));
+    }
+
+    function testERC20Upgradeable_TokenRoleRevoking_Positive() public ifDeploymentTestsEnabled endWithStopPrank { 
+        switchToAppAdministrator(); 
+        ProtocolToken(address(protocolTokenProxy)).grantRole(MINTER_ROLE, user1);
+        assertTrue(ProtocolToken(address(protocolTokenProxy)).hasRole(MINTER_ROLE, user1));
+        switchToAppAdministrator(); 
+        ProtocolToken(address(protocolTokenProxy)).revokeRole(MINTER_ROLE, user1);
+        assertFalse(ProtocolToken(address(protocolTokenProxy)).hasRole(MINTER_ROLE, user1));
+    }
+
+    function testERC20Upgradeable_TokenRoleRevoking_Negative() public ifDeploymentTestsEnabled endWithStopPrank { 
+        switchToAppAdministrator(); 
+        ProtocolToken(address(protocolTokenProxy)).grantRole(MINTER_ROLE, user1);
+        assertTrue(ProtocolToken(address(protocolTokenProxy)).hasRole(MINTER_ROLE, user1));
+        
+        switchToSuperAdmin(); 
+        vm.expectRevert(abi.encodePacked("AccessControl: account ", StringsUpgradeable.toHexString(superAdmin), " is missing role 0x9e262e26e9d5bf97da5c389e15529a31bb2b13d89967a4f6eab01792567d5fd6"));
+        ProtocolToken(address(protocolTokenProxy)).grantRole(MINTER_ROLE, user1);
+        assertTrue(ProtocolToken(address(protocolTokenProxy)).hasRole(MINTER_ROLE, user1));
+    }
+
+    function testERC20Upgradeable_TokenConnectHandler_Positive() public ifDeploymentTestsEnabled endWithStopPrank { 
+        switchToAppAdministrator(); 
+        ProtocolToken(address(protocolTokenProxy)).connectHandlerToToken(address(0x777)); 
+        assertEq(ProtocolToken(address(protocolTokenProxy)).getHandlerAddress(), address(0x777)); 
+    }
+
+    function testERC20Upgradeable_TokenConnectHandler_Negative() public ifDeploymentTestsEnabled endWithStopPrank { 
+        switchToSuperAdmin(); 
+        vm.expectRevert(abi.encodePacked("AccessControl: account ", StringsUpgradeable.toHexString(superAdmin), " is missing role 0x9e262e26e9d5bf97da5c389e15529a31bb2b13d89967a4f6eab01792567d5fd6"));
+        ProtocolToken(address(protocolTokenProxy)).connectHandlerToToken(address(0x777)); 
+        assertEq(ProtocolToken(address(protocolTokenProxy)).getHandlerAddress(), address(handlerDiamond)); 
+    }
+
     function testERC20Upgradeable_MintToSuperAdmin_Postive() public ifDeploymentTestsEnabled endWithStopPrank {
         switchToAppAdministrator(); 
         uint256 balanceBeforeMint = ProtocolToken(address(protocolTokenProxy)).balanceOf(superAdmin); 

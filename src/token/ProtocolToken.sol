@@ -21,7 +21,6 @@ contract ProtocolToken is Initializable, ERC20Upgradeable, ERC20BurnableUpgradea
     
     bytes32 constant TOKEN_ADMIN_ROLE = keccak256("TOKEN_ADMIN_ROLE");
     bytes32 constant MINTER_ROLE = keccak256("MINTER_ROLE");
-    bytes32 constant BURNER_ROLE = keccak256("BURNER_ROLE");
     
     address public handlerAddress;
     IProtocolTokenHandler handler;
@@ -48,7 +47,6 @@ contract ProtocolToken is Initializable, ERC20Upgradeable, ERC20BurnableUpgradea
         __UUPSUpgradeable_init();
         _grantRole(TOKEN_ADMIN_ROLE, _minterAdmin); 
         _setRoleAdmin(MINTER_ROLE, TOKEN_ADMIN_ROLE);
-        _setRoleAdmin(BURNER_ROLE, TOKEN_ADMIN_ROLE);
     }
 
     /**

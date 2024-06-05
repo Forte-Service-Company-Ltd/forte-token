@@ -69,7 +69,6 @@ abstract contract TestCommon is TestUtils, EndWithStopPrank {
 
     bytes32 public constant TOKEN_ADMIN_ROLE = keccak256("TOKEN_ADMIN_ROLE");
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
-    bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
 
     uint64 Blocktime = 7598888;
     modifier ifDeploymentTestsEnabled() {
