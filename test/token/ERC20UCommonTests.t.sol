@@ -10,6 +10,7 @@ import {DummyAMM} from "tronTest/client/token/TestTokenCommon.sol";
 abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
 /// all test function should use ifDeploymentTestsEnabled endWithStopPrank() modifiers
     
+    // Tests needed - RBAC ROLES: Granting/revoking + ConnectTokenToHandler only Token Admin role
     function testERC20Upgradeable_OwnershipOfProxy_Positive() public ifDeploymentTestsEnabled endWithStopPrank { 
         assertEq(appAdministrator, ProtocolToken(address(protocolTokenProxy)).owner());
     }
@@ -37,7 +38,7 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
     function testERC20Upgradeable_Mint_NotAdmin_Negative() public ifDeploymentTestsEnabled endWithStopPrank {
         switchToUser();
         uint256 balanceBeforeMint = ProtocolToken(address(protocolTokenProxy)).balanceOf(user1); 
-        vm.expectRevert(abi.encodeWithSignature("NotAppAdministrator()"));
+        vm.expectRevert(abi.encodePacked("AccessControl: account ", StringsUpgradeable.toHexString(user1), " is missing role 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6"));
         ProtocolToken(address(protocolTokenProxy)).mint(user1, 10000);
         assertEq(balanceBeforeMint, ProtocolToken(address(protocolTokenProxy)).balanceOf(user1));
     }
@@ -45,7 +46,7 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
     function testERC20Upgradeable_Mint_NotAppAdmin_Negative() public ifDeploymentTestsEnabled endWithStopPrank {
         switchToRuleAdmin();
         uint256 balanceBeforeMint = ProtocolToken(address(protocolTokenProxy)).balanceOf(ruleAdmin); 
-        vm.expectRevert(abi.encodeWithSignature("NotAppAdministrator()"));
+        vm.expectRevert(abi.encodePacked("AccessControl: account ", StringsUpgradeable.toHexString(ruleAdmin), " is missing role 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6"));
         ProtocolToken(address(protocolTokenProxy)).mint(ruleAdmin, 10000);
         assertEq(balanceBeforeMint, ProtocolToken(address(protocolTokenProxy)).balanceOf(ruleAdmin));
     }
@@ -119,7 +120,7 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
         assertEq(10000, ProtocolToken(address(protocolTokenProxy)).balanceOf(appAdministrator));
         // ensure that only admins can mint with new logic contract
         switchToUser(); 
-        vm.expectRevert(abi.encodeWithSignature("NotAppAdministrator()"));
+        vm.expectRevert(abi.encodePacked("AccessControl: account ", StringsUpgradeable.toHexString(user1), " is missing role 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6"));
         ProtocolToken(address(protocolTokenProxy)).mint(user1, 10000);
     }
 
@@ -144,7 +145,7 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
 
     function testERC20U_ForkTesting_TestMinting_Negative() public ifDeploymentTestsEnabled endWithStopPrank {
         switchToUser(); 
-        vm.expectRevert(abi.encodeWithSignature("NotAppAdministrator()"));
+        vm.expectRevert(abi.encodePacked("AccessControl: account ", StringsUpgradeable.toHexString(user1), " is missing role 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6"));
         ProtocolToken(address(protocolTokenProxy)).mint(appAdministrator, 1000); 
         assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(appAdministrator), 0);
     }
@@ -529,7 +530,8 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
         testTokenProxy = _deployERC20UpgradeableProxyNonDeterministic(address(testToken), proxyOwner); 
         
         switchToAppAdministrator(); 
-        ProtocolToken(address(testTokenProxy)).initialize("Test", "TEST", address(appManager)); 
+        ProtocolToken(address(testTokenProxy)).initialize("Test", "TEST", appAdministrator); 
+        ProtocolToken(address(testTokenProxy)).grantRole(MINTER_ROLE,appAdministrator);
         assetHandlerTest = new DummyAssetHandler();
         ProtocolToken(address(testTokenProxy)).connectHandlerToToken(address(assetHandlerTest)); 
         appManager.registerToken("TEST", address(testTokenProxy));

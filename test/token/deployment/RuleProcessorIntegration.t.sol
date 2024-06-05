@@ -41,7 +41,8 @@ contract ProtocolTokenProtocolIntegrationTest is TestCommon, TestArrays, DummyAM
             protocolTokenProxy = _deployERC20UpgradeableProxy(address(protocolToken), proxyOwner); 
             ERC20HandlerMainFacet(address(handlerDiamond)).initialize(address(ruleProcessorDiamond), address(appManager), address(protocolTokenProxy));
             switchToAppAdministrator(); 
-            ProtocolToken(address(protocolTokenProxy)).initialize("Wave", "WAVE", address(appManager)); 
+            ProtocolToken(address(protocolTokenProxy)).initialize("Wave", "WAVE", appAdministrator); 
+            ProtocolToken(address(protocolTokenProxy)).grantRole(MINTER_ROLE, appAdministrator);
             ProtocolToken(address(protocolTokenProxy)).connectHandlerToToken(address(handlerDiamond)); 
             appManager.registerToken("WAVE", address(protocolTokenProxy));
 

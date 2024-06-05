@@ -7,8 +7,9 @@ import "openzeppelin-contracts-upgradeable/contracts/token/ERC20/ERC20Upgradeabl
 import "openzeppelin-contracts-upgradeable/contracts/access/OwnableUpgradeable.sol";
 import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/Initializable.sol";
 import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/UUPSUpgradeable.sol";
+import "openzeppelin-contracts-upgradeable/contracts/access/AccessControlUpgradeable.sol";
 import "tron/client/token/IProtocolTokenHandler.sol";
-import "tron/client/token/ProtocolTokenCommonU.sol";
+import "tron/client/token/ERC20/upgradeable/IProtocolERC20UMin.sol";
 
 /**
  * @title ERC20 Upgradable Protocol Token Contract
@@ -16,7 +17,12 @@ import "tron/client/token/ProtocolTokenCommonU.sol";
  * @notice Protocol ERC20 Upgradeable to provide liquidity for Web3 economies
  */
 
-contract ProtocolToken is Initializable, ERC20Upgradeable, ERC20BurnableUpgradeable, OwnableUpgradeable, ERC20PermitUpgradeable, UUPSUpgradeable, ProtocolTokenCommonU  {
+contract ProtocolToken is Initializable, ERC20Upgradeable, ERC20BurnableUpgradeable, OwnableUpgradeable, ERC20PermitUpgradeable, UUPSUpgradeable, IProtocolERC20UMin, AccessControlUpgradeable  {
+    
+    bytes32 constant TOKEN_ADMIN_ROLE = keccak256("TOKEN_ADMIN_ROLE");
+    bytes32 constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    bytes32 constant BURNER_ROLE = keccak256("BURNER_ROLE");
+    
     address public handlerAddress;
     IProtocolTokenHandler handler;
     uint256[50] reservedStorage;
@@ -33,25 +39,16 @@ contract ProtocolToken is Initializable, ERC20Upgradeable, ERC20BurnableUpgradea
      * It is critical to ensure your deploy process mitigates this risk.
      * @param _nameProto Name of the Token
      * @param _symbolProto Symbol for the Token
-     * @param _appManagerAddress Address of App Manager
      */
-   function initialize(string memory _nameProto, string memory _symbolProto, address _appManagerAddress) external appAdministratorOnly(_appManagerAddress) initializer {
+   function initialize(string memory _nameProto, string memory _symbolProto, address _minterAdmin) external initializer {
         __ERC20_init(_nameProto, _symbolProto); 
         __ERC20Burnable_init();
         __Ownable_init();
         __ERC20Permit_init(_nameProto);
         __UUPSUpgradeable_init();
-        _initializeProtocol(_appManagerAddress);
-    }
-
-    /**
-     * @dev Private Initializer sets the the App Manager Address
-     * @param _appManagerAddress Address of App Manager
-     */
-    function _initializeProtocol(address _appManagerAddress) private onlyInitializing {
-        if (_appManagerAddress == address(0)) revert ZeroAddress();
-        appManagerAddress = _appManagerAddress;
-        emit AD1467_NewTokenDeployed(_appManagerAddress);
+        _grantRole(TOKEN_ADMIN_ROLE, _minterAdmin); 
+        _setRoleAdmin(MINTER_ROLE, TOKEN_ADMIN_ROLE);
+        _setRoleAdmin(BURNER_ROLE, TOKEN_ADMIN_ROLE);
     }
 
     /**
@@ -65,7 +62,7 @@ contract ProtocolToken is Initializable, ERC20Upgradeable, ERC20BurnableUpgradea
      * @param to Address of recipient
      * @param amount Number of tokens to mint 
      */
-    function mint(address to, uint256 amount) public appAdministratorOnly(appManagerAddress) {
+    function mint(address to, uint256 amount) onlyRole(MINTER_ROLE) public  {
         _mint(to, amount);
     }
 
@@ -96,7 +93,7 @@ contract ProtocolToken is Initializable, ERC20Upgradeable, ERC20BurnableUpgradea
      * @dev Function to connect Token to previously deployed Handler contract
      * @param _deployedHandlerAddress address of the currently deployed Handler Address
      */
-    function connectHandlerToToken(address _deployedHandlerAddress) external appAdministratorOnly(appManagerAddress) {
+    function connectHandlerToToken(address _deployedHandlerAddress) external onlyRole(TOKEN_ADMIN_ROLE) {
         if (_deployedHandlerAddress == address(0)) revert ZeroAddress();
         handlerAddress = _deployedHandlerAddress;
         handler = IProtocolTokenHandler(handlerAddress);

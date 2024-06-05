@@ -128,19 +128,19 @@ contract ProtocolTokenFuzzTest is TestCommon {
     function testERC20Upgradeable_Fuzz_MintAdminOnly(uint8 addrIndex1) public endWithStopPrank { 
         (address _user1, address _user2, address _user3, address _user4) = _get4RandomAddresses(addrIndex1);
         vm.startPrank(_user1);
-        vm.expectRevert(abi.encodeWithSignature("NotAppAdministrator()"));
+        vm.expectRevert(abi.encodePacked("AccessControl: account ", StringsUpgradeable.toHexString(_user1), " is missing role 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6"));
         ProtocolToken(address(protocolTokenProxy)).mint(_user1, 10000);
 
         vm.startPrank(_user2);
-        vm.expectRevert(abi.encodeWithSignature("NotAppAdministrator()"));
+        vm.expectRevert(abi.encodePacked("AccessControl: account ", StringsUpgradeable.toHexString(_user2), " is missing role 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6"));
         ProtocolToken(address(protocolTokenProxy)).mint(_user2, 10000);
 
         vm.startPrank(_user3);
-        vm.expectRevert(abi.encodeWithSignature("NotAppAdministrator()"));
+        vm.expectRevert(abi.encodePacked("AccessControl: account ", StringsUpgradeable.toHexString(_user3), " is missing role 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6"));
         ProtocolToken(address(protocolTokenProxy)).mint(_user3, 10000);
 
         vm.startPrank(_user4);
-        vm.expectRevert(abi.encodeWithSignature("NotAppAdministrator()"));
+        vm.expectRevert(abi.encodePacked("AccessControl: account ", StringsUpgradeable.toHexString(_user4), " is missing role 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6"));
         ProtocolToken(address(protocolTokenProxy)).mint(_user4, 10000);
 
         assertEq(ProtocolToken(address(protocolTokenProxy)).totalSupply(), 0);
