@@ -22,47 +22,52 @@ contract BridgeTokenTest is TestCommon {
     InterchainTokenService tokenService;
 
     function setUp() public {
-        privateKey = vm.envUint("DEPLOYMENT_OWNER_KEY");
-        ownerAddress = vm.envAddress("DEPLOYMENT_OWNER");
-        minterAddress = vm.envAddress("DEPLOYMENT_MINTER");
-        vm.createSelectFork("sepolia_chain");
-        salt = bytes32(keccak256(abi.encode(vm.envString("SALT_STRING"))));
+        if (vm.envBool("FORK_TEST") == true) {
+            privateKey = vm.envUint("DEPLOYMENT_OWNER_KEY");
+            ownerAddress = vm.envAddress("DEPLOYMENT_OWNER");
+            minterAddress = vm.envAddress("DEPLOYMENT_MINTER");
+            vm.createSelectFork("sepolia_chain");
+            salt = bytes32(keccak256(abi.encode(vm.envString("SALT_STRING"))));
 
-        tokenService = InterchainTokenService(vm.envAddress("INTERCHAIN_TOKEN_SERVICE"));
+            tokenService = InterchainTokenService(vm.envAddress("INTERCHAIN_TOKEN_SERVICE"));
 
-        bytes32 expectedTokenId = tokenService.interchainTokenId(ownerAddress, salt);
-        
-        setUpTokenWithHandler();
+            bytes32 expectedTokenId = tokenService.interchainTokenId(ownerAddress, salt);
+            
+            setUpTokenWithHandler();
 
-        bytes memory ownerAddressBytes = abi.encodePacked(ownerAddress);
-        bytes memory params = abi.encode(ownerAddressBytes, address(protocolTokenProxy));
+            bytes memory ownerAddressBytes = abi.encodePacked(ownerAddress);
+            bytes memory params = abi.encode(ownerAddressBytes, address(protocolTokenProxy));
 
-        tokenId = tokenService.deployTokenManager(
-            salt,
-            "", 
-            ITokenManagerType.TokenManagerType.LOCK_UNLOCK, 
-            params,
-            0
-        );
+            tokenId = tokenService.deployTokenManager(
+                salt,
+                "", 
+                ITokenManagerType.TokenManagerType.LOCK_UNLOCK, 
+                params,
+                0
+            );
 
-        assertEq(tokenId, expectedTokenId);
+            assertEq(tokenId, expectedTokenId);
 
-        bytes32 tokenId2 = tokenService.deployTokenManager(
-            salt, 
-            "base-sepolia",
-            ITokenManagerType.TokenManagerType.LOCK_UNLOCK,
-            params, 
-            0.01 ether
-        );
+            bytes32 tokenId2 = tokenService.deployTokenManager(
+                salt, 
+                "base-sepolia",
+                ITokenManagerType.TokenManagerType.LOCK_UNLOCK,
+                params, 
+                0.01 ether
+            );
 
-        assertEq(tokenId2, tokenId);
+            assertEq(tokenId2, tokenId);
 
-        switchToAppAdministrator();
-        ProtocolToken(address(protocolTokenProxy)).mint(ownerAddress, 100 ether);
-        vm.stopPrank();
+            switchToAppAdministrator();
+            ProtocolToken(address(protocolTokenProxy)).mint(ownerAddress, 100 ether);
+            vm.stopPrank();
+        testDeployments = true;
+        } else {
+            testDeployments = false;
+        }
     }
 
-    function testSendTokenCrossChain() public {
+    function testSendTokenCrossChain() public ifDeploymentTestsEnabled {
         string memory destinationChain = "base-sepolia";
         bytes memory destinationAddress = abi.encodePacked(ownerAddress);
         uint amount = 1 ether; // 10^18

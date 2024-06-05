@@ -53,3 +53,5 @@ contract WaveTokenDeployScript is Script {
         // more thoughts: potentially import different modifier onto the initialze function to make it not check msg.sender but tx.origin, but this might conflict with gnosis safe wallets
         vm.stopBroadcast();
     }
+
+}
