@@ -75,11 +75,11 @@ abstract contract TestCommon is TestUtils, EndWithStopPrank {
     }
 
     function _deployERC20Upgradeable() public returns (ProtocolToken _protocolToken){
-        return new ProtocolToken{salt: keccak256(vm.envBytes("SALT_STRING"))}();
+        return new ProtocolToken{salt: keccak256(abi.encode(vm.envString("SALT_STRING")))}();
     }
 
     function _deployERC20UpgradeableProxy(address _protocolToken, address _proxyOwner) public returns (ProtocolTokenProxy _tokenProxy){
-        return new ProtocolTokenProxy{salt: keccak256(vm.envBytes("SALT_STRING"))}(_protocolToken, _proxyOwner, "");
+        return new ProtocolTokenProxy{salt: keccak256(abi.encode(vm.envString("SALT_STRING")))}(_protocolToken, _proxyOwner, "");
     }
 
     function _deployERC20UpgradeableNonDeterministic() public returns (ProtocolToken _protocolToken){

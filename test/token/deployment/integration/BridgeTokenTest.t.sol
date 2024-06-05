@@ -22,12 +22,21 @@ contract BridgeTokenTest is TestCommon {
     InterchainTokenService tokenService;
 
     function setUp() public {
+<<<<<<< HEAD
         if (vm.envBool("FORK_TEST") == true) {
             privateKey = vm.envUint("DEPLOYMENT_OWNER_KEY");
             ownerAddress = vm.envAddress("DEPLOYMENT_OWNER");
             minterAddress = vm.envAddress("DEPLOYMENT_MINTER");
             vm.createSelectFork("sepolia_chain");
             salt = bytes32(keccak256(abi.encode(vm.envString("SALT_STRING"))));
+=======
+        privateKey = vm.envUint("DEPLOYMENT_OWNER_KEY");
+        ownerAddress = vm.envAddress("DEPLOYMENT_OWNER");
+        minterAddress = vm.envAddress("DEPLOYMENT_MINTER");
+        vm.createSelectFork("sepolia_chain");
+        string memory saltStr = vm.envString("SALT_STRING");
+        salt = bytes32(keccak256(abi.encode(saltStr)));
+>>>>>>> a4a7924 (fix is in)
 
             tokenService = InterchainTokenService(vm.envAddress("INTERCHAIN_TOKEN_SERVICE"));
 
@@ -46,6 +55,7 @@ contract BridgeTokenTest is TestCommon {
                 0
             );
 
+<<<<<<< HEAD
             assertEq(tokenId, expectedTokenId);
 
             bytes32 tokenId2 = tokenService.deployTokenManager(
@@ -55,6 +65,15 @@ contract BridgeTokenTest is TestCommon {
                 params, 
                 0.01 ether
             );
+=======
+        bytes32 tokenId2 = tokenService.deployTokenManager(
+            salt, 
+            "base-sepolia",
+            ITokenManagerType.TokenManagerType.LOCK_UNLOCK,
+            params, 
+            0.01 ether
+        );
+>>>>>>> a4a7924 (fix is in)
 
             assertEq(tokenId2, tokenId);
 
