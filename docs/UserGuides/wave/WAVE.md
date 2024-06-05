@@ -1,0 +1,121 @@
+# Wave Token 
+[![Project Version][version-image]][version-url]
+
+
+## Table of Contents
+- [Purpose](#purpose)
+- [Ownership of Token](#ownership-of-token)
+- [Token Information](#token-information)
+- [Integration with Rule Processor Diamond](#integration-with-rule-processor-diamond)
+- [Token Permissions](#token-permissions)
+- [Proxy Pattern](#proxy-pattern)
+- [Upgrading The Token](#upgrading-the-token)
+- [Token Functionality](#token-functionality)
+- [Testing Methodology](#testing-methodology)
+
+
+
+## Purpose 
+Wave is an ERC20 Upgradeable token and allows for the logic contract to be updated overtime. Wave token will utilize existing rules protocol architecure: the asset handler, application manager and handler, and the rule processor diamond. The Application Manager controls the permissioning roles that guard certain functions within the token.  
+
+
+## Ownership of Token
+
+Wave will be owned by a multi-signature safe contract owned by the [Team](mailto:engineering@thrackle.io).
+
+## Token Information
+- Deployments: 
+    - Ethereum Mainnet: <Mainnet Address>
+    - Polygon POS: <Polygon Address> 
+- Name: Wave 
+- Symbol: WAVE 
+- Initial Minted Supply: 0 
+- Total Supply: Uncapped (mintable/ burnable)
+- Decimals: 18 
+- Minting privileges are controlled by Application Manager RBAC Roles. 
+
+## Integration with Rule Processor Diamond 
+Wave token utilizes the Rules Procotol `_checkAllRules()` hook in the `_beforeTokenTransfer()` of the token. Wave token will be connected to its own asset handler diamond, application manager and application handler contracts. The [Wave Token](../../../src/token/ProtocolToken.sol) contract inherhits both the `IProtocolTokenHandler.sol` interface and `ProtocolTokenCommonU.sol` contract.
+
+The `IProtocolTokenHandler.sol` interface is for the token to call the `_checkAllRules()` hook. Once an asset handler diamond address has been connected to the token, any [rules](../../../lib/tron/docs/userGuides/rules/README.md) that are set to active within that asset handler diamond will be checked upon transfer of the token. 
+
+The `ProtocolTokenCommonU.sol` contract allows for the token to set the Application Manager address and utilize the RBAC roles for safeguarding functions. `mint()`,`connectHandlerToToken()` and `initialize()` are role guarded functions for admin role permissioned addresses only. 
+
+
+## Token Permissions
+Wave token utilizes the Application Manager's RBAC [roles](../../../lib/tron/docs/userGuides/permissions/ADMIN-ROLES.md).
+
+```solidity
+modifier appAdministratorOrOwnerOnly(address _permissionModuleAppManagerAddress)
+```
+
+The Wave token proxy utilizes a proxy admin role set at contruction of the proxy contract. This address is passed into the constructor as an address parameter and granted the role of `admin` for the proxy. This role may be changed through the function: 
+
+```solidity
+function changeAdmin(address newAdmin) external virtual ifAdmin
+```
+
+This function is only callable by the current proxy admin via the ifAdmin modifier: 
+
+```solidity
+modifier ifAdmin() 
+```
+
+## Proxy Pattern 
+
+The Wave token utilizes an Upgradeable Proxy Pattern that adheres to the [ERC1967 standard](https://eips.ethereum.org/EIPS/eip-1967). The [Wave Token Proxy](../../../src/token/ProtocolTokenProxy.sol) is the proxy contract for the [Wave Token](../../../src/token/ProtocolToken.sol). 
+
+The Token Proxy will first check if the calling address is the admin for the contract. If the caller is not the admin, the call is then passed to the logic contract via a `delegateCall`. If the caller is the admin of the token proxy, they must call one of the functions within the Proxy contract and cannot call functions inside of the logic contract. Calls to the logic contract by the proxy admin will revert with "TransparentUpgradeableProxy: admin cannot fallback to proxy target". 
+
+## Upgrading The Token 
+### Logic Contract Upgrades
+ERC20 Upgradeable allows for the Proxy address to point to a new logic contract. This is done by calling either the function: 
+```solidity
+function upgradeTo(address newImplementation) external ifAdmin
+```
+Or the function:
+```solidity
+function upgradeToAndCall(address newImplementation, bytes calldata data)  external payable ifAdmin
+```
+Both upgrade functions use the [ifAdmin](#token-permissions) modifier. 
+
+### Asset Handler Upgrades
+Connecting to a new asset handler is done by calling the function: 
+```solidity
+function connectHandlerToToken(address _deployedHandlerAddress) external appAdministratorOnly(appManagerAddress) 
+```
+This function uses the [appAdministratorOnly](#token-permissions) modifier. 
+
+### Application Manager Upgrades 
+Connecting to a new Application manager is done through a two step verification process. First call the function: 
+```solidity
+function proposeAppManagerAddress(address _newAppManagerAddress)
+```
+This function uses the [appAdministratorOnly](#token-permissions) modifier. 
+
+Then by calling the function: 
+```solidity
+function confirmAppManagerAddress() external
+```
+
+## Token Functionality 
+### ERC20 Upgradeable Structure
+Wave token inherits from multiple contracts: 
+- ERC20 Upgreadeable
+- Initializable 
+- ERC20BurnableUpgradeable 
+- OwnableUpgradeable 
+- ERC20PermitUpgradeable 
+- UUPSUpgradeable 
+- ProtocolTokenCommonU 
+
+### Standard ERC20 Token functions 
+Wave token inherits and has all standard ERC20 functions as defined in the [ERC20 Upgreadeable](https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable/blob/master/contracts/token/ERC20/ERC20Upgradeable.sol) contract. 
+
+#### Testing Methodology 
+[Testing](./ERC20_UPGRADEABLE_TESTING_METHODOLOGY.md) for the token's functionality and integration with the Rule Processor Diamond.
+
+
+<!-- These are the header links -->
+[version-image]: https://img.shields.io/badge/Version-1.0.0-brightgreen?style=for-the-badge&logo=appveyor
+[version-url]: https://github.com/thrackle-io/pacman
