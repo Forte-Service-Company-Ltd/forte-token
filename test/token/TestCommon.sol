@@ -46,6 +46,7 @@ abstract contract TestCommon is TestUtils, EndWithStopPrank {
     // common addresses
     address superAdmin = address(0xDaBEEF);
     address appAdministrator = address(0xDEAD);
+    address minterAdmin = address(0xF00D);
     address treasuryAccount = address(0xAAA);
     address ruleAdmin = address(0xACDC);
     address accessLevelAdmin = address(0xBBB);
@@ -66,6 +67,9 @@ abstract contract TestCommon is TestUtils, EndWithStopPrank {
     address[] ADDRESSES = [address(0xFF1), address(0xFF2), address(0xFF3), address(0xFF4), address(0xFF5), address(0xFF6), address(0xFF7), address(0xFF8)];
 
     uint256 constant ATTO = 10 ** 18;
+
+    bytes32 public constant TOKEN_ADMIN_ROLE = keccak256("TOKEN_ADMIN_ROLE");
+    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
     uint64 Blocktime = 7598888;
     modifier ifDeploymentTestsEnabled() {
@@ -126,7 +130,8 @@ abstract contract TestCommon is TestUtils, EndWithStopPrank {
         // connect everything 
         switchToAppAdministrator(); 
         appManager.setNewApplicationHandlerAddress(address(appHandler));
-        ProtocolToken(address(protocolTokenProxy)).initialize("Wave", "WAVE", address(appManager)); 
+        ProtocolToken(address(protocolTokenProxy)).initialize("Wave", "WAVE", address(appAdministrator)); 
+        ProtocolToken(address(protocolTokenProxy)).grantRole(MINTER_ROLE, minterAdmin);
         ProtocolToken(address(protocolTokenProxy)).connectHandlerToToken(address(handlerDiamond)); 
         appManager.registerToken("WAVE", address(protocolTokenProxy));
 
@@ -151,6 +156,11 @@ abstract contract TestCommon is TestUtils, EndWithStopPrank {
         appManager.addAppAdministrator(appAdministrator); //set a app administrator
         vm.stopPrank(); //stop interacting as the app admin
         vm.startPrank(appAdministrator); //interact as the created app administrator
+    }
+
+    function switchToMinterAdmin() public {
+        vm.stopPrank(); //stop interacting as the app admin
+        vm.startPrank(minterAdmin); //interact as the created app administrator
     }
 
     function switchToAccessLevelAdmin() public {

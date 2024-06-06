@@ -14,7 +14,7 @@ contract ProtocolTokenFuzzTest is TestCommon {
 
     // test total supply changes with mint/burns 
     function testERC20Upgradeable_Fuzz_TotalSupplyChanges(uint256 amount) public endWithStopPrank {
-        switchToAppAdministrator(); 
+        switchToMinterAdmin(); 
         uint256 supplyBeforeMint = ProtocolToken(address(protocolTokenProxy)).totalSupply(); 
         ProtocolToken(address(protocolTokenProxy)).mint(appAdministrator, amount);
         assertEq(supplyBeforeMint + amount, ProtocolToken(address(protocolTokenProxy)).totalSupply());
@@ -22,8 +22,8 @@ contract ProtocolTokenFuzzTest is TestCommon {
 
     function testERC20Upgradeable_Fuzz_TotalSupplyChangesMintAndBurn(uint256 amount) public endWithStopPrank {
         amount = bound(amount, 11, type(uint256).max);
-        switchToAppAdministrator(); 
-        ProtocolToken(address(protocolTokenProxy)).mint(appAdministrator, amount);
+        switchToMinterAdmin(); 
+        ProtocolToken(address(protocolTokenProxy)).mint(minterAdmin, amount);
         uint256 supply = ProtocolToken(address(protocolTokenProxy)).totalSupply();
         uint256 burnAmount; 
         if (amount < 100) {
@@ -38,7 +38,7 @@ contract ProtocolTokenFuzzTest is TestCommon {
 
     // test transfers to zero address 
     function testERC20Upgradeable_Fuzz_TransfersToZeroAddress_Negative(uint256 amount) public endWithStopPrank {
-        switchToAppAdministrator();  
+        switchToMinterAdmin();  
         ProtocolToken(address(protocolTokenProxy)).mint(user1, amount);
         switchToUser(); 
         vm.expectRevert("ERC20: transfer to the zero address");
@@ -46,7 +46,7 @@ contract ProtocolTokenFuzzTest is TestCommon {
     }
     // transfer more than balance reverts admin 
     function testERC20Upgradeable_Fuzz_Transfers_Positive(uint256 amount) public endWithStopPrank {
-        switchToAppAdministrator();  
+        switchToMinterAdmin();  
         ProtocolToken(address(protocolTokenProxy)).mint(user1, amount);
         switchToUser(); 
         ProtocolToken(address(protocolTokenProxy)).transfer(appAdministrator, amount);
@@ -55,7 +55,7 @@ contract ProtocolTokenFuzzTest is TestCommon {
 
     function testERC20Upgradeable_Fuzz_Transfers_Negative(uint256 amount) public endWithStopPrank {
         amount = bound(amount, 1, (type(uint256).max -1));
-        switchToAppAdministrator();  
+        switchToMinterAdmin();  
         ProtocolToken(address(protocolTokenProxy)).mint(user1, amount);
         switchToUser(); 
         vm.expectRevert("ERC20: transfer amount exceeds balance");
@@ -63,7 +63,7 @@ contract ProtocolTokenFuzzTest is TestCommon {
     }
     // transfer more than balance reverts user 
     function testERC20Upgradeable_Fuzz_TransfersToUser_Positive(uint256 amount) public endWithStopPrank {
-        switchToAppAdministrator();  
+        switchToMinterAdmin();  
         ProtocolToken(address(protocolTokenProxy)).mint(user1, amount);
         switchToUser(); 
         ProtocolToken(address(protocolTokenProxy)).transfer(user2, amount);
@@ -72,7 +72,7 @@ contract ProtocolTokenFuzzTest is TestCommon {
 
     function testERC20Upgradeable_Fuzz_TransfersToUser_Negative(uint256 amount) public endWithStopPrank {
         amount = bound(amount, 1, (type(uint256).max -1));
-        switchToAppAdministrator();  
+        switchToMinterAdmin();  
         ProtocolToken(address(protocolTokenProxy)).mint(user1, amount);
         switchToUser(); 
         vm.expectRevert("ERC20: transfer amount exceeds balance");
@@ -80,15 +80,15 @@ contract ProtocolTokenFuzzTest is TestCommon {
     }
     // burn more than balance reverts admin 
     function testERC20Upgradeable_Fuzz_BurnAdmin_Positive(uint256 amount) public endWithStopPrank {
-        switchToAppAdministrator();  
-        ProtocolToken(address(protocolTokenProxy)).mint(appAdministrator, amount);
+        switchToMinterAdmin();  
+        ProtocolToken(address(protocolTokenProxy)).mint(minterAdmin, amount);
         ProtocolToken(address(protocolTokenProxy)).burn(amount);
-        assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(appAdministrator), 0);
+        assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(minterAdmin), 0);
     }
 
     function testERC20Upgradeable_Fuzz_BurnAdmin_Negative(uint256 amount) public endWithStopPrank {
         amount = bound(amount, 1, (type(uint256).max -1));
-        switchToAppAdministrator();  
+        switchToMinterAdmin();  
         ProtocolToken(address(protocolTokenProxy)).mint(appAdministrator, amount);
         vm.expectRevert("ERC20: burn amount exceeds balance");
         ProtocolToken(address(protocolTokenProxy)).burn(amount + 1);
@@ -96,7 +96,7 @@ contract ProtocolTokenFuzzTest is TestCommon {
     }
     // burn more than balance reverts user 
     function testERC20Upgradeable_Fuzz_BurnUser_Positive(uint256 amount) public endWithStopPrank {
-        switchToAppAdministrator();  
+        switchToMinterAdmin();  
         ProtocolToken(address(protocolTokenProxy)).mint(user1, amount);
         switchToUser();
         ProtocolToken(address(protocolTokenProxy)).burn(amount);
@@ -105,7 +105,7 @@ contract ProtocolTokenFuzzTest is TestCommon {
 
     function testERC20Upgradeable_Fuzz_BurnUser_Negative(uint256 amount) public endWithStopPrank {
         amount = bound(amount, 1, (type(uint256).max -1));
-        switchToAppAdministrator();  
+        switchToMinterAdmin();  
         ProtocolToken(address(protocolTokenProxy)).mint(user1, amount);
         switchToUser();
         vm.expectRevert("ERC20: burn amount exceeds balance");
@@ -114,11 +114,11 @@ contract ProtocolTokenFuzzTest is TestCommon {
     }
     // test allowance given to admin 
     function testERC20Upgradeable_Fuzz_Allowance_Positive(uint256 amount) public endWithStopPrank {
-        switchToAppAdministrator();  
+        switchToMinterAdmin();  
         ProtocolToken(address(protocolTokenProxy)).mint(user1, amount);
         switchToUser();
-        ProtocolToken(address(protocolTokenProxy)).increaseAllowance(appAdministrator, amount);
-        switchToAppAdministrator(); 
+        ProtocolToken(address(protocolTokenProxy)).increaseAllowance(minterAdmin, amount);
+        switchToMinterAdmin(); 
         ProtocolToken(address(protocolTokenProxy)).transferFrom(user1, user2, amount);
 
         assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(user1), 0);
@@ -128,19 +128,19 @@ contract ProtocolTokenFuzzTest is TestCommon {
     function testERC20Upgradeable_Fuzz_MintAdminOnly(uint8 addrIndex1) public endWithStopPrank { 
         (address _user1, address _user2, address _user3, address _user4) = _get4RandomAddresses(addrIndex1);
         vm.startPrank(_user1);
-        vm.expectRevert(abi.encodeWithSignature("NotAppAdministrator()"));
+        vm.expectRevert(abi.encodePacked("AccessControl: account ", StringsUpgradeable.toHexString(_user1), " is missing role 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6"));
         ProtocolToken(address(protocolTokenProxy)).mint(_user1, 10000);
 
         vm.startPrank(_user2);
-        vm.expectRevert(abi.encodeWithSignature("NotAppAdministrator()"));
+        vm.expectRevert(abi.encodePacked("AccessControl: account ", StringsUpgradeable.toHexString(_user2), " is missing role 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6"));
         ProtocolToken(address(protocolTokenProxy)).mint(_user2, 10000);
 
         vm.startPrank(_user3);
-        vm.expectRevert(abi.encodeWithSignature("NotAppAdministrator()"));
+        vm.expectRevert(abi.encodePacked("AccessControl: account ", StringsUpgradeable.toHexString(_user3), " is missing role 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6"));
         ProtocolToken(address(protocolTokenProxy)).mint(_user3, 10000);
 
         vm.startPrank(_user4);
-        vm.expectRevert(abi.encodeWithSignature("NotAppAdministrator()"));
+        vm.expectRevert(abi.encodePacked("AccessControl: account ", StringsUpgradeable.toHexString(_user4), " is missing role 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6"));
         ProtocolToken(address(protocolTokenProxy)).mint(_user4, 10000);
 
         assertEq(ProtocolToken(address(protocolTokenProxy)).totalSupply(), 0);

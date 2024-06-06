@@ -2,9 +2,11 @@
 [![Project Version][version-image]][version-url]
 
 ## Purpose 
-Wave is an ERC20 Upgradeable token and allows for the logic contract to be updated overtime. Wave token will utilize existing rules protocol architecure: the asset handler, application manager and handler, and the rule processor diamond. The Application Manager controlls the permissioning roles that guard certain functions within the token.
+Wave is an ERC20 Upgradeable token and allows for the logic contract to be updated overtime. Wave token will utilize existing rules protocol architecure: the asset handler, application manager and handler, and the rule processor diamond. Wave token uses Access Control Upgradeable for the admin roles that guard certain functions within the token.
 
-[Token Information](./WAVE.md#token-information)
+[Token Information](./WAVE.md#token-information)    
+
+[Token Permissions](./WAVE.md#token-permissions)
 
 ## Deploying Wave Token 
 [![Project Version][version-image]][version-url]

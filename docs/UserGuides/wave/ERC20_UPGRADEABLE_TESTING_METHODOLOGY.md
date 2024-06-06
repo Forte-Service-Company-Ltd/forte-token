@@ -34,8 +34,8 @@ Invariant testing utilizes randomness and saves the state of the contract to ens
 ERC20 Upgradeable functions for mint, burn, transfer, total supply, and zero address checks are were all tested in [ERC20UBasic](../../../test/token/invariants/ERC20UBasic.t.i.sol) and [ERC20UMintBurn](../../../test/token/invariants/ERC20UMintBurn.t.i.sol). 
 
 ## Fork Tests 
-Fork testing was conducted on two chains, Polygon Amoy testnet and Ethereum Sepolia testnet. 
-[Amoy Fork Testing](../../../test/token/deployment/RuleProcessorIntegration.t.sol)
+Fork testing was conducted on two chains, Polygon Amoy testnet and Ethereum Sepolia testnet.    
+[Amoy Fork Testing](../../../test/token/deployment/RuleProcessorIntegration.t.sol)  
 [Sepolia Fork Testing](../../../test/token/deployment/ForkTestERC20U.t.sol)
 
 Fork testing requires the `FORK_TEST` env bool be set to `"true"` and that a valid `RPC_URL` is set for each chain. 
@@ -45,8 +45,8 @@ Fork testing will take the state of the tested chain at the provided block time 
 
 Rule setting and processing as well as role based account controls are tested through the `ERC20UCommonTests.t.sol` file. This allows  for local testing and fork testing to maintain parity in the test suite. 
 
-
-
+Token Bridge Testing was conducted on Ethereum Sepolia and Base Sepoia test nets. Tokens were minted on Base Sepolia and bridged to Eth Sepolia.    
+[Token Bridge Testing](../../../test/token/deployment/integration/BridgeTokenTest.t.sol)
 
 
 
