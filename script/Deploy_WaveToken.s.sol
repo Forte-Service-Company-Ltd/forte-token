@@ -37,7 +37,7 @@ contract WaveTokenDeployScript is Script {
         /// Create ERC20 Upgradeable and Proxy 
         ProtocolToken waveToken = new ProtocolToken{salt: keccak256(abi.encodePacked(vm.envString("SALT_STRING")))}();
         vm.stopBroadcast();
-        vm.startBroadcast(appConfigAdminKey);
+        vm.startBroadcast(privateKey);
         bytes memory callData = abi.encodeWithSelector(waveToken.initialize.selector, "Wave", "WAVE", address(ownerAddress));
         ProtocolTokenProxy waveTokenProxy = new ProtocolTokenProxy{salt: keccak256(abi.encodePacked(vm.envString("SALT_STRING")))}(address(waveToken), appConfigAdminAddress, callData); 
         console.log("Wave Token Proxy Address: ", address(waveTokenProxy));
