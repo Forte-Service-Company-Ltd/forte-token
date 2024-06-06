@@ -45,7 +45,7 @@ Fork testing will take the state of the tested chain at the provided block time 
 
 Rule setting and processing as well as role based account controls are tested through the `ERC20UCommonTests.t.sol` file. This allows  for local testing and fork testing to maintain parity in the test suite. 
 
-Token Bridge Testing was conducted on Ethereum Sepolia and Base Sepoia test nets. Tokens were minted on Eth Sepolia and bridged to Base Sepolia.    
+Token Bridge Testing was conducted on Ethereum Sepolia and Base Sepoia test nets. Tokens were minted on Base Sepolia and bridged to Eth Sepolia.    
 [Token Bridge Testing](../../../test/token/deployment/integration/BridgeTokenTest.t.sol)
 
 

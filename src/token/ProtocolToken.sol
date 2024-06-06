@@ -38,14 +38,15 @@ contract ProtocolToken is Initializable, ERC20Upgradeable, ERC20BurnableUpgradea
      * It is critical to ensure your deploy process mitigates this risk.
      * @param _nameProto Name of the Token
      * @param _symbolProto Symbol for the Token
+     * @param _tokenAdmin address to be granted the token admin role for the Token
      */
-   function initialize(string memory _nameProto, string memory _symbolProto, address _minterAdmin) external initializer {
+   function initialize(string memory _nameProto, string memory _symbolProto, address _tokenAdmin) external initializer {
         __ERC20_init(_nameProto, _symbolProto); 
         __ERC20Burnable_init();
         __Ownable_init();
         __ERC20Permit_init(_nameProto);
         __UUPSUpgradeable_init();
-        _grantRole(TOKEN_ADMIN_ROLE, _minterAdmin); 
+        _grantRole(TOKEN_ADMIN_ROLE, _tokenAdmin); 
         _setRoleAdmin(MINTER_ROLE, TOKEN_ADMIN_ROLE);
     }
 

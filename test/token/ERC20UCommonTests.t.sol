@@ -30,7 +30,6 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
         switchToAppAdministrator(); 
         ProtocolToken(address(protocolTokenProxy)).grantRole(MINTER_ROLE, user1);
         assertTrue(ProtocolToken(address(protocolTokenProxy)).hasRole(MINTER_ROLE, user1));
-        switchToAppAdministrator(); 
         ProtocolToken(address(protocolTokenProxy)).revokeRole(MINTER_ROLE, user1);
         assertFalse(ProtocolToken(address(protocolTokenProxy)).hasRole(MINTER_ROLE, user1));
     }
@@ -60,21 +59,21 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
     }
 
     function testERC20Upgradeable_MintToSuperAdmin_Postive() public ifDeploymentTestsEnabled endWithStopPrank {
-        switchToAppAdministrator(); 
+        switchToMinterAdmin(); 
         uint256 balanceBeforeMint = ProtocolToken(address(protocolTokenProxy)).balanceOf(superAdmin); 
         ProtocolToken(address(protocolTokenProxy)).mint(superAdmin, 10000);
         assertEq(balanceBeforeMint + 10000, ProtocolToken(address(protocolTokenProxy)).balanceOf(superAdmin));
     }
 
     function testERC20Upgradeable_MintToAppAdmin_Postive() public ifDeploymentTestsEnabled endWithStopPrank {
-        switchToAppAdministrator(); 
+        switchToMinterAdmin(); 
         uint256 balanceBeforeMint = ProtocolToken(address(protocolTokenProxy)).balanceOf(appAdministrator); 
         ProtocolToken(address(protocolTokenProxy)).mint(appAdministrator, 10000);
         assertEq(balanceBeforeMint + 10000, ProtocolToken(address(protocolTokenProxy)).balanceOf(appAdministrator));
     }
 
     function testERC20Upgradeable_MintToUser_Postive() public ifDeploymentTestsEnabled endWithStopPrank {
-        switchToAppAdministrator(); 
+        switchToMinterAdmin(); 
         uint256 balanceBeforeMint = ProtocolToken(address(protocolTokenProxy)).balanceOf(user1); 
         ProtocolToken(address(protocolTokenProxy)).mint(user1, 10000);
         assertEq(balanceBeforeMint + 10000, ProtocolToken(address(protocolTokenProxy)).balanceOf(user1));
@@ -97,16 +96,16 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
     }
 
     function testERC20Upgradeable_TransferFromAppAdminToUser_Postive() public ifDeploymentTestsEnabled endWithStopPrank {
-        switchToAppAdministrator(); 
-        uint256 balanceBeforeMint = ProtocolToken(address(protocolTokenProxy)).balanceOf(appAdministrator); 
-        ProtocolToken(address(protocolTokenProxy)).mint(appAdministrator, 10000);
-        assertEq(balanceBeforeMint + 10000, ProtocolToken(address(protocolTokenProxy)).balanceOf(appAdministrator));
+        switchToMinterAdmin(); 
+        uint256 balanceBeforeMint = ProtocolToken(address(protocolTokenProxy)).balanceOf(minterAdmin); 
+        ProtocolToken(address(protocolTokenProxy)).mint(minterAdmin, 10000);
+        assertEq(balanceBeforeMint + 10000, ProtocolToken(address(protocolTokenProxy)).balanceOf(minterAdmin));
         ProtocolToken(address(protocolTokenProxy)).transfer(user1, 1000);
         assertEq(1000, ProtocolToken(address(protocolTokenProxy)).balanceOf(user1));
     }
 
     function testERC20Upgradeable_TransferFromUserToUser_Postive() public ifDeploymentTestsEnabled endWithStopPrank {
-        switchToAppAdministrator();  
+        switchToMinterAdmin();  
         ProtocolToken(address(protocolTokenProxy)).mint(user1, 10000);
         switchToUser();
         ProtocolToken(address(protocolTokenProxy)).transfer(user2, 1000);
@@ -114,7 +113,7 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
     }
 
     function testERC20Upgradeable_TransferFromUserToUser_Negative() public ifDeploymentTestsEnabled endWithStopPrank {
-        switchToAppAdministrator();  
+        switchToMinterAdmin();  
         ProtocolToken(address(protocolTokenProxy)).mint(user2, 10000);
         switchToUser();
         vm.expectRevert("ERC20: transfer amount exceeds balance");
@@ -123,14 +122,14 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
     }
 
     function testERC20Upgradeable_AdminBurn_Postive() public ifDeploymentTestsEnabled endWithStopPrank {
-        switchToAppAdministrator();  
-        ProtocolToken(address(protocolTokenProxy)).mint(appAdministrator, 10000);
+        switchToMinterAdmin();  
+        ProtocolToken(address(protocolTokenProxy)).mint(minterAdmin, 10000);
         ProtocolToken(address(protocolTokenProxy)).burn(1000);
-        assertEq(9000, ProtocolToken(address(protocolTokenProxy)).balanceOf(appAdministrator));
+        assertEq(9000, ProtocolToken(address(protocolTokenProxy)).balanceOf(minterAdmin));
     }
 
     function testERC20Upgradeable_UserBurn_Postive() public ifDeploymentTestsEnabled endWithStopPrank {
-        switchToAppAdministrator();  
+        switchToMinterAdmin();  
         ProtocolToken(address(protocolTokenProxy)).mint(user1, 10000);
         switchToUser();
         ProtocolToken(address(protocolTokenProxy)).burn(1000);
@@ -138,7 +137,7 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
     }
 
     function testERC20Upgradeable_UserBurn_Negative() public ifDeploymentTestsEnabled endWithStopPrank {
-        switchToAppAdministrator();  
+        switchToMinterAdmin();  
         ProtocolToken(address(protocolTokenProxy)).mint(user1, 10000);
         switchToUser();
         vm.expectRevert("ERC20: burn amount exceeds balance");
@@ -147,7 +146,7 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
     }
 
     function testERC20Upgradeable_AdminBurn_Negative() public ifDeploymentTestsEnabled endWithStopPrank {
-        switchToAppAdministrator();  
+        switchToMinterAdmin();  
         ProtocolToken(address(protocolTokenProxy)).mint(appAdministrator, 10000);
         vm.expectRevert("ERC20: burn amount exceeds balance");
         ProtocolToken(address(protocolTokenProxy)).burn(11000);
@@ -155,13 +154,13 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
     }
 
     function testERC20Upgradeable_Upgrade() public ifDeploymentTestsEnabled endWithStopPrank {
-        switchToAppAdministrator();  
+        switchToMinterAdmin();  
         ProtocolToken(address(protocolTokenProxy)).mint(appAdministrator, 10000);
         vm.stopPrank();
         vm.startPrank(proxyOwner); 
         protocolTokenUpgraded = new ProtocolToken(); 
         protocolTokenProxy.upgradeTo(address(protocolTokenUpgraded));
-        switchToAppAdministrator();
+        switchToMinterAdmin();
         assertEq(10000, ProtocolToken(address(protocolTokenProxy)).balanceOf(appAdministrator));
         // ensure that only admins can mint with new logic contract
         switchToUser(); 
@@ -183,7 +182,7 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
     }
 
     function testERC20U_ForkTesting_TestMinting_Positive() public ifDeploymentTestsEnabled endWithStopPrank {        
-        switchToAppAdministrator(); 
+        switchToMinterAdmin(); 
         ProtocolToken(address(protocolTokenProxy)).mint(appAdministrator, 1000); 
         assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(appAdministrator), 1000);
     }
@@ -196,32 +195,32 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
     }
 
     function testERC20U_ForkTesting_TestBurn_Positive() public ifDeploymentTestsEnabled endWithStopPrank {
-        switchToAppAdministrator(); 
-        ProtocolToken(address(protocolTokenProxy)).mint(appAdministrator, 1000); 
-        assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(appAdministrator), 1000);
+        switchToMinterAdmin(); 
+        ProtocolToken(address(protocolTokenProxy)).mint(minterAdmin, 1000); 
+        assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(minterAdmin), 1000);
         ProtocolToken(address(protocolTokenProxy)).burn(900);
-        assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(appAdministrator), 100);
+        assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(minterAdmin), 100);
     }
 
     function testERC20U_ForkTesting_TestBurn_Negative() public ifDeploymentTestsEnabled endWithStopPrank {
-        switchToAppAdministrator(); 
-        ProtocolToken(address(protocolTokenProxy)).mint(appAdministrator, 1000); 
-        assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(appAdministrator), 1000);
+        switchToMinterAdmin(); 
+        ProtocolToken(address(protocolTokenProxy)).mint(minterAdmin, 1000); 
+        assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(minterAdmin), 1000);
         vm.expectRevert("ERC20: burn amount exceeds balance");
         ProtocolToken(address(protocolTokenProxy)).burn(9000);
-        assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(appAdministrator), 1000);
+        assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(minterAdmin), 1000);
     }
 
     function testERC20U_ForkTesting_TestTransfers_Positive() public ifDeploymentTestsEnabled endWithStopPrank {
-        switchToAppAdministrator(); 
-        ProtocolToken(address(protocolTokenProxy)).mint(appAdministrator, 1000); 
-        assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(appAdministrator), 1000);
+        switchToMinterAdmin(); 
+        ProtocolToken(address(protocolTokenProxy)).mint(minterAdmin, 1000); 
+        assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(minterAdmin), 1000);
         ProtocolToken(address(protocolTokenProxy)).transfer(user1, 500);
         assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(user1), 500);
     }
 
     function testERC20U_ForkTesting_TestTransfers_Negative() public ifDeploymentTestsEnabled endWithStopPrank {
-        switchToAppAdministrator(); 
+        switchToMinterAdmin(); 
         ProtocolToken(address(protocolTokenProxy)).mint(appAdministrator, 1000); 
         assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(appAdministrator), 1000);
         vm.expectRevert("ERC20: transfer amount exceeds balance");
@@ -344,10 +343,10 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
         ActionTypes[] memory actionTypes = createActionTypeArray(ActionTypes.SELL, ActionTypes.BUY);
         TradingRuleFacet(address(handlerDiamond)).setTokenMaxBuySellVolumeIdFull(actionTypes, ruleId);
         tokenAmm = setUpAMM();
-        switchToAppAdministrator(); 
+        switchToMinterAdmin(); 
         tokenAmm.dummyTrade(address(protocolTokenProxy), address(testTokenProxy), 500, 500, true); 
-        assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(appAdministrator), 500);
-        assertEq(ProtocolToken(address(testTokenProxy)).balanceOf(appAdministrator), 500);
+        assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(minterAdmin), 500);
+        assertEq(ProtocolToken(address(testTokenProxy)).balanceOf(minterAdmin), 500);
     }
 
     function testERC20U_ForkTesting_TokenMaxBuySellVolume_Sell_Positive() public ifDeploymentTestsEnabled endWithStopPrank {
@@ -359,11 +358,11 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
         ActionTypes[] memory actionTypes = createActionTypeArray(ActionTypes.SELL, ActionTypes.BUY);
         TradingRuleFacet(address(handlerDiamond)).setTokenMaxBuySellVolumeIdFull(actionTypes, ruleId);
         tokenAmm = setUpAMM();
-        switchToAppAdministrator(); 
-        ProtocolToken(address(testTokenProxy)).mint(appAdministrator, 500);
+        switchToMinterAdmin(); 
+        ProtocolToken(address(testTokenProxy)).mint(minterAdmin, 500);
         tokenAmm.dummyTrade(address(protocolTokenProxy), address(testTokenProxy), 500, 500, false); 
-        assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(appAdministrator), 1500);
-        assertEq(ProtocolToken(address(testTokenProxy)).balanceOf(appAdministrator), 0);
+        assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(minterAdmin), 1500);
+        assertEq(ProtocolToken(address(testTokenProxy)).balanceOf(minterAdmin), 0);
     }
 
     function testERC20U_ForkTesting_TokenMaxBuySellVolume_Buy_Negative() public ifDeploymentTestsEnabled endWithStopPrank {
@@ -375,10 +374,10 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
         ActionTypes[] memory actionTypes = createActionTypeArray(ActionTypes.SELL, ActionTypes.BUY);
         TradingRuleFacet(address(handlerDiamond)).setTokenMaxBuySellVolumeIdFull(actionTypes, ruleId);
         tokenAmm = setUpAMM();
-        switchToAppAdministrator(); 
+        switchToMinterAdmin(); 
         tokenAmm.dummyTrade(address(protocolTokenProxy), address(testTokenProxy), 500, 500, true); 
-        assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(appAdministrator), 500);
-        assertEq(ProtocolToken(address(testTokenProxy)).balanceOf(appAdministrator), 500);
+        assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(minterAdmin), 500);
+        assertEq(ProtocolToken(address(testTokenProxy)).balanceOf(minterAdmin), 500);
 
         ProtocolToken(address(testTokenProxy)).mint(user1, 5000); 
         switchToUser(); 
@@ -400,11 +399,11 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
         ActionTypes[] memory actionTypes = createActionTypeArray(ActionTypes.SELL, ActionTypes.BUY);
         TradingRuleFacet(address(handlerDiamond)).setTokenMaxBuySellVolumeIdFull(actionTypes, ruleId);
         tokenAmm = setUpAMM();
-        switchToAppAdministrator(); 
-        ProtocolToken(address(testTokenProxy)).mint(appAdministrator, 500);
+        switchToMinterAdmin(); 
+        ProtocolToken(address(testTokenProxy)).mint(minterAdmin, 500);
         tokenAmm.dummyTrade(address(protocolTokenProxy), address(testTokenProxy), 500, 500, false); 
-        assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(appAdministrator), 1500);
-        assertEq(ProtocolToken(address(testTokenProxy)).balanceOf(appAdministrator), 0);
+        assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(minterAdmin), 1500);
+        assertEq(ProtocolToken(address(testTokenProxy)).balanceOf(minterAdmin), 0);
 
         ProtocolToken(address(testTokenProxy)).mint(user1, 5000); 
         switchToUser(); 
@@ -427,7 +426,7 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
         ERC20NonTaggedRuleFacet(address(handlerDiamond)).setTokenMaxTradingVolumeId(actionTypes, ruleId);
         switchToUser();
         ProtocolToken(address(protocolTokenProxy)).transfer(user2, 1000);
-        switchToAppAdministrator(); 
+        switchToMinterAdmin(); 
         ProtocolToken(address(protocolTokenProxy)).transfer(user1, 1000);
 
     }
@@ -440,7 +439,7 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
         ERC20NonTaggedRuleFacet(address(handlerDiamond)).setTokenMaxTradingVolumeId(actionTypes, ruleId);
         switchToUser();
         ProtocolToken(address(protocolTokenProxy)).transfer(user2, 100);
-        switchToAppAdministrator(); 
+        switchToMinterAdmin(); 
         vm.expectRevert(abi.encodeWithSignature("OverMaxTradingVolume()"));
         ProtocolToken(address(protocolTokenProxy)).transfer(user2, 1000);
 
@@ -448,60 +447,60 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
 
     function testERC20U_ForkTesting_MaxTradingVolume_Buy_Positive() public ifDeploymentTestsEnabled endWithStopPrank {
         tokenAmm = setUpAMM();
-        switchToAppAdministrator(); 
-        ProtocolToken(address(testTokenProxy)).mint(appAdministrator, 500);
+        switchToMinterAdmin(); 
+        ProtocolToken(address(testTokenProxy)).mint(minterAdmin, 500);
         _mintToAdminAndUsers();
         switchToRuleAdmin();
         uint32 ruleId = _addTokenMaxTradingVolume(1000); 
         ActionTypes[] memory actionTypes = createActionTypeArray(ActionTypes.P2P_TRANSFER, ActionTypes.BUY, ActionTypes.SELL, ActionTypes.MINT);
         ERC20NonTaggedRuleFacet(address(handlerDiamond)).setTokenMaxTradingVolumeId(actionTypes, ruleId);
-        switchToAppAdministrator(); 
+        switchToMinterAdmin(); 
         tokenAmm.dummyTrade(address(protocolTokenProxy), address(testTokenProxy), 50, 50, false);
-        assertEq(ProtocolToken(address(testTokenProxy)).balanceOf(appAdministrator), 450);
+        assertEq(ProtocolToken(address(testTokenProxy)).balanceOf(minterAdmin), 450);
     }
 
     function testERC20U_ForkTesting_MaxTradingVolume_Sell_Positive() public ifDeploymentTestsEnabled endWithStopPrank {
         tokenAmm = setUpAMM();
-        switchToAppAdministrator(); 
-        ProtocolToken(address(testTokenProxy)).mint(appAdministrator, 500);
+        switchToMinterAdmin(); 
+        ProtocolToken(address(testTokenProxy)).mint(minterAdmin, 500);
         _mintToAdminAndUsers();
         switchToRuleAdmin();
         uint32 ruleId = _addTokenMaxTradingVolume(1000); 
         ActionTypes[] memory actionTypes = createActionTypeArray(ActionTypes.P2P_TRANSFER, ActionTypes.BUY, ActionTypes.SELL, ActionTypes.MINT);
         ERC20NonTaggedRuleFacet(address(handlerDiamond)).setTokenMaxTradingVolumeId(actionTypes, ruleId);
-        switchToAppAdministrator(); 
+        switchToMinterAdmin(); 
         tokenAmm.dummyTrade(address(protocolTokenProxy), address(testTokenProxy), 50, 50, true);
-        assertEq(ProtocolToken(address(testTokenProxy)).balanceOf(appAdministrator), 550);
+        assertEq(ProtocolToken(address(testTokenProxy)).balanceOf(minterAdmin), 550);
     }
 
     function testERC20U_ForkTesting_MaxTradingVolume_Buy_Negative() public ifDeploymentTestsEnabled endWithStopPrank {
         tokenAmm = setUpAMM();
-        switchToAppAdministrator(); 
-        ProtocolToken(address(testTokenProxy)).mint(appAdministrator, 500);
+        switchToMinterAdmin(); 
+        ProtocolToken(address(testTokenProxy)).mint(minterAdmin, 500);
         _mintToAdminAndUsers();
         switchToRuleAdmin();
         uint32 ruleId = _addTokenMaxTradingVolume(10); 
         ActionTypes[] memory actionTypes = createActionTypeArray(ActionTypes.P2P_TRANSFER, ActionTypes.BUY, ActionTypes.SELL, ActionTypes.MINT);
         ERC20NonTaggedRuleFacet(address(handlerDiamond)).setTokenMaxTradingVolumeId(actionTypes, ruleId);
-        switchToAppAdministrator(); 
+        switchToMinterAdmin(); 
         vm.expectRevert(abi.encodeWithSignature("OverMaxTradingVolume()"));
         tokenAmm.dummyTrade(address(protocolTokenProxy), address(testTokenProxy), 500, 1000, false);
-        assertEq(ProtocolToken(address(testTokenProxy)).balanceOf(appAdministrator), 500);
+        assertEq(ProtocolToken(address(testTokenProxy)).balanceOf(minterAdmin), 500);
     }
 
     function testERC20U_ForkTesting_MaxTradingVolume_Sell_Negative() public ifDeploymentTestsEnabled endWithStopPrank {
         tokenAmm = setUpAMM();
-        switchToAppAdministrator(); 
-        ProtocolToken(address(testTokenProxy)).mint(appAdministrator, 500);
+        switchToMinterAdmin(); 
+        ProtocolToken(address(testTokenProxy)).mint(minterAdmin, 500);
         _mintToAdminAndUsers();
         switchToRuleAdmin();
         uint32 ruleId = _addTokenMaxTradingVolume(10); 
         ActionTypes[] memory actionTypes = createActionTypeArray(ActionTypes.P2P_TRANSFER, ActionTypes.BUY, ActionTypes.SELL, ActionTypes.MINT);
         ERC20NonTaggedRuleFacet(address(handlerDiamond)).setTokenMaxTradingVolumeId(actionTypes, ruleId);
-        switchToAppAdministrator(); 
+        switchToMinterAdmin(); 
         vm.expectRevert(abi.encodeWithSignature("OverMaxTradingVolume()"));
         tokenAmm.dummyTrade(address(protocolTokenProxy), address(testTokenProxy), 1000, 1000, true);
-        assertEq(ProtocolToken(address(testTokenProxy)).balanceOf(appAdministrator), 500);
+        assertEq(ProtocolToken(address(testTokenProxy)).balanceOf(minterAdmin), 500);
     }
 
     function testERC20U_ForkTesting_AccountMaxTxValueByRisk_Transfer_Positive() public ifDeploymentTestsEnabled endWithStopPrank {
@@ -525,7 +524,7 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
     }
 
     function testERC20U_ForkTesting_AccountMaxTxValueByRisk_Transfer_Negative() public ifDeploymentTestsEnabled endWithStopPrank {
-        switchToAppAdministrator(); 
+        switchToMinterAdmin(); 
         ProtocolToken(address(protocolTokenProxy)).mint(user1, 1000 * (1 * (10 ** 18)));
         ProtocolToken(address(protocolTokenProxy)).mint(user2, 1000 * (1 * (10 ** 18)));
         ProtocolToken(address(protocolTokenProxy)).mint(user3, 1000 * (1 * (10 ** 18)));
@@ -564,23 +563,23 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
 
     // TEST HELPER FUNCTIONS 
     function setUpAMM() internal returns (DummyAMM){
-        switchToAppAdministrator(); 
-        ProtocolToken(address(protocolTokenProxy)).mint(appAdministrator, 1_000_000_000); 
+        switchToMinterAdmin(); 
+        ProtocolToken(address(protocolTokenProxy)).mint(minterAdmin, 1_000_000_000); 
         tokenAmm = new DummyAMM(); 
         ProtocolToken(address(protocolTokenProxy)).approve(address(tokenAmm), 1000000); 
-
+        switchToAppAdministrator();
         // create second token for AMM swaps 
         testToken = _deployERC20UpgradeableNonDeterministic(); 
         // deploy proxy 
         testTokenProxy = _deployERC20UpgradeableProxyNonDeterministic(address(testToken), proxyOwner); 
-        
-        switchToAppAdministrator(); 
+         
         ProtocolToken(address(testTokenProxy)).initialize("Test", "TEST", appAdministrator); 
-        ProtocolToken(address(testTokenProxy)).grantRole(MINTER_ROLE,appAdministrator);
+        ProtocolToken(address(testTokenProxy)).grantRole(MINTER_ROLE, minterAdmin);
         assetHandlerTest = new DummyAssetHandler();
         ProtocolToken(address(testTokenProxy)).connectHandlerToToken(address(assetHandlerTest)); 
         appManager.registerToken("TEST", address(testTokenProxy));
-        ProtocolToken(address(testTokenProxy)).mint(appAdministrator, 1_000_000_000);
+        switchToMinterAdmin();
+        ProtocolToken(address(testTokenProxy)).mint(minterAdmin, 1_000_000_000);
         ProtocolToken(address(testTokenProxy)).approve(address(tokenAmm), 1000000);
         /// fund the amm with 
         ProtocolToken(address(testTokenProxy)).transfer(address(tokenAmm), 1_000_000_000);
@@ -594,10 +593,10 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
     }
 
     function _mintToAdminAndUsers() internal {
-        switchToAppAdministrator(); 
+        switchToMinterAdmin(); 
         //admin mint 
-        ProtocolToken(address(protocolTokenProxy)).mint(appAdministrator, 1000); 
-        assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(appAdministrator), 1000); 
+        ProtocolToken(address(protocolTokenProxy)).mint(minterAdmin, 1000); 
+        assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(minterAdmin), 1000); 
         // user 1 mint 
         ProtocolToken(address(protocolTokenProxy)).mint(user1, 1000); 
         assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(user1), 1000);

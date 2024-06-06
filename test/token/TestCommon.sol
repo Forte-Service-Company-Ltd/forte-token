@@ -46,6 +46,7 @@ abstract contract TestCommon is TestUtils, EndWithStopPrank {
     // common addresses
     address superAdmin = address(0xDaBEEF);
     address appAdministrator = address(0xDEAD);
+    address minterAdmin = address(0xF00D);
     address treasuryAccount = address(0xAAA);
     address ruleAdmin = address(0xACDC);
     address accessLevelAdmin = address(0xBBB);
@@ -130,7 +131,7 @@ abstract contract TestCommon is TestUtils, EndWithStopPrank {
         switchToAppAdministrator(); 
         appManager.setNewApplicationHandlerAddress(address(appHandler));
         ProtocolToken(address(protocolTokenProxy)).initialize("Wave", "WAVE", address(appAdministrator)); 
-        ProtocolToken(address(protocolTokenProxy)).grantRole(MINTER_ROLE, appAdministrator);
+        ProtocolToken(address(protocolTokenProxy)).grantRole(MINTER_ROLE, minterAdmin);
         ProtocolToken(address(protocolTokenProxy)).connectHandlerToToken(address(handlerDiamond)); 
         appManager.registerToken("WAVE", address(protocolTokenProxy));
 
@@ -155,6 +156,11 @@ abstract contract TestCommon is TestUtils, EndWithStopPrank {
         appManager.addAppAdministrator(appAdministrator); //set a app administrator
         vm.stopPrank(); //stop interacting as the app admin
         vm.startPrank(appAdministrator); //interact as the created app administrator
+    }
+
+    function switchToMinterAdmin() public {
+        vm.stopPrank(); //stop interacting as the app admin
+        vm.startPrank(minterAdmin); //interact as the created app administrator
     }
 
     function switchToAccessLevelAdmin() public {
