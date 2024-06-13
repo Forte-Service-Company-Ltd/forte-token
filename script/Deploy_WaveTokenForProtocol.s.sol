@@ -64,12 +64,15 @@ contract WaveTokenDeployScript is DeployScriptUtil {
         vm.stopBroadcast();
         vm.startBroadcast(minterAdminKey);
         ProtocolToken(address(waveTokenProxy)).connectHandlerToToken(address(applicationCoinHandlerDiamond));
-
         vm.stopBroadcast();
         vm.startBroadcast(tronAppAdminKey);
         /// Register the tokens with the application's app manager
         applicationAppManager.registerToken("WAVE", address(waveTokenProxy));
         setENVAddress("TOKEN_ADDRESS", vm.toString(address(waveTokenProxy)));
+        vm.stopBroadcast();
+        vm.startBroadcast(minterAdminKey);
+        ProtocolToken(address(waveTokenProxy)).mint(minterAdminAddress, vm.envUint("MINT_AMOUNT"));
+        vm.stopBroadcast();
     }
 
 }
