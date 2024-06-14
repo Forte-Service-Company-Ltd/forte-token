@@ -10,10 +10,10 @@ import {ERC20HandlerMainFacet} from "tron/client/token/handler/diamond/ERC20Hand
 import "script/deployUtil.s.sol";
 
 /**
- * @title ERC20 Upggradeable Protocol Token  Deployment Script
+ * @title ERC20 Upggradeable Protocol Token Deployment Script
  * @author @ShaneDuncan602 @VoR0220 @Palmerg4 @TJ-Everett
- * @dev This script will deploy an ERC20 Upgradeable fungible token and Proxy.
- * @notice Deploys an application ERC20U and Proxy.
+ * @dev This script will deploy an ERC20 Upgradeable fungible token and Proxy then connect them to the Protocol contracts.
+ * @notice Deploys an application ERC20U and Proxy and connects them to the Protocol Contracts.
  * ** Requires .env variables to be set with correct addresses **
  */
 
@@ -50,7 +50,28 @@ contract WaveTokenDeployScript is DeployScriptUtil {
         console.log("Wave Token Proxy Address: ", address(waveTokenProxy));
 
         ProtocolToken(address(waveTokenProxy)).grantRole(MINTER_ROLE, minterAdminAddress);
+        vm.stopBroadcast();
+
+        /// Connect to Asset Handler and register with App Manager
+        uint256 tronPrivateKey = vm.envUint("TRON_DEPLOYMENT_OWNER_KEY");
+        address tronOwnerAddress = vm.envAddress("TRON_DEPLOYMENT_OWNER");
+        vm.startBroadcast(tronPrivateKey);
+        ApplicationAppManager applicationAppManager = ApplicationAppManager(vm.envAddress("APPLICATION_APP_MANAGER"));
+        HandlerDiamond applicationCoinHandlerDiamond = HandlerDiamond(payable(vm.envAddress("APPLICATION_ERC20_HANDLER_ADDRESS")));
+        ERC20HandlerMainFacet(address(applicationCoinHandlerDiamond)).initialize(vm.envAddress("RULE_PROCESSOR_DIAMOND"), address(applicationAppManager), address(waveTokenProxy));
+        uint256 tronAppAdminKey = vm.envUint("TRON_APP_ADMIN_PRIVATE_KEY");
+        address tronAppAdminAddress = vm.envAddress("TRON_APP_ADMIN");
+        vm.stopBroadcast();
+        vm.startBroadcast(minterAdminKey);
+        ProtocolToken(address(waveTokenProxy)).connectHandlerToToken(address(applicationCoinHandlerDiamond));
+        vm.stopBroadcast();
+        vm.startBroadcast(tronAppAdminKey);
+        /// Register the tokens with the application's app manager
+        applicationAppManager.registerToken("WAVE", address(waveTokenProxy));
         setENVAddress("TOKEN_ADDRESS", vm.toString(address(waveTokenProxy)));
+        vm.stopBroadcast();
+        vm.startBroadcast(minterAdminKey);
+        ProtocolToken(address(waveTokenProxy)).mint(minterAdminAddress, vm.envUint("MINT_AMOUNT"));
         vm.stopBroadcast();
     }
 

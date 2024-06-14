@@ -1,5 +1,6 @@
 forge-std/=lib/forge-std/src/
 ds-test/=lib/forge-std/lib/ds-test/src/
+tron/=lib/tron/src
 @openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
 @openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/
 axelar-gmp-sdk-solidity/=lib/axelar-gmp-sdk-solidity/contracts/
