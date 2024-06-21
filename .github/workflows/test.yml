@@ -19,15 +19,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          submodules: false
-      - name: Checkout submodules using a PAT
-        run: |
-          git config --file .gitmodules --get-regexp url | while read url; do
-          git config --file=.gitmodules $(echo "$url" | sed -E "s/git@github.com:|https:\/\/github.com\//https:\/\/${{ secrets.TRON_GITHUB_TOKEN }}:${{ secrets.TRON_GITHUB_TOKEN }}@github.com\//")
-          done
-          git submodule sync
-          git submodule update --init --recursive
-
+          token: ${{ secrets.TRON_GITHUB_TOKEN }}
+          submodules: recursive
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
         with:
@@ -42,7 +35,6 @@ jobs:
           sudo apt-get install -y python3-pip
           pip3 install eth_abi
           forge install dapphub/ds-test 
-          forge install OpenZeppelin/openzeppelin-contracts
       - name: Build
         run: |
           forge clean && forge build --optimize
