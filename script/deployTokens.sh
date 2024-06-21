@@ -8,14 +8,68 @@ echo
 
 ENV_FILE=".env"
 source $ENV_FILE
-echo "################################################################"
-echo Deploy parent token to ETH sepolia
-echo "################################################################"
-echo
-forge script script/deployToken.s.sol --ffi -vvv --non-interactive --rpc-url sepolia_chain --broadcast --gasPrice 20
+os=$(uname -a)
+echo "Would you like to connect the token to the Rules Protocol during deployment? (y or n)"
+read FULL_DEPLOYMENT
+FULL_DEPLOYMENT=$(echo "$FULL_DEPLOYMENT" | tr '[:upper:]' '[:lower:]') 
+while [ "y" != "$FULL_DEPLOYMENT" ] && [ "n" != "$FULL_DEPLOYMENT" ] ; do
+  echo
+  echo "Not a valid answer (y or n)"
+  echo "Would you like to connect the token to the Rules Protocol during deployment? (y or n)"
+  read FULL_DEPLOYMENT
+  FULL_DEPLOYMENT=$(echo "$FULL_DEPLOYMENT" | tr '[:upper:]' '[:lower:]')  
+done
 
-echo "################################################################"
-echo Deploy child token to Base Sepolia 
-echo "################################################################"
-echo
-forge script script/deployToken.s.sol --ffi -vvv --non-interactive --rpc-url base_sepolia_chain --broadcast --gasPrice 20
+if [ "$FULL_DEPLOYMENT" = "y" ]; then
+
+    echo "################################################################"
+    echo Deploy parent token to the native chain and connect to protocol
+    echo "################################################################"
+    echo
+    forge script script/Deploy_WaveTokenForProtocol.s.sol --ffi -vvv --non-interactive --rpc-url $NATIVE_CHAIN_RPC_URL --broadcast --gas-price 20
+
+    if [[ $os == *"Darwin"* ]]; then
+        sed -i '' 's/CURRENT_DEPLOYMENT=.*/CURRENT_DEPLOYMENT=FOREIGN/g' $ENV_FILE
+    else
+        sed -i 's/CURRENT_DEPLOYMENT=.*/CURRENT_DEPLOYMENT=FOREIGN/g' $ENV_FILE 
+    fi
+
+    echo "################################################################"
+    echo Deploy child token to the foreign chain and connect to protocol
+    echo "################################################################"
+    echo
+    forge script script/Deploy_WaveTokenForProtocol.s.sol --ffi -vvv --non-interactive --rpc-url $FOREIGN_CHAIN_RPC_URL --broadcast --gas-price 20
+
+    if [[ $os == *"Darwin"* ]]; then
+        sed -i '' 's/CURRENT_DEPLOYMENT=.*/CURRENT_DEPLOYMENT=NATIVE/g' $ENV_FILE
+    else
+        sed -i 's/CURRENT_DEPLOYMENT=.*/CURRENT_DEPLOYMENT=NATIVE/g' $ENV_FILE 
+    fi
+
+ else 
+    echo "################################################################"
+    echo Deploy parent token to the native chain
+    echo "################################################################"
+    echo $NATIVE_CHAIN_RPC_URL
+    echo 
+    echo
+    forge script script/Deploy_WaveToken.s.sol --ffi -vvv --non-interactive --rpc-url $NATIVE_CHAIN_RPC_URL --broadcast --gas-price 20
+
+    if [[ $os == *"Darwin"* ]]; then
+        sed -i '' 's/CURRENT_DEPLOYMENT=.*/CURRENT_DEPLOYMENT=FOREIGN/g' $ENV_FILE
+    else
+        sed -i 's/CURRENT_DEPLOYMENT=.*/CURRENT_DEPLOYMENT=FOREIGN/g' $ENV_FILE 
+    fi
+
+    echo "################################################################"
+    echo Deploy child token to the foreign chain
+    echo "################################################################"
+    echo
+    forge script script/Deploy_WaveToken.s.sol --ffi -vvv --non-interactive --rpc-url $FOREIGN_CHAIN_RPC_URL --broadcast --gas-price 20
+ 
+    if [[ $os == *"Darwin"* ]]; then
+        sed -i '' 's/CURRENT_DEPLOYMENT=.*/CURRENT_DEPLOYMENT=NATIVE/g' $ENV_FILE
+    else
+        sed -i 's/CURRENT_DEPLOYMENT=.*/CURRENT_DEPLOYMENT=NATIVE/g' $ENV_FILE 
+    fi
+ fi

@@ -25,13 +25,13 @@ contract ProtocolTokenProtocolIntegrationTest is TestCommon, TestArrays, DummyAM
             vm.stopPrank(); 
             vm.startPrank(vm.envAddress("AMOY_DEPLOYMENT_OWNER")); 
             // set rule processor diamond address 
-            ruleProcessorDiamond = RuleProcessorDiamond(payable(vm.envAddress("RULE_PROCESSOR_DIAMOND")));
+            ruleProcessorDiamond = RuleProcessorDiamond(payable(vm.envAddress("AMOY_RULE_PROCESSOR_DIAMOND")));
             // set up app manager and handler address 
-            appManager = AppManager(vm.envAddress("APP_MANAGER"));
+            appManager = AppManager(vm.envAddress("AMOY_APP_MANAGER"));
             appManager.addAppAdministrator(appAdministrator);
             appManager.addRuleAdministrator(ruleAdmin);
-            appHandler = ProtocolApplicationHandler(vm.envAddress("APP_HANDLER"));
-            appManager.setNewApplicationHandlerAddress(vm.envAddress("APP_HANDLER"));
+            appHandler = ProtocolApplicationHandler(vm.envAddress("AMOY_APP_HANDLER"));
+            appManager.setNewApplicationHandlerAddress(vm.envAddress("AMOY_APP_HANDLER"));
             // set asset handler diamond address 
             vm.warp(Blocktime);
             handlerDiamond = _createERC20HandlerDiamond();
