@@ -3,7 +3,7 @@ pragma solidity ^0.8.24;
 
 import "forge-std/Test.sol";
 // Diamond Imports 
-import "tron/protocol/economic/ruleProcessor/ruleProcessorDiamond.sol";
+import "tron/protocol/economic/ruleProcessor/RuleProcessorDiamond.sol";
 import {IDiamondCut} from "tronLib/diamond-std/core/DiamondCut/IDiamondCut.sol";
 import {IDiamondInit} from "tronLib/diamond-std/initializers/IDiamondInit.sol";
 import {DiamondInit} from "tronLib/diamond-std/initializers/DiamondInit.sol";
