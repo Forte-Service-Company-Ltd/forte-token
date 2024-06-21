@@ -1,34 +1,45 @@
-name: test
+name: Test
 
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened, edited, ready_for_review]
 
 env:
   FOUNDRY_PROFILE: ci
 
 jobs:
-  check:
-    strategy:
-      fail-fast: true
+  build-test:
+    name: Build and Test
+    runs-on: ubuntu-22.04
 
-    name: Foundry project
-    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
         with:
           submodules: recursive
-
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
         with:
-          version: nightly
+          # May 2, 2024 - Must be a release (nightly) tag
+          version: nightly-f625d0fa7c51e65b4bf1e8f7931cd1c6e2e285e9 
 
-      - name: Run Forge build
+      - name: Install dependencies
         run: |
-          forge --version
-          forge build --sizes
-        id: build
-
-      - name: Run Forge tests
+          git config user.email "cloudops@thrackle.io"
+          git config user.name "CloudOps Thrackle"
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip3 install eth_abi
+          forge install dapphub/ds-test 
+          forge install OpenZeppelin/openzeppelin-contracts
+      - name: Build
         run: |
-          forge test -vvv
-        id: test
+          forge clean && forge build --optimize
+      - name: Test
+        env:
+          FORK_TEST: false
+        run: |
+          forge test -vv --ffi
