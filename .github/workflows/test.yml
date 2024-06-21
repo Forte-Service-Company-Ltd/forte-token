@@ -19,8 +19,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          token: ${{ secrets.TRON_GITHUB_TOKEN }}
-          submodules: recursive
+          submodules: false
+      - name: Checkout submodules using a PAT
+        run: |
+          git config --file .gitmodules --get-regexp url | while read url; do
+          git config --file=.gitmodules $(echo "$url" | sed -E "s/git@github.com:|https:\/\/github.com\//https:\/\/${{ secrets.TRON_GITHUB_TOKEN }}:${{ secrets.TRON_GITHUB_TOKEN }}@github.com\//")
+          done
+          git submodule sync
+          git submodule update --init --recursive
+
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
         with:
