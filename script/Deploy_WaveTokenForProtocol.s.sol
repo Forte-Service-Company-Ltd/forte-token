@@ -17,7 +17,7 @@ import "script/deployUtil.s.sol";
  * ** Requires .env variables to be set with correct addresses **
  */
 
-contract WaveTokenDeployScript is DeployScriptUtil {
+contract WaveTokenForProtocolDeployScript is DeployScriptUtil {
     uint256 privateKey;
     address ownerAddress;
     uint256 minterAdminKey;
@@ -33,13 +33,28 @@ contract WaveTokenDeployScript is DeployScriptUtil {
         privateKey = vm.envUint("DEPLOYMENT_OWNER_KEY");
         ownerAddress = vm.envAddress("DEPLOYMENT_OWNER");
         vm.startBroadcast(privateKey);
-        
+
         /// switch to the config admin
         minterAdminKey = vm.envUint("MINTER_ADMIN_KEY");
         minterAdminAddress = vm.envAddress("MINTER_ADMIN");
 
         proxyOwnerKey = vm.envUint("PROXY_OWNER_KEY");
         proxyOwnerAddress = vm.envAddress("PROXY_OWNER");
+        bool native = keccak256(bytes(vm.envString("CURRENT_DEPLOYMENT"))) == keccak256(bytes("NATIVE"));
+
+        address appManagerAddress;
+        address handlerAddress;
+        address protocolAddress;
+
+        if(native) {
+            appManagerAddress = vm.envAddress("APPLICATION_APP_MANAGER");
+            handlerAddress = vm.envAddress("APPLICATION_ERC20_HANDLER_ADDRESS");
+            protocolAddress = vm.envAddress("RULE_PROCESSOR_DIAMOND");
+        } else {
+            appManagerAddress = vm.envAddress("FOREIGN_APPLICATION_APP_MANAGER");
+            handlerAddress = vm.envAddress("FOREIGN_APPLICATION_ERC20_HANDLER_ADDRESS");
+            protocolAddress = vm.envAddress("FOREIGN_RULE_PROCESSOR_DIAMOND");
+        }
 
         /// Create ERC20 Upgradeable and Proxy 
         ProtocolToken waveToken = new ProtocolToken{salt: keccak256(abi.encodePacked(vm.envString("SALT_STRING")))}();
@@ -56,9 +71,9 @@ contract WaveTokenDeployScript is DeployScriptUtil {
         uint256 tronPrivateKey = vm.envUint("TRON_DEPLOYMENT_OWNER_KEY");
         address tronOwnerAddress = vm.envAddress("TRON_DEPLOYMENT_OWNER");
         vm.startBroadcast(tronPrivateKey);
-        ApplicationAppManager applicationAppManager = ApplicationAppManager(vm.envAddress("APPLICATION_APP_MANAGER"));
-        HandlerDiamond applicationCoinHandlerDiamond = HandlerDiamond(payable(vm.envAddress("APPLICATION_ERC20_HANDLER_ADDRESS")));
-        ERC20HandlerMainFacet(address(applicationCoinHandlerDiamond)).initialize(vm.envAddress("RULE_PROCESSOR_DIAMOND"), address(applicationAppManager), address(waveTokenProxy));
+        ApplicationAppManager applicationAppManager = ApplicationAppManager(appManagerAddress);
+        HandlerDiamond applicationCoinHandlerDiamond = HandlerDiamond(payable(handlerAddress));
+        ERC20HandlerMainFacet(address(applicationCoinHandlerDiamond)).initialize(protocolAddress, address(applicationAppManager), address(waveTokenProxy));
         uint256 tronAppAdminKey = vm.envUint("TRON_APP_ADMIN_PRIVATE_KEY");
         address tronAppAdminAddress = vm.envAddress("TRON_APP_ADMIN");
         vm.stopBroadcast();
@@ -68,7 +83,11 @@ contract WaveTokenDeployScript is DeployScriptUtil {
         vm.startBroadcast(tronAppAdminKey);
         /// Register the tokens with the application's app manager
         applicationAppManager.registerToken("WAVE", address(waveTokenProxy));
-        setENVAddress("TOKEN_ADDRESS", vm.toString(address(waveTokenProxy)));
+        if(native) {
+            setENVAddress("TOKEN_ADDRESS", vm.toString(address(waveTokenProxy)));
+        } else {
+            setENVAddress("FOREIGN_TOKEN_ADDRESS", vm.toString(address(waveTokenProxy)));
+        }
         vm.stopBroadcast();
         vm.startBroadcast(minterAdminKey);
         ProtocolToken(address(waveTokenProxy)).mint(minterAdminAddress, vm.envUint("MINT_AMOUNT"));

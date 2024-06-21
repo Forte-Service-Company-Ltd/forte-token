@@ -50,7 +50,11 @@ contract WaveTokenDeployScript is DeployScriptUtil {
         console.log("Wave Token Proxy Address: ", address(waveTokenProxy));
 
         ProtocolToken(address(waveTokenProxy)).grantRole(MINTER_ROLE, minterAdminAddress);
-        setENVAddress("TOKEN_ADDRESS", vm.toString(address(waveTokenProxy)));
+        if(keccak256(bytes(vm.envString("CURRENT_DEPLOYMENT"))) == keccak256(bytes("NATIVE"))) {
+            setENVAddress("TOKEN_ADDRESS", vm.toString(address(waveTokenProxy)));
+        } else {
+            setENVAddress("FOREIGN_TOKEN_ADDRESS", vm.toString(address(waveTokenProxy)));
+        }
         vm.stopBroadcast();
     }
 

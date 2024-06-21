@@ -25,8 +25,8 @@ contract BridgeTokenTest is TestCommon {
         if (vm.envBool("FORK_TEST") == true) {
             privateKey = vm.envUint("DEPLOYMENT_OWNER_KEY");
             ownerAddress = vm.envAddress("DEPLOYMENT_OWNER");
-            minterAddress = vm.envAddress("DEPLOYMENT_MINTER");
-            vm.createSelectFork("sepolia_chain");
+            minterAddress = vm.envAddress("MINTER_ADMIN");
+            vm.createSelectFork(vm.envString("NATIVE_CHAIN_RPC_URL"));
             salt = bytes32(keccak256(abi.encode(vm.envString("SALT_STRING"))));
 
             tokenService = InterchainTokenService(vm.envAddress("INTERCHAIN_TOKEN_SERVICE"));
@@ -49,7 +49,7 @@ contract BridgeTokenTest is TestCommon {
             assertEq(tokenId, expectedTokenId);
         bytes32 tokenId2 = tokenService.deployTokenManager(
             salt, 
-            "base-sepolia",
+            vm.envString("FOREIGN_CHAIN_RPC_URL"),
             ITokenManagerType.TokenManagerType.LOCK_UNLOCK,
             params, 
             0.01 ether
@@ -67,7 +67,7 @@ contract BridgeTokenTest is TestCommon {
     }
 
     function testSendTokenCrossChain() public ifDeploymentTestsEnabled {
-        string memory destinationChain = "base-sepolia";
+        string memory destinationChain = vm.envString("FOREIGN_CHAIN_RPC_URL");
         bytes memory destinationAddress = abi.encodePacked(ownerAddress);
         uint amount = 1 ether; // 10^18
 
