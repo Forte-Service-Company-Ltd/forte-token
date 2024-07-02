@@ -13,10 +13,6 @@
 	url = https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable
 	branch = release-v4.9
 	ignore = dirty
-[submodule "lib/openzeppelin-contracts"]
-	path = lib/openzeppelin-contracts
-	url = https://github.com/OpenZeppelin/openzeppelin-contracts
-	ignore = dirty
 [submodule "lib/tron"]
 	path = lib/tron
 	url = https://github.com/thrackle-io/tron

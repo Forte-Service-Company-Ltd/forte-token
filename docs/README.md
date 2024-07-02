@@ -1,3 +1,4 @@
+[![Project Version][version-image]][version-url]
 # Documentation maintenance
 
 This repository has two types of documentation:
@@ -16,5 +17,13 @@ foundryup --commit $(awk '$1~/^[^#]/' foundry.lock)
 forge doc
 ```
 
+# Wave Token 
+- [Wave Token](./UserGuides/wave/WAVE.md) is an ERC20 Upgradeable token and allows for the logic contract to be updated overtime. Wave token will utilize existing rules protocol architecure: the asset handler, application manager and handler, and the rule processor diamond. Wave token uses Access Control Upgradeable for the admin roles that guard certain functions within the token.
+- [Token Information][userGuide-url]
+- [Testing](./UserGuides/wave/ERC20_UPGRADEABLE_TESTING_METHODOLOGY.md)
+
+
 <!-- These are the body links -->
 [userGuide-url]: ./userGuides/README.md
+[version-image]: https://img.shields.io/badge/Version-1.0.0-brightgreen?style=for-the-badge&logo=appveyor
+[version-url]: https://github.com/thrackle-io/pacman
