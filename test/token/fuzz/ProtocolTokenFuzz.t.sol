@@ -124,6 +124,19 @@ contract ProtocolTokenFuzzTest is TestCommon {
         assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(user1), 0);
         assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(user2), amount);
     }
+    // test allowance given to admin - negative
+    function testERC20Upgradeable_Fuzz_Allowance_Negative(uint256 amount) public endWithStopPrank {
+        amount = bound(amount, 1, type(uint256).max);
+        switchToMinterAdmin();  
+        ProtocolToken(address(protocolTokenProxy)).mint(user1, amount);
+        switchToUser();
+        switchToMinterAdmin(); 
+
+        vm.expectRevert("ERC20: insufficient allowance");
+        ProtocolToken(address(protocolTokenProxy)).transferFrom(user1, user2, amount);
+
+        assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(user1), amount);
+    }
     // test mint is admin protected 
     function testERC20Upgradeable_Fuzz_MintAdminOnly(uint8 addrIndex1) public endWithStopPrank { 
         (address _user1, address _user2, address _user3, address _user4) = _get4RandomAddresses(addrIndex1);
