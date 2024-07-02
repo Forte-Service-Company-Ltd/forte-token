@@ -130,7 +130,6 @@ contract ProtocolTokenFuzzTest is TestCommon {
         switchToMinterAdmin();  
         ProtocolToken(address(protocolTokenProxy)).mint(user1, amount);
         switchToUser();
-        // ProtocolToken(address(protocolTokenProxy)).increaseAllowance(minterAdmin, amount);
         switchToMinterAdmin(); 
 
         vm.expectRevert("ERC20: insufficient allowance");
