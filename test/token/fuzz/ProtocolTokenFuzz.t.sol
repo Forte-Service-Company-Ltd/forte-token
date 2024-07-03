@@ -159,4 +159,32 @@ contract ProtocolTokenFuzzTest is TestCommon {
         assertEq(ProtocolToken(address(protocolTokenProxy)).totalSupply(), 0);
     }
 
+    function testERC20Upgradeable_Upgrade_AdminOnly(uint8 addrIndex1) public ifDeploymentTestsEnabled endWithStopPrank {
+        (address _user1, address _user2, address _user3, address _user4) = _get4RandomAddresses(addrIndex1);
+        
+        vm.stopPrank();
+        vm.startPrank(_user1); 
+        protocolTokenUpgraded = new ProtocolToken(); 
+        vm.expectRevert("Not Authorized.");
+        protocolTokenProxy.upgradeTo(address(protocolTokenUpgraded));
+
+        vm.stopPrank();
+        vm.startPrank(_user2); 
+        protocolTokenUpgraded = new ProtocolToken(); 
+        vm.expectRevert("Not Authorized.");
+        protocolTokenProxy.upgradeTo(address(protocolTokenUpgraded));
+
+        vm.stopPrank();
+        vm.startPrank(_user3); 
+        protocolTokenUpgraded = new ProtocolToken(); 
+        vm.expectRevert("Not Authorized.");
+        protocolTokenProxy.upgradeTo(address(protocolTokenUpgraded));
+
+        vm.stopPrank();
+        vm.startPrank(_user4); 
+        protocolTokenUpgraded = new ProtocolToken(); 
+        vm.expectRevert("Not Authorized.");
+        protocolTokenProxy.upgradeTo(address(protocolTokenUpgraded));
+    }
+
 }
