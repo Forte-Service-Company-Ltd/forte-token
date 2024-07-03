@@ -168,6 +168,81 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
         ProtocolToken(address(protocolTokenProxy)).mint(user1, 10000);
     }
 
+    function testERC20Upgradeable_Upgrade_Negative() public ifDeploymentTestsEnabled endWithStopPrank {
+        vm.stopPrank();
+        vm.startPrank(user1); 
+        protocolTokenUpgraded = new ProtocolToken(); 
+        vm.expectRevert("Not Authorized.");
+        protocolTokenProxy.upgradeTo(address(protocolTokenUpgraded));
+    }
+
+    function testERC20Upgradeable_UpgradedRuleDataRetention_Positive() public ifDeploymentTestsEnabled endWithStopPrank {
+        // use max trading volume buy action for rule test data 
+        // rule uses accumulation data stored for the token 
+        tokenAmm = setUpAMM();
+        switchToMinterAdmin(); 
+        ProtocolToken(address(testTokenProxy)).mint(minterAdmin, 1001);
+        _mintToAdminAndUsers();
+        switchToRuleAdmin();
+        uint32 ruleId = _addTokenMaxTradingVolume(10); 
+        ActionTypes[] memory actionTypes = createActionTypeArray(ActionTypes.P2P_TRANSFER, ActionTypes.BUY, ActionTypes.SELL, ActionTypes.MINT);
+        ERC20NonTaggedRuleFacet(address(handlerDiamond)).setTokenMaxTradingVolumeId(actionTypes, ruleId);
+        switchToMinterAdmin(); 
+        tokenAmm.dummyTrade(address(protocolTokenProxy), address(testTokenProxy), 50, 50, false);
+        assertEq(ProtocolToken(address(testTokenProxy)).balanceOf(minterAdmin), 951);
+        assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(minterAdmin), 1050);
+        // upgrade the logic contract 
+        vm.stopPrank();
+        vm.startPrank(proxyOwner); 
+        protocolTokenUpgraded = new ProtocolToken(); 
+        protocolTokenProxy.upgradeTo(address(protocolTokenUpgraded));
+        switchToAppAdministrator();
+        ProtocolToken(address(protocolTokenProxy)).connectHandlerToToken(address(handlerDiamond));
+        // conduct buy that violates the rule with previous rule data 
+        // rule uses fixed total supply and this buy will exceed .01% of that total supply 
+        switchToMinterAdmin(); 
+        vm.expectRevert(abi.encodeWithSignature("OverMaxTradingVolume()"));
+        tokenAmm.dummyTrade(address(protocolTokenProxy), address(testTokenProxy), 500, 1000, false);
+        assertEq(ProtocolToken(address(testTokenProxy)).balanceOf(minterAdmin), 951);
+        assertEq(ProtocolToken(address(protocolTokenProxy)).balanceOf(minterAdmin), 1050);
+
+    }
+
+    function testERC20Upgradeable_UpgradeWithRuleData_Positive() public ifDeploymentTestsEnabled endWithStopPrank {
+        // check application level rules will work after upgrade 
+        switchToMinterAdmin(); 
+        ProtocolToken(address(protocolTokenProxy)).mint(user1, 1000 * (1 * (10 ** 18)));
+        ProtocolToken(address(protocolTokenProxy)).mint(user2, 1000 * (1 * (10 ** 18)));
+        ProtocolToken(address(protocolTokenProxy)).mint(user3, 1000 * (1 * (10 ** 18)));
+        switchToRuleAdmin();
+        uint32 ruleId = _addAccountMaxTxValueByRiskRule();
+        ActionTypes[] memory actionTypes = createActionTypeArray(ActionTypes.P2P_TRANSFER, ActionTypes.BUY, ActionTypes.SELL, ActionTypes.MINT, ActionTypes.BURN);
+        appHandler.setAccountMaxTxValueByRiskScoreId(actionTypes, ruleId);
+        switchToRiskAdmin(); 
+        appManager.addRiskScore(user1, 25);
+        appManager.addRiskScore(user2, 50);
+        appManager.addRiskScore(user3, 75);
+
+        switchToUser3(); 
+        ProtocolToken(address(protocolTokenProxy)).transfer(user2, 10 * (1 * (10 ** 18))); 
+
+        switchToUser2(); 
+        ProtocolToken(address(protocolTokenProxy)).transfer(user1, 1000 * (1 * (10 ** 18)));
+
+        // upgrade the logic contract 
+        vm.stopPrank();
+        vm.startPrank(proxyOwner); 
+        protocolTokenUpgraded = new ProtocolToken(); 
+        protocolTokenProxy.upgradeTo(address(protocolTokenUpgraded));
+        switchToAppAdministrator();
+        ProtocolToken(address(protocolTokenProxy)).connectHandlerToToken(address(handlerDiamond));
+
+        switchToUser(); 
+        bytes4 selector = bytes4(keccak256("OverMaxTxValueByRiskScore(uint8,uint256)"));
+        vm.expectRevert(abi.encodeWithSelector(selector, 75, 100000000000000000000));
+        ProtocolToken(address(protocolTokenProxy)).transfer(user3, 500 * (1 * (10 ** 18)));
+    }
+
     function testERC20U_ForkTesting_IsSuperAdmin() public ifDeploymentTestsEnabled endWithStopPrank {
         assertEq(appManager.isSuperAdmin(superAdmin), true);
         assertEq(appManager.isSuperAdmin(appAdministrator), false);
