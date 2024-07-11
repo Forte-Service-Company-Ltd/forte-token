@@ -24,7 +24,7 @@ contract ProtocolToken is Initializable, ERC20Upgradeable, ERC20BurnableUpgradea
     
     address public handlerAddress;
     IProtocolTokenHandler handler;
-    uint256[50] reservedStorage;
+    uint256[48] reservedStorage;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
