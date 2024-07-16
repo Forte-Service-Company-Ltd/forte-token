@@ -1,5 +1,5 @@
 # ProtocolToken
-[Git Source](https://github.com/thrackle-io/pacman/blob/08f0c72272e84003db52dec3b8b914a0f3d12a67/src/token/ProtocolToken.sol)
+[Git Source](https://github.com/thrackle-io/wave/blob/08f0c72272e84003db52dec3b8b914a0f3d12a67/src/token/ProtocolToken.sol)
 
 **Inherits:**
 Initializable, ERC20Upgradeable, ERC20BurnableUpgradeable, OwnableUpgradeable, ERC20PermitUpgradeable, UUPSUpgradeable, ProtocolTokenCommonU

@@ -7,16 +7,16 @@
         "pattern": "^http://localhost"
       },
       {
-        "pattern": "^https://github.com/thrackle-io/pacman"
+        "pattern": "^https://github.com/thrackle-io/wave"
       },
     ],
     "replacementPatterns": [
       {
-        "pattern": "https://github.com/thrackle-io/pacman",
+        "pattern": "https://github.com/thrackle-io/wave",
         "replacement": ""
       },
       {
-        "pattern": "https://github.com/thrackle-io/Pacman",
+        "pattern": "https://github.com/thrackle-io/Wave",
         "replacement": ""
       },
       {
