@@ -32,6 +32,21 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
         assertTrue(ProtocolToken(address(protocolTokenProxy)).hasRole(MINTER_ROLE, user1));
         ProtocolToken(address(protocolTokenProxy)).revokeRole(MINTER_ROLE, user1);
         assertFalse(ProtocolToken(address(protocolTokenProxy)).hasRole(MINTER_ROLE, user1));
+
+        ProtocolToken(address(protocolTokenProxy)).revokeRole(MINTER_ROLE, user1);
+        assertFalse(ProtocolToken(address(protocolTokenProxy)).hasRole(MINTER_ROLE, user1));
+    }
+
+    function testERC20Upgradeable_TokenAdminRole_Positive() public ifDeploymentTestsEnabled endWithStopPrank { 
+        switchToAppAdministrator(); 
+        ProtocolToken(address(protocolTokenProxy)).grantRole(TOKEN_ADMIN_ROLE, user1);
+        assertTrue(ProtocolToken(address(protocolTokenProxy)).hasRole(TOKEN_ADMIN_ROLE, user1));
+        ProtocolToken(address(protocolTokenProxy)).grantRole(TOKEN_ADMIN_ROLE, user2);
+        assertTrue(ProtocolToken(address(protocolTokenProxy)).hasRole(TOKEN_ADMIN_ROLE, user2));
+        vm.stopPrank(); 
+        vm.startPrank(proxyOwner);
+        address proxyOwnerCheck = ProtocolTokenProxy(payable(address(protocolTokenProxy))).admin();
+        assertEq(proxyOwnerCheck, proxyOwner);
     }
 
     function testERC20Upgradeable_TokenRoleRevoking_Negative() public ifDeploymentTestsEnabled endWithStopPrank { 

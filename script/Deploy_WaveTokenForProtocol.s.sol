@@ -59,9 +59,7 @@ contract WaveTokenForProtocolDeployScript is DeployScriptUtil {
         /// Create ERC20 Upgradeable and Proxy 
         ProtocolToken waveToken = new ProtocolToken{salt: keccak256(abi.encodePacked(vm.envString("SALT_STRING")))}();
         ProtocolTokenProxy waveTokenProxy = new ProtocolTokenProxy{salt: keccak256(abi.encode(vm.envString("SALT_STRING")))}(address(waveToken), proxyOwnerAddress, "");
-        vm.stopBroadcast();
-        vm.startBroadcast(minterAdminKey);
-        ProtocolToken(address(waveTokenProxy)).initialize("Wave", "WAVE", address(minterAdminAddress)); 
+        ProtocolToken(address(waveTokenProxy)).initialize("Wave", "WAVE", address(ownerAddress)); 
         console.log("Wave Token Proxy Address: ", address(waveTokenProxy));
 
         ProtocolToken(address(waveTokenProxy)).grantRole(MINTER_ROLE, minterAdminAddress);
@@ -69,15 +67,13 @@ contract WaveTokenForProtocolDeployScript is DeployScriptUtil {
 
         /// Connect to Asset Handler and register with App Manager
         uint256 tronPrivateKey = vm.envUint("TRON_DEPLOYMENT_OWNER_KEY");
-        address tronOwnerAddress = vm.envAddress("TRON_DEPLOYMENT_OWNER");
         vm.startBroadcast(tronPrivateKey);
         ApplicationAppManager applicationAppManager = ApplicationAppManager(appManagerAddress);
         HandlerDiamond applicationCoinHandlerDiamond = HandlerDiamond(payable(handlerAddress));
         ERC20HandlerMainFacet(address(applicationCoinHandlerDiamond)).initialize(protocolAddress, address(applicationAppManager), address(waveTokenProxy));
         uint256 tronAppAdminKey = vm.envUint("TRON_APP_ADMIN_PRIVATE_KEY");
-        address tronAppAdminAddress = vm.envAddress("TRON_APP_ADMIN");
         vm.stopBroadcast();
-        vm.startBroadcast(minterAdminKey);
+        vm.startBroadcast(privateKey);
         ProtocolToken(address(waveTokenProxy)).connectHandlerToToken(address(applicationCoinHandlerDiamond));
         vm.stopBroadcast();
         vm.startBroadcast(tronAppAdminKey);

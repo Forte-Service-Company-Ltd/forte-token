@@ -44,10 +44,12 @@ contract WaveTokenDeployScript is DeployScriptUtil {
         /// Create ERC20 Upgradeable and Proxy 
         ProtocolToken waveToken = new ProtocolToken{salt: keccak256(abi.encodePacked(vm.envString("SALT_STRING")))}();
         ProtocolTokenProxy waveTokenProxy = new ProtocolTokenProxy{salt: keccak256(abi.encode(vm.envString("SALT_STRING")))}(address(waveToken), proxyOwnerAddress, "");
-        vm.stopBroadcast();
-        vm.startBroadcast(minterAdminKey);
-        ProtocolToken(address(waveTokenProxy)).initialize("Wave", "WAVE", address(minterAdminAddress)); 
+        
+        ProtocolToken(address(waveTokenProxy)).initialize("Wave", "WAVE", address(ownerAddress)); 
         console.log("Wave Token Proxy Address: ", address(waveTokenProxy));
+        console.log("Wave Token Proxy Admin Address: ", address(proxyOwnerAddress));
+        console.log("Wave Token Admin Address: ", address(ownerAddress));
+        console.log("Wave Token Minter Address: ", address(minterAdminAddress));
 
         ProtocolToken(address(waveTokenProxy)).grantRole(MINTER_ROLE, minterAdminAddress);
         if(keccak256(bytes(vm.envString("CURRENT_DEPLOYMENT"))) == keccak256(bytes("NATIVE"))) {

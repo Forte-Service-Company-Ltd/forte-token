@@ -47,6 +47,7 @@ contract ProtocolToken is Initializable, UUPSUpgradeable, ERC20Upgradeable, ERC2
         __ERC20Permit_init(_nameProto);
         __UUPSUpgradeable_init();
         _grantRole(TOKEN_ADMIN_ROLE, _tokenAdmin); 
+        _setRoleAdmin(TOKEN_ADMIN_ROLE, TOKEN_ADMIN_ROLE);
         _setRoleAdmin(MINTER_ROLE, TOKEN_ADMIN_ROLE);
     }
 
