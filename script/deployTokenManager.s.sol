@@ -6,7 +6,6 @@ import "forge-std/Script.sol";
 // note: needed to avoid conflict with ERC20 interface in OpenZeppelin
 import {InterchainTokenService} from "interchain-token-service/InterchainTokenService.sol";
 import {ITokenManagerType} from "interchain-token-service/interfaces/ITokenManagerType.sol";
-
 import {ProtocolToken} from "src/token/ProtocolToken.sol";
 
 
@@ -61,8 +60,6 @@ contract DeployTokenManager is Script {
             0.01 ether // note: this may need to be adjusted depending on network conditions
         );
 
-        setENVAddress("TOKEN_MANAGER_ADDRESS", vm.toString(tokenManagerAddress));
-        setENVString("TOKEN_ID", vm.toString(tokenId));
 
         vm.stopBroadcast();
     }
