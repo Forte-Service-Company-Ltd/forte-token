@@ -67,6 +67,16 @@ contract ProtocolToken is Initializable, UUPSUpgradeable, ERC20Upgradeable, ERC2
     }
 
     /**
+     * @dev Function burns tokens from a user, presumably for cross chain transfer
+     * @notice Add appAdministratorOnly modifier to restrict burning privilages
+     * @param from Address of burner
+     * @param amount Number of tokens to burn 
+     */
+    function burn(address from, uint256 amount) onlyRole(MINTER_ROLE) public {
+        _burn(from, amount);
+    }
+
+    /**
      * @dev Function called before any token transfers to confirm transfer is within rules of the protocol
      * @param from sender address
      * @param to recipient address

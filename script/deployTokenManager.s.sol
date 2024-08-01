@@ -38,7 +38,6 @@ contract DeployTokenManager is Script {
         tokenService = InterchainTokenService(vm.envAddress("INTERCHAIN_TOKEN_SERVICE"));
         salt = keccak256(abi.encode(vm.envString("SALT_STRING")));
 
-        
         vm.startBroadcast(privateKey);
         
         bytes32 tokenId = tokenService.deployTokenManager(
@@ -57,10 +56,13 @@ contract DeployTokenManager is Script {
         tokenService.deployTokenManager(
             salt, 
             vm.envString("DESTINATION_CHAIN"),
-            ITokenManagerType.TokenManagerType.LOCK_UNLOCK,
+            ITokenManagerType.TokenManagerType.MINT_BURN,
             abi.encode(abi.encodePacked(ownerAddress), vm.envAddress("FOREIGN_TOKEN_ADDRESS")), 
             0.01 ether // note: this may need to be adjusted depending on network conditions
         );
+
+        setENVAddress("TOKEN_MANAGER_ADDRESS", vm.toString(tokenManagerAddress));
+        setENVString("TOKEN_ID", vm.toString(tokenId));
 
         vm.stopBroadcast();
     }

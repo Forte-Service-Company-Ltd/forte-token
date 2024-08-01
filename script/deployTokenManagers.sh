@@ -17,8 +17,8 @@ forge script script/deployTokenManager.s.sol --ffi -vvv --non-interactive --rpc-
 echo "################################################################"
 
 
-echo "################################################################"
-echo Deploy an Axelar TokenManager to the foreign chain
-forge script script/deployTokenManager.s.sol --ffi -vvv --non-interactive --rpc-url $FOREIGN_CHAIN_RPC_URL --broadcast --gas-price 20
-echo "################################################################"
+# echo "################################################################"
+# echo Deploy an Axelar TokenManager to the foreign chain
+# forge script script/deployTokenManager.s.sol --ffi -vvv --non-interactive --rpc-url $FOREIGN_CHAIN_RPC_URL --broadcast --gas-price 20
+# echo "################################################################"
 
