@@ -12,13 +12,6 @@ ENV_FILE=".env"
 source $ENV_FILE
 
 echo "################################################################"
-echo Deploy an Axelar TokenManager to the native chain
+echo Deploy an Axelar TokenManager to the native chain and the foreign chain
 forge script script/deployTokenManager.s.sol --ffi -vvv --non-interactive --rpc-url $NATIVE_CHAIN_RPC_URL --broadcast --gas-price 20
 echo "################################################################"
-
-
-echo "################################################################"
-echo Deploy an Axelar TokenManager to the foreign chain
-forge script script/deployTokenManager.s.sol --ffi -vvv --non-interactive --rpc-url $FOREIGN_CHAIN_RPC_URL --broadcast --gas-price 20
-echo "################################################################"
-

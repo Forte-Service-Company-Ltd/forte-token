@@ -20,8 +20,8 @@ contract MintProtocolTokens is Script {
 
     function run() public {
         /// switch to the config admin
-        appConfigAdminKey = vm.envUint("DEPLOYMENT_OWNER_KEY");
-        appConfigAdminAddress = vm.envAddress("DEPLOYMENT_OWNER");
+        appConfigAdminKey = vm.envUint("MINTER_ADMIN_KEY");
+        appConfigAdminAddress = vm.envAddress("MINTER_ADMIN");
         protocolTokenAddress = vm.envAddress("TOKEN_ADDRESS");
 
         vm.startBroadcast(appConfigAdminKey);
