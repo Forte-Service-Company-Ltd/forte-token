@@ -7,7 +7,7 @@ import "forge-std/Script.sol";
 import {InterchainTokenService} from "interchain-token-service/InterchainTokenService.sol";
 import {ITokenManagerType} from "interchain-token-service/interfaces/ITokenManagerType.sol";
 import {ProtocolToken} from "src/token/ProtocolToken.sol";
-
+import "script/deployUtil.s.sol";
 
 /**
  * @title Deploy Token Manager
@@ -20,7 +20,7 @@ import {ProtocolToken} from "src/token/ProtocolToken.sol";
  * forge script script/deployTokenManager.s.sol --ffi --rpc-url $RPC_URL --broadcast -vvvv
  */
 
-contract DeployTokenManager is Script {
+contract DeployTokenManager is Script, DeployScriptUtil {
 
     uint privateKey;
     address ownerAddress;
@@ -60,6 +60,8 @@ contract DeployTokenManager is Script {
             0.01 ether // note: this may need to be adjusted depending on network conditions
         );
 
+        setENVAddress("TOKEN_MANAGER_ADDRESS", vm.toString(address(tokenManagerAddress)));
+        setENVAddress("TOKEN_ID", vm.toString(tokenId));
 
         vm.stopBroadcast();
     }
