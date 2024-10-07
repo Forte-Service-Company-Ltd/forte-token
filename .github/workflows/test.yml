@@ -33,6 +33,11 @@ jobs:
           chmod +x $HOME/.foundry/bin/foundryup
           foundryup --version $(awk '$1~/^[^#]/' foundry.lock)
 
+      - name: DEBUG FOUNDRY
+        run: |
+          echo $PATH
+          ls -la $HOME/.foundry/bin
+
       - name: Install dependencies
         run: |
           git config user.email "cloudops@thrackle.io"
