@@ -23,9 +23,11 @@ jobs:
           token: ${{ secrets.TRON_GITHUB_TOKEN }}
           submodules: recursive
       - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@v1
-        with:
-          version: nightly-f625d0fa7c51e65b4bf1e8f7931cd1c6e2e285e9
+        run: |
+          mkdir -p $HOME/.foundry/bin/
+          curl -sSL https://raw.githubusercontent.com/thrackle-io/foundry/refs/heads/master/foundryup/foundryup -o $HOME/.foundry/bin/foundryup
+          chmod +x $HOME/.foundry/bin/foundryup
+          $HOME/.foundry/bin/foundryup --version $(awk '$1~/^[^#]/' foundry.lock)
       - name: Install dependencies
         run: |
           git config user.email "cloudops@thrackle.io"
