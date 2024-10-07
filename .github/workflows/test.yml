@@ -26,7 +26,8 @@ jobs:
           mkdir -p $HOME/.foundry/bin/
           curl -sSL https://raw.githubusercontent.com/thrackle-io/foundry/refs/heads/master/foundryup/foundryup -o $HOME/.foundry/bin/foundryup
           chmod +x $HOME/.foundry/bin/foundryup
-          $HOME/.foundry/bin/foundryup --version $(awk '$1~/^[^#]/' foundry.lock)
+          echo "$HOME/.foundry/bin" >> $GITHUB_PATH
+          foundryup --version $(awk '$1~/^[^#]/' foundry.lock)
       - name: Install dependencies
         run: |
           git config user.email "cloudops@thrackle.io"
