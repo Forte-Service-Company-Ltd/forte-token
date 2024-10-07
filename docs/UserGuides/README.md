@@ -7,15 +7,21 @@
 This guide is intended to be a user-friendly introduction to [Wave token](./wave/README.md). It provides a walkthrough of how to get started with the token.
 
 ## Installation and Tooling
-##### This is designed to be tested and deployed with Foundry. All that should be required is to install Python 3.11, Homebrew, and then install [foundry](https://book.getfoundry.sh/getting-started/installation), pull the code, and then run in the root of the project's directory:
 
-`foundryup --commit $(awk '$1~/^[^#]/' foundry.lock)` 
+##### This is designed to be tested and deployed with Foundry. Install Python 3.11, Homebrew, and then install [foundry using Thrackle's `foundryup`](https://github.com/thrackle-io/foundry). This applies numbered versions to upstream Foundry releases.
+
+```
+pip3 install -r requirements.txt
+brew install jq
+```
+
+```
+curl -sSL https://raw.githubusercontent.com/thrackle-io/foundry/refs/heads/master/foundryup/foundryup | bash
+foundryup --version $(awk '$1~/^[^#]/' foundry.lock)
+```
 
 _Note: `awk` in the above command is used to ignore comments in `foundry.lock`_
 
-`pip3 install -r requirements.txt`
-
-` brew install jq`
 
 Now that you have the dependencies installed, you are ready to build the project. Do:
 
