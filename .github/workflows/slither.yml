@@ -24,6 +24,7 @@ jobs:
           submodules: recursive
 
       - name: Create Foundry Dir
+        run: |
           mkdir -p $HOME/.foundry/bin/
           echo "$HOME/.foundry/bin" >> $GITHUB_PATH
 
