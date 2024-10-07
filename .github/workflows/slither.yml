@@ -34,7 +34,7 @@ jobs:
           curl -sSL https://raw.githubusercontent.com/thrackle-io/foundry/refs/heads/master/foundryup/foundryup -o $FOUNDRY_DIR/bin/foundryup
           chmod +x $FOUNDRY_DIR/bin/foundryup
           foundryup --version $(awk '$1~/^[^#]/' foundry.lock)
-i
+
       - name: Install dependencies
         run: |
           git config user.email "cloudops@thrackle.io"
