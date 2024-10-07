@@ -16,8 +16,10 @@ brew install jq
 ```
 
 ```
-curl -sSL https://raw.githubusercontent.com/thrackle-io/foundry/refs/heads/master/foundryup/foundryup | bash
-foundryup --version $(awk '$1~/^[^#]/' foundry.lock)
+mkdir -p ~/.foundry/bin/
+curl -sSL https://raw.githubusercontent.com/thrackle-io/foundry/refs/heads/master/foundryup/foundryup -o ~/.foundry/bin/foundryup
+chmod +x ~/.foundry/bin/foundryup
+~/.foundry/bin/foundryup --version $(awk '$1~/^[^#]/' foundry.lock)
 ```
 
 _Note: `awk` in the above command is used to ignore comments in `foundry.lock`_
