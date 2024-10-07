@@ -26,14 +26,15 @@ jobs:
       - name: Create Foundry Dir
         run: |
           mkdir -p $HOME/.foundry/bin/
+          echo "FOUNDRY_DIR=$HOME/.foundry" >> $GITHUB_ENV
           echo "$HOME/.foundry/bin" >> $GITHUB_PATH
 
       - name: Install Foundry
         run: |
-          curl -sSL https://raw.githubusercontent.com/thrackle-io/foundry/refs/heads/master/foundryup/foundryup -o $HOME/.foundry/bin/foundryup
-          chmod +x $HOME/.foundry/bin/foundryup
+          curl -sSL https://raw.githubusercontent.com/thrackle-io/foundry/refs/heads/master/foundryup/foundryup -o $FOUNDRY_DIR/bin/foundryup
+          chmod +x $FOUNDRY_DIR/bin/foundryup
           foundryup --version $(awk '$1~/^[^#]/' foundry.lock)
-
+i
       - name: Install dependencies
         run: |
           git config user.email "cloudops@thrackle.io"
