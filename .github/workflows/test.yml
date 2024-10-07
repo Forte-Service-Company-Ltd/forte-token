@@ -21,13 +21,17 @@ jobs:
         with:
           token: ${{ secrets.TRON_GITHUB_TOKEN }}
           submodules: recursive
+
+      - name: Create Foundry Dir
+          mkdir -p $HOME/.foundry/bin/
+          echo "$HOME/.foundry/bin" >> $GITHUB_PATH
+
       - name: Install Foundry
         run: |
-          mkdir -p $HOME/.foundry/bin/
           curl -sSL https://raw.githubusercontent.com/thrackle-io/foundry/refs/heads/master/foundryup/foundryup -o $HOME/.foundry/bin/foundryup
           chmod +x $HOME/.foundry/bin/foundryup
-          echo "$HOME/.foundry/bin" >> $GITHUB_PATH
-          foundryup --version $(awk '$1~/^[^#]/' foundry.lock)
+          foundryup --version $(awk '$1~/^[^#]/' foundry.lock)- name: Install dependencies
+
       - name: Install dependencies
         run: |
           git config user.email "cloudops@thrackle.io"
@@ -36,9 +40,11 @@ jobs:
           sudo apt-get install -y python3-pip
           pip3 install eth_abi
           forge install dapphub/ds-test 
+
       - name: Build
         run: |
           forge clean && forge build --optimize
+
       - name: Test
         env:
           FORK_TEST: false
