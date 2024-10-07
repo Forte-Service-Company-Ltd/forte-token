@@ -31,7 +31,7 @@ jobs:
         run: |
           curl -sSL https://raw.githubusercontent.com/thrackle-io/foundry/refs/heads/master/foundryup/foundryup -o $HOME/.foundry/bin/foundryup
           chmod +x $HOME/.foundry/bin/foundryup
-          foundryup --version $(awk '$1~/^[^#]/' foundry.lock)- name: Install dependencies
+          foundryup --version $(awk '$1~/^[^#]/' foundry.lock)
 
       - name: Install dependencies
         run: |
