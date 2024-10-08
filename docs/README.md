@@ -9,11 +9,11 @@ This repository has two types of documentation:
 The manually generated documentation root can be found [here][userGuide-url].
 
 ## Auto-generated Documentation
-This repository utilized Foundary documentation generation for files using NatSpec comments. The commands to generate this documentation and to keep them up to date are:
+This repository utilized Foundry documentation generation for files using NatSpec comments. The commands to generate this documentation and to keep them up to date are:
 (Note: This is currently performed by CI/CD processes and not manually run.)
 The root of the documentation can be found [here](./src/SUMMARY.md).
 ```
-foundryup --commit $(awk '$1~/^[^#]/' foundry.lock)
+foundryup --version $(awk '$1~/^[^#]/' foundry.lock)
 forge doc
 ```
 
