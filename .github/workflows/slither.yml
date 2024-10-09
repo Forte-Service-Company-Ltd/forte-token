@@ -23,17 +23,10 @@ jobs:
           token: ${{ secrets.TRON_GITHUB_TOKEN }}
           submodules: recursive
 
-      - name: Create Foundry Dir
-        run: |
-          mkdir -p $HOME/.foundry/bin/
-          echo "FOUNDRY_DIR=$HOME/.foundry" >> $GITHUB_ENV
-          echo "$HOME/.foundry/bin" >> $GITHUB_PATH
-
       - name: Install Foundry
         run: |
-          curl -sSL https://raw.githubusercontent.com/thrackle-io/foundry/refs/heads/master/foundryup/foundryup -o $FOUNDRY_DIR/bin/foundryup
-          chmod +x $FOUNDRY_DIR/bin/foundryup
-          foundryup --version $(awk '$1~/^[^#]/' foundry.lock)
+          curl -sSL https://raw.githubusercontent.com/thrackle-io/foundry/refs/heads/master/foundryup/foundryup -o foundryup
+          FOUNDRY_DIR=/usr/local bash ./foundryup --version $(awk '$1~/^[^#]/' script/foundryScripts/foundry.lock)
 
       - name: Install dependencies
         run: |
@@ -96,9 +89,9 @@ jobs:
           submodules: recursive
 
       - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@v1
-        with:
-          version: nightly-f625d0fa7c51e65b4bf1e8f7931cd1c6e2e285e9
+        run: |
+          curl -sSL https://raw.githubusercontent.com/thrackle-io/foundry/refs/heads/master/foundryup/foundryup -o foundryup
+          FOUNDRY_DIR=/usr/local bash ./foundryup --version $(awk '$1~/^[^#]/' script/foundryScripts/foundry.lock)
 
       - name: Install dependencies
         run: |
