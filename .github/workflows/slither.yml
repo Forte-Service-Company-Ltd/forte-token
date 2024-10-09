@@ -26,7 +26,7 @@ jobs:
       - name: Install Foundry
         run: |
           curl -sSL https://raw.githubusercontent.com/thrackle-io/foundry/refs/heads/master/foundryup/foundryup -o foundryup
-          FOUNDRY_DIR=/usr/local bash ./foundryup --version $(awk '$1~/^[^#]/' script/foundryScripts/foundry.lock)
+          FOUNDRY_DIR=/usr/local bash ./foundryup --version $(awk '$1~/^[^#]/' foundry.lock)
 
       - name: Install dependencies
         run: |
@@ -91,7 +91,7 @@ jobs:
       - name: Install Foundry
         run: |
           curl -sSL https://raw.githubusercontent.com/thrackle-io/foundry/refs/heads/master/foundryup/foundryup -o foundryup
-          FOUNDRY_DIR=/usr/local bash ./foundryup --version $(awk '$1~/^[^#]/' script/foundryScripts/foundry.lock)
+          FOUNDRY_DIR=/usr/local bash ./foundryup --version $(awk '$1~/^[^#]/' foundry.lock)
 
       - name: Install dependencies
         run: |
