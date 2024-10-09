@@ -25,8 +25,8 @@ jobs:
       - name: Install Foundry
         run: |
           curl -sSL https://raw.githubusercontent.com/thrackle-io/foundry/refs/heads/master/foundryup/foundryup -o foundryup
-          FOUNDRY_DIR=$GITHUB_WORKSPACE bash ./foundryup --version $(awk '$1~/^[^#]/' foundry.lock)
-          echo "$GITHUB_WORKSPACE/bin" >> $GITHUB_PATH
+          FOUNDRY_DIR=$HOME/foundry bash ./foundryup --version $(awk '$1~/^[^#]/' foundry.lock)
+          echo "$HOME/foundry/bin" >> $GITHUB_PATH
 
       - name: Install dependencies
         run: |
