@@ -42,10 +42,10 @@ contract WaveTokenDeployScript is DeployScriptUtil {
         proxyOwnerAddress = vm.envAddress("PROXY_OWNER");
 
         /// Create ERC20 Upgradeable and Proxy 
-        ProtocolToken waveToken = new ProtocolToken{salt: keccak256(abi.encodePacked(vm.envString("SALT_STRING")))}();
-        ProtocolTokenProxy waveTokenProxy = new ProtocolTokenProxy{salt: keccak256(abi.encode(vm.envString("SALT_STRING")))}(address(waveToken), proxyOwnerAddress, "");
+        ProtocolToken waveToken = new ProtocolToken();
+        ProtocolTokenProxy waveTokenProxy = new ProtocolTokenProxy(address(waveToken), proxyOwnerAddress, "");
         
-        ProtocolToken(address(waveTokenProxy)).initialize("Wave", "WAVE", address(ownerAddress)); 
+        ProtocolToken(address(waveTokenProxy)).initialize("Test", "TEST", address(ownerAddress)); 
         console.log("Wave Token Proxy Address: ", address(waveTokenProxy));
         console.log("Wave Token Proxy Admin Address: ", address(proxyOwnerAddress));
         console.log("Wave Token Admin Address: ", address(ownerAddress));

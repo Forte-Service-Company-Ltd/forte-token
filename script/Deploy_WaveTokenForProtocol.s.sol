@@ -59,7 +59,7 @@ contract WaveTokenForProtocolDeployScript is DeployScriptUtil {
         /// Create ERC20 Upgradeable and Proxy 
         ProtocolToken waveToken = new ProtocolToken{salt: keccak256(abi.encodePacked(vm.envString("SALT_STRING")))}();
         ProtocolTokenProxy waveTokenProxy = new ProtocolTokenProxy{salt: keccak256(abi.encode(vm.envString("SALT_STRING")))}(address(waveToken), proxyOwnerAddress, "");
-        ProtocolToken(address(waveTokenProxy)).initialize("Wave", "WAVE", address(ownerAddress)); 
+        ProtocolToken(address(waveTokenProxy)).initialize("RE Test", "RETEST", address(ownerAddress)); 
         console.log("Wave Token Proxy Address: ", address(waveTokenProxy));
 
         ProtocolToken(address(waveTokenProxy)).grantRole(MINTER_ROLE, minterAdminAddress);
@@ -78,15 +78,15 @@ contract WaveTokenForProtocolDeployScript is DeployScriptUtil {
         vm.stopBroadcast();
         vm.startBroadcast(tronAppAdminKey);
         /// Register the tokens with the application's app manager
-        applicationAppManager.registerToken("WAVE", address(waveTokenProxy));
-        if(native) {
-            setENVAddress("TOKEN_ADDRESS", vm.toString(address(waveTokenProxy)));
-        } else {
-            setENVAddress("FOREIGN_TOKEN_ADDRESS", vm.toString(address(waveTokenProxy)));
-        }
-        vm.stopBroadcast();
-        vm.startBroadcast(minterAdminKey);
-        ProtocolToken(address(waveTokenProxy)).mint(minterAdminAddress, vm.envUint("MINT_AMOUNT"));
+        applicationAppManager.registerToken("RETEST", address(waveTokenProxy));
+        // if(native) {
+        //     setENVAddress("TOKEN_ADDRESS", vm.toString(address(waveTokenProxy)));
+        // } else {
+        //     setENVAddress("FOREIGN_TOKEN_ADDRESS", vm.toString(address(waveTokenProxy)));
+        // }
+        // vm.stopBroadcast();
+        // vm.startBroadcast(minterAdminKey);
+        // ProtocolToken(address(waveTokenProxy)).mint(minterAdminAddress, vm.envUint("MINT_AMOUNT"));
         vm.stopBroadcast();
     }
 
