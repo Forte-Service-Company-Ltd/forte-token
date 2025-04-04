@@ -8,8 +8,8 @@ import "openzeppelin-contracts-upgradeable/contracts/token/ERC20/extensions/ERC2
 import "openzeppelin-contracts-upgradeable/contracts/token/ERC20/extensions/ERC20PermitUpgradeable.sol";
 import "openzeppelin-contracts-upgradeable/contracts/access/OwnableUpgradeable.sol";
 import "openzeppelin-contracts-upgradeable/contracts/access/AccessControlUpgradeable.sol";
-import "tron/client/token/IProtocolTokenHandler.sol";
-import "tron/client/token/ERC20/upgradeable/IProtocolERC20UMin.sol";
+import "rulesEngine/client/token/IProtocolTokenHandler.sol";
+import "rulesEngine/client/token/ERC20/upgradeable/IProtocolERC20UMin.sol";
 
 /**
  * @title ERC20 Upgradable Protocol Token Contract

@@ -7,16 +7,16 @@
         "pattern": "^http://localhost"
       },
       {
-        "pattern": "^https://github.com/thrackle-io/wave"
+        "pattern": "^https://github.com/thrackle-io/forte-token"
       },
     ],
     "replacementPatterns": [
       {
-        "pattern": "https://github.com/thrackle-io/wave",
+        "pattern": "https://github.com/thrackle-io/forte-token",
         "replacement": ""
       },
       {
-        "pattern": "https://github.com/thrackle-io/Wave",
+        "pattern": "https://github.com/thrackle-io/forte-token",
         "replacement": ""
       },
       {

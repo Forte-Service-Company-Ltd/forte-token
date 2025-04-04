@@ -27,7 +27,7 @@ contract ForkTestERC20UTest is TestCommon, TestArrays, DummyAMM, ERC20UCommonTes
             // set rule processor diamond address 
             ruleProcessorDiamond = RuleProcessorDiamond(payable(vm.envAddress("SEPOLIA_RULE_PROCESSOR_DIAMOND")));
             // set up app manager and handler address 
-            appManager = new AppManager(superAdmin, "Wave", false);
+            appManager = new AppManager(superAdmin, "TOK", false);
             appHandler = new ProtocolApplicationHandler(vm.envAddress("SEPOLIA_RULE_PROCESSOR_DIAMOND"), address(appManager));
             appManager.addAppAdministrator(appAdministrator);
             switchToAppAdministrator();
@@ -42,10 +42,10 @@ contract ForkTestERC20UTest is TestCommon, TestArrays, DummyAMM, ERC20UCommonTes
             protocolTokenProxy = _deployERC20UpgradeableProxy(address(protocolToken), proxyOwner); 
             ERC20HandlerMainFacet(address(handlerDiamond)).initialize(address(ruleProcessorDiamond), address(appManager), address(protocolTokenProxy));
             switchToAppAdministrator(); 
-            ProtocolToken(address(protocolTokenProxy)).initialize("Wave", "WAVE", appAdministrator); 
+            ProtocolToken(address(protocolTokenProxy)).initialize("TOKEN", "TOK", appAdministrator); 
             ProtocolToken(address(protocolTokenProxy)).grantRole(MINTER_ROLE, appAdministrator);
             ProtocolToken(address(protocolTokenProxy)).connectHandlerToToken(address(handlerDiamond)); 
-            appManager.registerToken("WAVE", address(protocolTokenProxy));
+            appManager.registerToken("TOKEN", address(protocolTokenProxy));
 
             oracleApproved = new OracleApproved();
             oracleDenied = new OracleDenied();

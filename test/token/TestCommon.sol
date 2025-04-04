@@ -11,13 +11,13 @@ import "test/token/TestUtils.sol";
 import "src/token/ProtocolToken.sol";
 import "src/token/ProtocolTokenProxy.sol";
 import "test/token/EndWithStopPrank.sol"; 
-import "tron/client/pricing/ProtocolERC721Pricing.sol";
-import "tron/client/pricing/ProtocolERC20Pricing.sol";
-import "tron/example/OracleApproved.sol";
-import "tron/example/OracleDenied.sol";
-import {AppManager} from "tron/client/application/AppManager.sol";
-import {ProtocolApplicationHandler} from "tron/client/application/ProtocolApplicationHandler.sol";
-import {DummyAMM} from "tronTest/client/token/TestTokenCommon.sol";
+import "rulesEngine/client/pricing/ProtocolERC721Pricing.sol";
+import "rulesEngine/client/pricing/ProtocolERC20Pricing.sol";
+import "rulesEngine/example/OracleApproved.sol";
+import "rulesEngine/example/OracleDenied.sol";
+import {AppManager} from "rulesEngine/client/application/AppManager.sol";
+import {ProtocolApplicationHandler} from "rulesEngine/client/application/ProtocolApplicationHandler.sol";
+import {DummyAMM} from "rulesEngineTest/client/token/TestTokenCommon.sol";
 
 
 /**
@@ -96,14 +96,14 @@ abstract contract TestCommon is TestUtils, EndWithStopPrank {
 
     function _deployAppManagerAndHandler() public  returns (AppManager _appManager, ProtocolApplicationHandler _appHandler) {
         // This is needed for setting the permissions on the token intialize function 
-        _appManager = new AppManager(superAdmin, "Wave", false);
+        _appManager = new AppManager(superAdmin, "Token", false);
         _appHandler = new ProtocolApplicationHandler(address(ruleProcessorDiamond), address(_appManager));
         return (_appManager, _appHandler);
     }
 
     function _deployAppManagerAndHandlerFork(address _ruleProcessorDiamond) public  returns (AppManager _appManager, ProtocolApplicationHandler _appHandler) {
         // This is needed for setting the permissions on the token intialize function 
-        _appManager = new AppManager(superAdmin, "Wave", false);
+        _appManager = new AppManager(superAdmin, "Token", false);
         _appHandler = new ProtocolApplicationHandler(address(_ruleProcessorDiamond), address(_appManager));
         return (_appManager, _appHandler);
     }
@@ -130,10 +130,10 @@ abstract contract TestCommon is TestUtils, EndWithStopPrank {
         // connect everything 
         switchToAppAdministrator(); 
         appManager.setNewApplicationHandlerAddress(address(appHandler));
-        ProtocolToken(address(protocolTokenProxy)).initialize("Wave", "WAVE", address(appAdministrator)); 
+        ProtocolToken(address(protocolTokenProxy)).initialize("Token", "TOK", address(appAdministrator)); 
         ProtocolToken(address(protocolTokenProxy)).grantRole(MINTER_ROLE, minterAdmin);
         ProtocolToken(address(protocolTokenProxy)).connectHandlerToToken(address(handlerDiamond)); 
-        appManager.registerToken("WAVE", address(protocolTokenProxy));
+        appManager.registerToken("TOK", address(protocolTokenProxy));
 
         oracleApproved = new OracleApproved();
         oracleDenied = new OracleDenied();

@@ -4,9 +4,9 @@ pragma solidity ^0.8.24;
 import "forge-std/Script.sol";
 import "src/token/ProtocolToken.sol";
 import "src/token/ProtocolTokenProxy.sol";
-import {ApplicationAppManager} from "tron/example/application/ApplicationAppManager.sol";
-import {HandlerDiamond} from "tron/client/token/handler/diamond/HandlerDiamond.sol";
-import {ERC20HandlerMainFacet} from "tron/client/token/handler/diamond/ERC20HandlerMainFacet.sol";
+import {ApplicationAppManager} from "rulesEngine/example/application/ApplicationAppManager.sol";
+import {HandlerDiamond} from "rulesEngine/client/token/handler/diamond/HandlerDiamond.sol";
+import {ERC20HandlerMainFacet} from "rulesEngine/client/token/handler/diamond/ERC20HandlerMainFacet.sol";
 import "script/deployUtil.s.sol";
 
 /**
@@ -17,15 +17,17 @@ import "script/deployUtil.s.sol";
  * ** Requires .env variables to be set with correct addresses **
  */
 
-contract WaveTokenForProtocolDeployScript is DeployScriptUtil {
+contract TokenForProtocolDeployScript is DeployScriptUtil {
     uint256 privateKey;
     address ownerAddress;
     uint256 minterAdminKey;
     address minterAdminAddress;
     uint256 proxyOwnerKey;
     address proxyOwnerAddress;
-
     bytes32 constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    string name = "Forte"; // Change Name here 
+    string symbol = "FOR"; // Change Symbol here  
+        
 
     function setUp() public {}
 
@@ -57,36 +59,36 @@ contract WaveTokenForProtocolDeployScript is DeployScriptUtil {
         }
 
         /// Create ERC20 Upgradeable and Proxy 
-        ProtocolToken waveToken = new ProtocolToken{salt: keccak256(abi.encodePacked(vm.envString("SALT_STRING")))}();
-        ProtocolTokenProxy waveTokenProxy = new ProtocolTokenProxy{salt: keccak256(abi.encode(vm.envString("SALT_STRING")))}(address(waveToken), proxyOwnerAddress, "");
-        ProtocolToken(address(waveTokenProxy)).initialize("Wave", "WAVE", address(ownerAddress)); 
-        console.log("Wave Token Proxy Address: ", address(waveTokenProxy));
+        ProtocolToken Token = new ProtocolToken{salt: keccak256(abi.encodePacked(vm.envString("SALT_STRING")))}();
+        ProtocolTokenProxy TokenProxy = new ProtocolTokenProxy{salt: keccak256(abi.encode(vm.envString("SALT_STRING")))}(address(Token), proxyOwnerAddress, "");
+        ProtocolToken(address(TokenProxy)).initialize(name, symbol, address(ownerAddress)); 
+        console.log("Token Proxy Address: ", address(TokenProxy));
 
-        ProtocolToken(address(waveTokenProxy)).grantRole(MINTER_ROLE, minterAdminAddress);
+        ProtocolToken(address(TokenProxy)).grantRole(MINTER_ROLE, minterAdminAddress);
         vm.stopBroadcast();
 
         /// Connect to Asset Handler and register with App Manager
-        uint256 tronPrivateKey = vm.envUint("TRON_DEPLOYMENT_OWNER_KEY");
-        vm.startBroadcast(tronPrivateKey);
+        uint256 frePrivateKey = vm.envUint("FRE_DEPLOYMENT_OWNER_KEY");
+        vm.startBroadcast(frePrivateKey);
         ApplicationAppManager applicationAppManager = ApplicationAppManager(appManagerAddress);
         HandlerDiamond applicationCoinHandlerDiamond = HandlerDiamond(payable(handlerAddress));
-        ERC20HandlerMainFacet(address(applicationCoinHandlerDiamond)).initialize(protocolAddress, address(applicationAppManager), address(waveTokenProxy));
-        uint256 tronAppAdminKey = vm.envUint("TRON_APP_ADMIN_PRIVATE_KEY");
+        ERC20HandlerMainFacet(address(applicationCoinHandlerDiamond)).initialize(protocolAddress, address(applicationAppManager), address(TokenProxy));
+        uint256 freAppAdminKey = vm.envUint("FRE_APP_ADMIN_PRIVATE_KEY");
         vm.stopBroadcast();
         vm.startBroadcast(privateKey);
-        ProtocolToken(address(waveTokenProxy)).connectHandlerToToken(address(applicationCoinHandlerDiamond));
+        ProtocolToken(address(TokenProxy)).connectHandlerToToken(address(applicationCoinHandlerDiamond));
         vm.stopBroadcast();
-        vm.startBroadcast(tronAppAdminKey);
+        vm.startBroadcast(freAppAdminKey);
         /// Register the tokens with the application's app manager
-        applicationAppManager.registerToken("WAVE", address(waveTokenProxy));
+        applicationAppManager.registerToken("FOR", address(TokenProxy));
         if(native) {
-            setENVAddress("TOKEN_ADDRESS", vm.toString(address(waveTokenProxy)));
+            setENVAddress("TOKEN_ADDRESS", vm.toString(address(TokenProxy)));
         } else {
-            setENVAddress("FOREIGN_TOKEN_ADDRESS", vm.toString(address(waveTokenProxy)));
+            setENVAddress("FOREIGN_TOKEN_ADDRESS", vm.toString(address(TokenProxy)));
         }
         vm.stopBroadcast();
         vm.startBroadcast(minterAdminKey);
-        ProtocolToken(address(waveTokenProxy)).mint(minterAdminAddress, vm.envUint("MINT_AMOUNT"));
+        ProtocolToken(address(TokenProxy)).mint(minterAdminAddress, vm.envUint("MINT_AMOUNT"));
         vm.stopBroadcast();
     }
 

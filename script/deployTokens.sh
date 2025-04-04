@@ -37,7 +37,7 @@ if [ "$FULL_DEPLOYMENT" = "y" ]; then
     echo Deploy parent token to the native chain and connect to protocol
     echo "################################################################"
     echo
-    forge script script/Deploy_WaveTokenForProtocol.s.sol --ffi -vvv --non-interactive --rpc-url $NATIVE_CHAIN_RPC_URL --broadcast --gas-price 20
+    forge script script/Deploy_TokenForProtocol.s.sol --ffi -vvv --non-interactive --rpc-url $NATIVE_CHAIN_RPC_URL --broadcast --gas-price 20
 
     if [ "$FOREIGN_DEPLOYMENT" = "y" ]; then 
         if [[ $os == *"Darwin"* ]]; then
@@ -50,7 +50,7 @@ if [ "$FULL_DEPLOYMENT" = "y" ]; then
         echo Deploy child token to the foreign chain and connect to protocol
         echo "################################################################"
         echo
-        forge script script/Deploy_WaveTokenForProtocol.s.sol --ffi -vvv --non-interactive --rpc-url $FOREIGN_CHAIN_RPC_URL --broadcast --gas-price 20
+        forge script script/Deploy_TokenForProtocol.s.sol --ffi -vvv --non-interactive --rpc-url $FOREIGN_CHAIN_RPC_URL --broadcast --gas-price 20
 
         if [[ $os == *"Darwin"* ]]; then
             sed -i '' 's/CURRENT_DEPLOYMENT=.*/CURRENT_DEPLOYMENT=NATIVE/g' $ENV_FILE
@@ -66,7 +66,7 @@ if [ "$FULL_DEPLOYMENT" = "y" ]; then
     echo $NATIVE_CHAIN_RPC_URL
     echo 
     echo
-    forge script script/Deploy_WaveToken.s.sol --ffi -vvv --non-interactive --rpc-url $NATIVE_CHAIN_RPC_URL --broadcast --gas-price 20
+    forge script script/Deploy_Token.s.sol --ffi -vvv --non-interactive --rpc-url $NATIVE_CHAIN_RPC_URL --broadcast --gas-price 20
 
     if [ "$FOREIGN_DEPLOYMENT" = "y" ]; then 
         if [[ $os == *"Darwin"* ]]; then
@@ -79,7 +79,7 @@ if [ "$FULL_DEPLOYMENT" = "y" ]; then
         echo Deploy child token to the foreign chain
         echo "################################################################"
         echo
-        forge script script/Deploy_WaveToken.s.sol --ffi -vvv --non-interactive --rpc-url $FOREIGN_CHAIN_RPC_URL --broadcast --gas-price 20
+        forge script script/Deploy_Token.s.sol --ffi -vvv --non-interactive --rpc-url $FOREIGN_CHAIN_RPC_URL --broadcast --gas-price 20
     
         if [[ $os == *"Darwin"* ]]; then
             sed -i '' 's/CURRENT_DEPLOYMENT=.*/CURRENT_DEPLOYMENT=NATIVE/g' $ENV_FILE

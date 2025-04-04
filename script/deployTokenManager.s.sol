@@ -24,7 +24,7 @@ contract DeployTokenManager is Script, DeployScriptUtil {
 
     uint privateKey;
     address ownerAddress;
-    address waveAddress;
+    address FORAddress;
     InterchainTokenService tokenService;
     bytes32 salt;
 
@@ -33,7 +33,7 @@ contract DeployTokenManager is Script, DeployScriptUtil {
         console.log("Deploy a Token Manager");
         privateKey = vm.envUint("DEPLOYMENT_OWNER_KEY");
         ownerAddress = vm.envAddress("DEPLOYMENT_OWNER");
-        waveAddress = vm.envAddress("TOKEN_ADDRESS");
+        FORAddress = vm.envAddress("TOKEN_ADDRESS");
         tokenService = InterchainTokenService(vm.envAddress("INTERCHAIN_TOKEN_SERVICE"));
         salt = keccak256(abi.encode(vm.envString("SALT_STRING")));
 
@@ -43,7 +43,7 @@ contract DeployTokenManager is Script, DeployScriptUtil {
             salt,
             "", 
             ITokenManagerType.TokenManagerType.LOCK_UNLOCK, 
-            abi.encode(abi.encodePacked(ownerAddress), waveAddress),
+            abi.encode(abi.encodePacked(ownerAddress), FORAddress),
             0
         );
 

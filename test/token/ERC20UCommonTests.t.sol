@@ -4,7 +4,7 @@ pragma solidity ^0.8.24;
 import "forge-std/Test.sol";
 import "test/token/TestCommon.sol"; 
 import "test/token/TestArrays.sol";
-import {DummyAMM} from "tronTest/client/token/TestTokenCommon.sol";
+import {DummyAMM} from "rulesEngineTest/client/token/TestTokenCommon.sol";
 
 
 abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {

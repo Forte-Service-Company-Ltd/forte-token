@@ -3,45 +3,45 @@ pragma solidity ^0.8.24;
 
 import "forge-std/Test.sol";
 // Diamond Imports 
-import "tron/protocol/economic/ruleProcessor/RuleProcessorDiamond.sol";
-import {IDiamondCut} from "tronLib/diamond-std/core/DiamondCut/IDiamondCut.sol";
-import {IDiamondInit} from "tronLib/diamond-std/initializers/IDiamondInit.sol";
-import {DiamondInit} from "tronLib/diamond-std/initializers/DiamondInit.sol";
-import {FacetCut, FacetCutAction} from "tronLib/diamond-std/core/DiamondCut/DiamondCutLib.sol";
-import {SampleFacet} from "tronLib/diamond-std/core/test/SampleFacet.sol";
-import {SampleUpgradeFacet} from "tron/protocol/diamond/SampleUpgradeFacet.sol";
-import "tron/protocol/diamond/ProtocolNativeFacet.sol";
-import "tron/protocol/diamond/ProtocolRawFacet.sol";
-import {ERC173Facet} from "tronLib/diamond-std/implementations/ERC173/ERC173Facet.sol";
-import {HandlerVersionFacet} from "tron/client/token/handler/diamond/HandlerVersionFacet.sol";
-import {VersionFacet} from "tron/protocol/diamond/VersionFacet.sol";
+import "rulesEngine/protocol/economic/ruleProcessor/RuleProcessorDiamond.sol";
+import {IDiamondCut} from "rulesEngineLib/diamond-std/core/DiamondCut/IDiamondCut.sol";
+import {IDiamondInit} from "rulesEngineLib/diamond-std/initializers/IDiamondInit.sol";
+import {DiamondInit} from "rulesEngineLib/diamond-std/initializers/DiamondInit.sol";
+import {FacetCut, FacetCutAction} from "rulesEngineLib/diamond-std/core/DiamondCut/DiamondCutLib.sol";
+import {SampleFacet} from "rulesEngineLib/diamond-std/core/test/SampleFacet.sol";
+import {SampleUpgradeFacet} from "rulesEngine/protocol/diamond/SampleUpgradeFacet.sol";
+import "rulesEngine/protocol/diamond/ProtocolNativeFacet.sol";
+import "rulesEngine/protocol/diamond/ProtocolRawFacet.sol";
+import {ERC173Facet} from "rulesEngineLib/diamond-std/implementations/ERC173/ERC173Facet.sol";
+import {HandlerVersionFacet} from "rulesEngine/client/token/handler/diamond/HandlerVersionFacet.sol";
+import {VersionFacet} from "rulesEngine/protocol/diamond/VersionFacet.sol";
 // Handler Diamond Imports 
-import {HandlerDiamond, HandlerDiamondArgs} from "tron/client/token/handler/diamond/HandlerDiamond.sol";
-import "tron/client/token/handler/diamond/IHandlerDiamond.sol";
-import {FeesFacet} from "tron/client/token/handler/diamond/FeesFacet.sol";
-import {ERC20HandlerMainFacet} from "tron/client/token/handler/diamond/ERC20HandlerMainFacet.sol";
-import {ERC721HandlerMainFacet} from "tron/client/token/handler/diamond/ERC721HandlerMainFacet.sol";
-import "tron/client/token/handler/diamond/ERC20TaggedRuleFacet.sol";
-import "tron/client/token/handler/diamond/ERC20NonTaggedRuleFacet.sol";
-import "tron/client/token/handler/diamond/ERC721TaggedRuleFacet.sol";
-import "tron/client/token/handler/diamond/ERC721NonTaggedRuleFacet.sol";
+import {HandlerDiamond, HandlerDiamondArgs} from "rulesEngine/client/token/handler/diamond/HandlerDiamond.sol";
+import "rulesEngine/client/token/handler/diamond/IHandlerDiamond.sol";
+import {FeesFacet} from "rulesEngine/client/token/handler/diamond/FeesFacet.sol";
+import {ERC20HandlerMainFacet} from "rulesEngine/client/token/handler/diamond/ERC20HandlerMainFacet.sol";
+import {ERC721HandlerMainFacet} from "rulesEngine/client/token/handler/diamond/ERC721HandlerMainFacet.sol";
+import "rulesEngine/client/token/handler/diamond/ERC20TaggedRuleFacet.sol";
+import "rulesEngine/client/token/handler/diamond/ERC20NonTaggedRuleFacet.sol";
+import "rulesEngine/client/token/handler/diamond/ERC721TaggedRuleFacet.sol";
+import "rulesEngine/client/token/handler/diamond/ERC721NonTaggedRuleFacet.sol";
 
-import {INonTaggedRules as NonTaggedRules, ITaggedRules as TaggedRules, IApplicationRules as AppRules} from "tron/protocol/economic/ruleProcessor/RuleDataInterfaces.sol";
-import {ERC20RuleProcessorFacet} from "tron/protocol/economic/ruleProcessor/ERC20RuleProcessorFacet.sol";
-import {ERC20TaggedRuleProcessorFacet} from "tron/protocol/economic/ruleProcessor/ERC20TaggedRuleProcessorFacet.sol";
-import {ERC721TaggedRuleProcessorFacet} from "tron/protocol/economic/ruleProcessor/ERC721TaggedRuleProcessorFacet.sol";
-import {ERC721RuleProcessorFacet} from "tron/protocol/economic/ruleProcessor/ERC721RuleProcessorFacet.sol";
-import {RuleApplicationValidationFacet} from "tron/protocol/economic/ruleProcessor/RuleApplicationValidationFacet.sol";
-import {ApplicationRiskProcessorFacet} from "tron/protocol/economic/ruleProcessor/ApplicationRiskProcessorFacet.sol";
-import {ApplicationPauseProcessorFacet} from "tron/protocol/economic/ruleProcessor/ApplicationPauseProcessorFacet.sol";
-import {ApplicationAccessLevelProcessorFacet} from "tron/protocol/economic/ruleProcessor/ApplicationAccessLevelProcessorFacet.sol";
-import {ApplicationRiskProcessorFacet} from "tron/protocol/economic/ruleProcessor/ApplicationRiskProcessorFacet.sol";
-import {TaggedRuleDataFacet} from "tron/protocol/economic/ruleProcessor/TaggedRuleDataFacet.sol";
-import {RuleDataFacet} from "tron/protocol/economic/ruleProcessor/RuleDataFacet.sol";
-import {AppRuleDataFacet} from "tron/protocol/economic/ruleProcessor/AppRuleDataFacet.sol";
+import {INonTaggedRules as NonTaggedRules, ITaggedRules as TaggedRules, IApplicationRules as AppRules} from "rulesEngine/protocol/economic/ruleProcessor/RuleDataInterfaces.sol";
+import {ERC20RuleProcessorFacet} from "rulesEngine/protocol/economic/ruleProcessor/ERC20RuleProcessorFacet.sol";
+import {ERC20TaggedRuleProcessorFacet} from "rulesEngine/protocol/economic/ruleProcessor/ERC20TaggedRuleProcessorFacet.sol";
+import {ERC721TaggedRuleProcessorFacet} from "rulesEngine/protocol/economic/ruleProcessor/ERC721TaggedRuleProcessorFacet.sol";
+import {ERC721RuleProcessorFacet} from "rulesEngine/protocol/economic/ruleProcessor/ERC721RuleProcessorFacet.sol";
+import {RuleApplicationValidationFacet} from "rulesEngine/protocol/economic/ruleProcessor/RuleApplicationValidationFacet.sol";
+import {ApplicationRiskProcessorFacet} from "rulesEngine/protocol/economic/ruleProcessor/ApplicationRiskProcessorFacet.sol";
+import {ApplicationPauseProcessorFacet} from "rulesEngine/protocol/economic/ruleProcessor/ApplicationPauseProcessorFacet.sol";
+import {ApplicationAccessLevelProcessorFacet} from "rulesEngine/protocol/economic/ruleProcessor/ApplicationAccessLevelProcessorFacet.sol";
+import {ApplicationRiskProcessorFacet} from "rulesEngine/protocol/economic/ruleProcessor/ApplicationRiskProcessorFacet.sol";
+import {TaggedRuleDataFacet} from "rulesEngine/protocol/economic/ruleProcessor/TaggedRuleDataFacet.sol";
+import {RuleDataFacet} from "rulesEngine/protocol/economic/ruleProcessor/RuleDataFacet.sol";
+import {AppRuleDataFacet} from "rulesEngine/protocol/economic/ruleProcessor/AppRuleDataFacet.sol";
 
-import "tron/client/token/IProtocolTokenHandler.sol";
-import "lib/tron/script/EnabledActionPerRuleArray.sol";
+import "rulesEngine/client/token/IProtocolTokenHandler.sol";
+import "rulesEngineScripts/EnabledActionPerRuleArray.sol";
 
 contract TestUtils is Test, EnabledActionPerRuleArray {
 
