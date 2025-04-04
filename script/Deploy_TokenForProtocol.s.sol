@@ -59,12 +59,12 @@ contract TokenForProtocolDeployScript is DeployScriptUtil {
         }
 
         /// Create ERC20 Upgradeable and Proxy 
-        ProtocolToken Token = new ProtocolToken{salt: keccak256(abi.encodePacked(vm.envString("SALT_STRING")))}();
-        ProtocolTokenProxy TokenProxy = new ProtocolTokenProxy{salt: keccak256(abi.encode(vm.envString("SALT_STRING")))}(address(Token), proxyOwnerAddress, "");
-        ProtocolToken(address(TokenProxy)).initialize(name, symbol, address(ownerAddress)); 
-        console.log("Token Proxy Address: ", address(TokenProxy));
+        ProtocolToken token = new ProtocolToken{salt: keccak256(abi.encodePacked(vm.envString("SALT_STRING")))}();
+        ProtocolTokenProxy tokenProxy = new ProtocolTokenProxy{salt: keccak256(abi.encode(vm.envString("SALT_STRING")))}(address(token), proxyOwnerAddress, "");
+        ProtocolToken(address(tokenProxy)).initialize(name, symbol, address(ownerAddress)); 
+        console.log("Token Proxy Address: ", address(tokenProxy));
 
-        ProtocolToken(address(TokenProxy)).grantRole(MINTER_ROLE, minterAdminAddress);
+        ProtocolToken(address(tokenProxy)).grantRole(MINTER_ROLE, minterAdminAddress);
         vm.stopBroadcast();
 
         /// Connect to Asset Handler and register with App Manager
@@ -72,23 +72,23 @@ contract TokenForProtocolDeployScript is DeployScriptUtil {
         vm.startBroadcast(frePrivateKey);
         ApplicationAppManager applicationAppManager = ApplicationAppManager(appManagerAddress);
         HandlerDiamond applicationCoinHandlerDiamond = HandlerDiamond(payable(handlerAddress));
-        ERC20HandlerMainFacet(address(applicationCoinHandlerDiamond)).initialize(protocolAddress, address(applicationAppManager), address(TokenProxy));
+        ERC20HandlerMainFacet(address(applicationCoinHandlerDiamond)).initialize(protocolAddress, address(applicationAppManager), address(tokenProxy));
         uint256 freAppAdminKey = vm.envUint("FRE_APP_ADMIN_PRIVATE_KEY");
         vm.stopBroadcast();
         vm.startBroadcast(privateKey);
-        ProtocolToken(address(TokenProxy)).connectHandlerToToken(address(applicationCoinHandlerDiamond));
+        ProtocolToken(address(tokenProxy)).connectHandlerToToken(address(applicationCoinHandlerDiamond));
         vm.stopBroadcast();
         vm.startBroadcast(freAppAdminKey);
         /// Register the tokens with the application's app manager
-        applicationAppManager.registerToken("FOR", address(TokenProxy));
+        applicationAppManager.registerToken(symbol, address(tokenProxy));
         if(native) {
-            setENVAddress("TOKEN_ADDRESS", vm.toString(address(TokenProxy)));
+            setENVAddress("TOKEN_ADDRESS", vm.toString(address(tokenProxy)));
         } else {
-            setENVAddress("FOREIGN_TOKEN_ADDRESS", vm.toString(address(TokenProxy)));
+            setENVAddress("FOREIGN_TOKEN_ADDRESS", vm.toString(address(tokenProxy)));
         }
         vm.stopBroadcast();
         vm.startBroadcast(minterAdminKey);
-        ProtocolToken(address(TokenProxy)).mint(minterAdminAddress, vm.envUint("MINT_AMOUNT"));
+        ProtocolToken(address(tokenProxy)).mint(minterAdminAddress, vm.envUint("MINT_AMOUNT"));
         vm.stopBroadcast();
     }
 

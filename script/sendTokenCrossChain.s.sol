@@ -41,9 +41,9 @@ contract SendTokenCrossChain is Script {
 
         vm.startBroadcast(privateKey);
         
-        ProtocolToken For = ProtocolToken(vm.envAddress("TOKEN_ADDRESS"));
+        ProtocolToken pToken = ProtocolToken(vm.envAddress("TOKEN_ADDRESS"));
         
-        For.approve(address(tokenService), amount);
+        pToken.approve(address(tokenService), amount);
         
         tokenService.interchainTransfer(
             tokenId,

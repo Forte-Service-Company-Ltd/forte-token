@@ -17,7 +17,7 @@ import "script/deployUtil.s.sol";
  * ** Requires .env variables to be set with correct addresses **
  */
 
-contract FORTokenDeployScript is DeployScriptUtil {
+contract TokenDeployScript is DeployScriptUtil {
     uint256 privateKey;
     address ownerAddress;
     uint256 minterAdminKey;
@@ -44,20 +44,20 @@ contract FORTokenDeployScript is DeployScriptUtil {
         proxyOwnerAddress = vm.envAddress("PROXY_OWNER");
 
         /// Create ERC20 Upgradeable and Proxy 
-        ProtocolToken FORToken = new ProtocolToken{salt: keccak256(abi.encodePacked(vm.envString("SALT_STRING")))}();
-        ProtocolTokenProxy FORTokenProxy = new ProtocolTokenProxy{salt: keccak256(abi.encode(vm.envString("SALT_STRING")))}(address(FORToken), proxyOwnerAddress, "");
+        ProtocolToken token = new ProtocolToken{salt: keccak256(abi.encodePacked(vm.envString("SALT_STRING")))}();
+        ProtocolTokenProxy tokenProxy = new ProtocolTokenProxy{salt: keccak256(abi.encode(vm.envString("SALT_STRING")))}(address(token), proxyOwnerAddress, "");
         
-        ProtocolToken(address(FORTokenProxy)).initialize(name, symbol, address(ownerAddress)); 
-        console.log("Token Proxy Address: ", address(FORTokenProxy));
+        ProtocolToken(address(tokenProxy)).initialize(name, symbol, address(ownerAddress)); 
+        console.log("Token Proxy Address: ", address(tokenProxy));
         console.log("Token Proxy Admin Address: ", address(proxyOwnerAddress));
         console.log("Token Admin Address: ", address(ownerAddress));
         console.log("Token Minter Address: ", address(minterAdminAddress));
 
-        ProtocolToken(address(FORTokenProxy)).grantRole(MINTER_ROLE, minterAdminAddress);
+        ProtocolToken(address(tokenProxy)).grantRole(MINTER_ROLE, minterAdminAddress);
         if(keccak256(bytes(vm.envString("CURRENT_DEPLOYMENT"))) == keccak256(bytes("NATIVE"))) {
-            setENVAddress("TOKEN_ADDRESS", vm.toString(address(FORTokenProxy)));
+            setENVAddress("TOKEN_ADDRESS", vm.toString(address(tokenProxy)));
         } else {
-            setENVAddress("FOREIGN_TOKEN_ADDRESS", vm.toString(address(FORTokenProxy)));
+            setENVAddress("FOREIGN_TOKEN_ADDRESS", vm.toString(address(tokenProxy)));
         }
         vm.stopBroadcast();
     }
