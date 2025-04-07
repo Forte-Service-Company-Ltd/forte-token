@@ -11,10 +11,10 @@ remappings = [
     "ds-test/=lib/forge-std/lib/ds-test/src/",
     "@openzeppelin/=lib/openzeppelin-contracts/",
     "@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
-    "tron/=lib/tron/src",
-    "tronLib/=lib/tron/lib",
-    "tronTest/=lib/tron/test",
-    "tronScripts/=lib/tron/script",
+    "rulesEngine/=lib/ruleEngine/src",
+    "rulesEngineLib/=lib/ruleEngine/lib",
+    "rulesEngineTest/=lib/ruleEngine/test",
+    "rulesEngineScripts/=lib/ruleEngine/script",
     "axelar-gmp-sdk-solidity/=lib/axelar-gmp-sdk-solidity/contracts/",
     "@axelar-network/axelar-gmp-sdk-solidity/=lib/axelar-gmp-sdk-solidity"
 ]

@@ -4,9 +4,9 @@ pragma solidity ^0.8.24;
 import "forge-std/Script.sol";
 import "src/token/ProtocolToken.sol";
 import "src/token/ProtocolTokenProxy.sol";
-import {ApplicationAppManager} from "tron/example/application/ApplicationAppManager.sol";
-import {HandlerDiamond} from "tron/client/token/handler/diamond/HandlerDiamond.sol";
-import {ERC20HandlerMainFacet} from "tron/client/token/handler/diamond/ERC20HandlerMainFacet.sol";
+import {ApplicationAppManager} from "rulesEngine/example/application/ApplicationAppManager.sol";
+import {HandlerDiamond} from "rulesEngine/client/token/handler/diamond/HandlerDiamond.sol";
+import {ERC20HandlerMainFacet} from "rulesEngine/client/token/handler/diamond/ERC20HandlerMainFacet.sol";
 import "script/deployUtil.s.sol";
 
 /**
@@ -17,13 +17,15 @@ import "script/deployUtil.s.sol";
  * ** Requires .env variables to be set with correct addresses **
  */
 
-contract WaveTokenDeployScript is DeployScriptUtil {
+contract TokenDeployScript is DeployScriptUtil {
     uint256 privateKey;
     address ownerAddress;
     uint256 minterAdminKey;
     address minterAdminAddress;
     uint256 proxyOwnerKey;
     address proxyOwnerAddress;
+    string name = "Forte"; // Change Name here 
+    string symbol = "FOR"; // Change Symbol here 
 
     bytes32 constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
@@ -32,7 +34,7 @@ contract WaveTokenDeployScript is DeployScriptUtil {
     function run() public {
         privateKey = vm.envUint("DEPLOYMENT_OWNER_KEY");
         ownerAddress = vm.envAddress("DEPLOYMENT_OWNER");
-        vm.startBroadcast(privateKey);
+        vm.startBroadcast(privateKey); 
         
         /// switch to the config admin
         minterAdminKey = vm.envUint("MINTER_ADMIN_KEY");
@@ -42,20 +44,20 @@ contract WaveTokenDeployScript is DeployScriptUtil {
         proxyOwnerAddress = vm.envAddress("PROXY_OWNER");
 
         /// Create ERC20 Upgradeable and Proxy 
-        ProtocolToken waveToken = new ProtocolToken{salt: keccak256(abi.encodePacked(vm.envString("SALT_STRING")))}();
-        ProtocolTokenProxy waveTokenProxy = new ProtocolTokenProxy{salt: keccak256(abi.encode(vm.envString("SALT_STRING")))}(address(waveToken), proxyOwnerAddress, "");
+        ProtocolToken token = new ProtocolToken{salt: keccak256(abi.encodePacked(vm.envString("SALT_STRING")))}();
+        ProtocolTokenProxy tokenProxy = new ProtocolTokenProxy{salt: keccak256(abi.encode(vm.envString("SALT_STRING")))}(address(token), proxyOwnerAddress, "");
         
-        ProtocolToken(address(waveTokenProxy)).initialize("Wave", "WAVE", address(ownerAddress)); 
-        console.log("Wave Token Proxy Address: ", address(waveTokenProxy));
-        console.log("Wave Token Proxy Admin Address: ", address(proxyOwnerAddress));
-        console.log("Wave Token Admin Address: ", address(ownerAddress));
-        console.log("Wave Token Minter Address: ", address(minterAdminAddress));
+        ProtocolToken(address(tokenProxy)).initialize(name, symbol, address(ownerAddress)); 
+        console.log("Token Proxy Address: ", address(tokenProxy));
+        console.log("Token Proxy Admin Address: ", address(proxyOwnerAddress));
+        console.log("Token Admin Address: ", address(ownerAddress));
+        console.log("Token Minter Address: ", address(minterAdminAddress));
 
-        ProtocolToken(address(waveTokenProxy)).grantRole(MINTER_ROLE, minterAdminAddress);
+        ProtocolToken(address(tokenProxy)).grantRole(MINTER_ROLE, minterAdminAddress);
         if(keccak256(bytes(vm.envString("CURRENT_DEPLOYMENT"))) == keccak256(bytes("NATIVE"))) {
-            setENVAddress("TOKEN_ADDRESS", vm.toString(address(waveTokenProxy)));
+            setENVAddress("TOKEN_ADDRESS", vm.toString(address(tokenProxy)));
         } else {
-            setENVAddress("FOREIGN_TOKEN_ADDRESS", vm.toString(address(waveTokenProxy)));
+            setENVAddress("FOREIGN_TOKEN_ADDRESS", vm.toString(address(tokenProxy)));
         }
         vm.stopBroadcast();
     }
