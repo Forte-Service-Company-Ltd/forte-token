@@ -18,7 +18,7 @@ contract BridgeTokenTest is TestCommon {
     bytes32 tokenId;
     bytes32 salt;
 
-    ProtocolToken FOR;
+    ProtocolToken pToken;
     InterchainTokenService tokenService;
 
     function setUp() public {
