@@ -49,7 +49,7 @@ modifier ifAdmin();
 ### admin
 
 *Returns the current admin.
-NOTE: Only the admin can call this function. See [ProxyAdmin-getProxyAdmin](/lib/tron/lib/openzeppelin-contracts/contracts/proxy/transparent/ProxyAdmin.sol/contract.ProxyAdmin.md#getproxyadmin).
+NOTE: Only the admin can call this function. See [ProxyAdmin-getProxyAdmin](/lib/ruleEngine/lib/openzeppelin-contracts/contracts/proxy/transparent/ProxyAdmin.sol/contract.ProxyAdmin.md#getproxyadmin).
 TIP: To get this value clients can read directly from the storage slot shown below (specified by EIP1967) using the
 https://eth.wiki/json-rpc/API#eth_getstorageat[`eth_getStorageAt`] RPC call.
 `0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103`*
@@ -62,7 +62,7 @@ function admin() external view ifAdmin returns (address admin_);
 ### implementation
 
 *Returns the current implementation.
-NOTE: Only the admin can call this function. See [ProxyAdmin-getProxyImplementation](/lib/tron/lib/openzeppelin-contracts/contracts/proxy/transparent/ProxyAdmin.sol/contract.ProxyAdmin.md#getproxyimplementation).
+NOTE: Only the admin can call this function. See [ProxyAdmin-getProxyImplementation](/lib/ruleEngine/lib/openzeppelin-contracts/contracts/proxy/transparent/ProxyAdmin.sol/contract.ProxyAdmin.md#getproxyimplementation).
 TIP: To get this value clients can read directly from the storage slot shown below (specified by EIP1967) using the
 https://eth.wiki/json-rpc/API#eth_getstorageat[`eth_getStorageAt`] RPC call.
 `0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc`*
@@ -116,7 +116,7 @@ function _admin() internal view virtual returns (address);
 
 ### _beforeFallback
 
-*Makes sure the admin cannot access the fallback function. See [Proxy-_beforeFallback](/lib/tron/lib/openzeppelin-contracts/contracts/proxy/Proxy.sol/abstract.Proxy.md#_beforefallback).*
+*Makes sure the admin cannot access the fallback function. See [Proxy-_beforeFallback](/lib/ruleEngine/lib/openzeppelin-contracts/contracts/proxy/Proxy.sol/abstract.Proxy.md#_beforefallback).*
 
 
 ```solidity
