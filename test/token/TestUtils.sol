@@ -48,12 +48,12 @@ contract TestUtils is Test, EnabledActionPerRuleArray {
     HandlerDiamond public handlerDiamond;
     FacetCut[] _ruleProcessorFacetCuts;
     function _createERC20HandlerDiamond() public returns (HandlerDiamond diamond) {
-        FacetCut[] memory _erc20HandlerFacetCuts = new FacetCut[](8);
+        FacetCut[] memory _erc20HandlerFacetCuts = new FacetCut[](9);
         // Start by deploying the DiamonInit contract.
         DiamondInit diamondInit = new DiamondInit();
 
         // Register all facets.
-        string[8] memory facets = [
+        string[9] memory facets = [
             // diamond version
             "HandlerVersionFacet",
             // Native facets,
@@ -65,6 +65,7 @@ contract TestUtils is Test, EnabledActionPerRuleArray {
             "ERC20TaggedRuleFacet",
             "ERC20NonTaggedRuleFacet",
             "TradingRuleFacet",
+            "OracleRulesFacet",
             "FeesFacet"
         ];
 
@@ -204,7 +205,7 @@ contract TestUtils is Test, EnabledActionPerRuleArray {
     function _createSelectorArray(string memory _facet) public returns (bytes4[] memory _selectors) {
         string[] memory _inputs = new string[](3);
         _inputs[0] = "python3";
-        _inputs[1] = "lib/tron/script/python/get_selectors.py";
+        _inputs[1] = "lib/ruleEngine/script/python/get_selectors.py";
         _inputs[2] = _facet;
         bytes memory res = vm.ffi(_inputs);
         return abi.decode(res, (bytes4[]));

@@ -326,7 +326,7 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
         (approveRuleId, deniedRuleId) = _addOracleRule();
         // set ruleId in handler 
         ActionTypes[] memory actionTypes = createActionTypeArray(ActionTypes.P2P_TRANSFER, ActionTypes.BUY, ActionTypes.SELL, ActionTypes.MINT, ActionTypes.BURN);
-        ERC20NonTaggedRuleFacet(address(handlerDiamond)).setAccountApproveDenyOracleId(actionTypes, approveRuleId);
+        OracleRulesFacet(address(handlerDiamond)).setAccountApproveDenyOracleId(actionTypes, approveRuleId);
         // add users to approved list 
         switchToAppAdministrator();
         address[] memory approvedList = new address[](4); 
@@ -349,7 +349,7 @@ abstract contract ERC20UCommonTests is Test, TestCommon, TestArrays, DummyAMM {
         (approveRuleId, deniedRuleId) = _addOracleRule();
         // set ruleId in handler 
         ActionTypes[] memory actionTypes = createActionTypeArray(ActionTypes.P2P_TRANSFER, ActionTypes.BUY, ActionTypes.SELL, ActionTypes.MINT, ActionTypes.BURN);
-        ERC20NonTaggedRuleFacet(address(handlerDiamond)).setAccountApproveDenyOracleId(actionTypes, approveRuleId);
+        OracleRulesFacet(address(handlerDiamond)).setAccountApproveDenyOracleId(actionTypes, approveRuleId);
         // transfer to user fails since not on approved list 
         switchToUser();
         vm.expectRevert(abi.encodeWithSignature("AddressNotApproved()"));

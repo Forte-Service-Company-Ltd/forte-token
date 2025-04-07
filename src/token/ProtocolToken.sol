@@ -9,7 +9,7 @@ import "openzeppelin-contracts-upgradeable/contracts/token/ERC20/extensions/ERC2
 import "openzeppelin-contracts-upgradeable/contracts/access/OwnableUpgradeable.sol";
 import "openzeppelin-contracts-upgradeable/contracts/access/AccessControlUpgradeable.sol";
 import "rulesEngine/client/token/IProtocolTokenHandler.sol";
-import "rulesEngine/client/token/ERC20/upgradeable/IProtocolERC20UMin.sol";
+import "rulesEngine/client/token/IProtocolToken.sol";
 
 /**
  * @title ERC20 Upgradable Protocol Token Contract
@@ -17,7 +17,7 @@ import "rulesEngine/client/token/ERC20/upgradeable/IProtocolERC20UMin.sol";
  * @notice Protocol ERC20 Upgradeable to provide liquidity for Web3 economies
  */
 
-contract ProtocolToken is Initializable, UUPSUpgradeable, ERC20Upgradeable, ERC20BurnableUpgradeable, ERC20PermitUpgradeable, OwnableUpgradeable, AccessControlUpgradeable, IProtocolERC20UMin  {
+contract ProtocolToken is Initializable, UUPSUpgradeable, ERC20Upgradeable, ERC20BurnableUpgradeable, ERC20PermitUpgradeable, OwnableUpgradeable, AccessControlUpgradeable, IProtocolToken  {
     
     bytes32 constant TOKEN_ADMIN_ROLE = keccak256("TOKEN_ADMIN_ROLE");
     bytes32 constant MINTER_ROLE = keccak256("MINTER_ROLE");
@@ -104,7 +104,7 @@ contract ProtocolToken is Initializable, UUPSUpgradeable, ERC20Upgradeable, ERC2
      * @param _deployedHandlerAddress address of the currently deployed Handler Address
      */
     function connectHandlerToToken(address _deployedHandlerAddress) external onlyRole(TOKEN_ADMIN_ROLE) {
-        if (_deployedHandlerAddress == address(0)) revert ZeroAddress();
+        if (_deployedHandlerAddress == address(0)) revert("Handler Address Cannot Be Zero");
         handlerAddress = _deployedHandlerAddress;
         handler = IProtocolTokenHandler(handlerAddress);
         emit AD1467_HandlerConnected(_deployedHandlerAddress, address(this));
