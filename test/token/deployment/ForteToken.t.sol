@@ -21,7 +21,7 @@ contract ForteTokenTest is TestCommon {
     address APP_ADMIN = vm.envAddress("FRE_APP_ADMIN");
     address MINT_ADMIN = vm.envAddress("MINTER_ADMIN");
     address PROXY_OWNER = vm.envAddress("PROXY_OWNER");
-    address SKIP_FORTE_TOKEN_TESTS = vm.envAddress("SKIP_FORTE_TOKEN_TESTS");
+    bool SKIP_FORTE_TOKEN_TESTS = vm.envBool("SKIP_FORTE_TOKEN_TESTS");
     address USER_1 = address(0xEf485b7F98650a9a545D8E92FAcCf57Fbf4474b6);
     address USER_2 = address(0xd7770256590771b9f92c3Ae86AB922f20A6ad02e);
     address payable tokenAddress;
