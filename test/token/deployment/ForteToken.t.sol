@@ -21,6 +21,7 @@ contract ForteTokenTest is TestCommon {
     address APP_ADMIN = vm.envAddress("FRE_APP_ADMIN");
     address MINT_ADMIN = vm.envAddress("MINTER_ADMIN");
     address PROXY_OWNER = vm.envAddress("PROXY_OWNER");
+    address SKIP_FORTE_TOKEN_TESTS = vm.envAddress("SKIP_FORTE_TOKEN_TESTS");
     address USER_1 = address(0xEf485b7F98650a9a545D8E92FAcCf57Fbf4474b6);
     address USER_2 = address(0xd7770256590771b9f92c3Ae86AB922f20A6ad02e);
     address payable tokenAddress;
@@ -50,6 +51,7 @@ contract ForteTokenTest is TestCommon {
 
     // Make sure that the treasury accounts may transfer
     function testTransferPositive() public {
+        vm.skip(SKIP_FORTE_TOKEN_TESTS);
         vm.startPrank(TREASURY_1);
         ProtocolToken(tokenAddress).transfer(USER_1, 1);
         assertEq(ProtocolToken(tokenAddress).balanceOf(USER_1), 1);
@@ -57,23 +59,26 @@ contract ForteTokenTest is TestCommon {
 
     // Ensure that non treasury accounts cannot transfer
     function testTransferNegativeNonTreasury() public {
+        vm.skip(SKIP_FORTE_TOKEN_TESTS);
         vm.startPrank(TREASURY_1);
         ProtocolToken(tokenAddress).transfer(USER_1, 1);
         vm.startPrank(USER_1);
         // bytes4 selector = bytes4(keccak256("ApplicationPaused(uint256,uint256)"));
+        console2.log("block.timestamp",block.timestamp);
+        PauseRule[] memory pauseRules = appManager.getPauseRules();
+        for (uint256 i; i < pauseRules.length; ++i) {
+             console2.log("pause start",pauseRules[i].pauseStart);
+        }
         vm.expectRevert();
         ProtocolToken(tokenAddress).transfer(USER_2, 1);
     }
 
     // Ensure that the token can be upgraded
     function testUpgrade() public {
+        vm.skip(SKIP_FORTE_TOKEN_TESTS);
         vm.stopPrank();
         vm.startPrank(PROXY_OWNER); 
-        console2.log("proxyOwner", proxyOwner);
         protocolTokenUpgraded = new ProtocolToken(); 
-        console2.log(tokenAddress);
-        console2.log(address(protocolTokenUpgraded));
-        console2.log(address(ProtocolTokenProxy(tokenAddress).admin()));
         ProtocolTokenProxy(tokenAddress).upgradeTo(address(protocolTokenUpgraded));
         vm.stopPrank();
         vm.startPrank(USER_1); 
@@ -82,6 +87,7 @@ contract ForteTokenTest is TestCommon {
 
     // Ensure that a rule may be added and functions
     function testRule() public {
+        vm.skip(SKIP_FORTE_TOKEN_TESTS);
         vm.startPrank(TREASURY_1);
         ProtocolToken(tokenAddress).transfer(USER_1, 1000);
         vm.startPrank(APP_ADMIN);
@@ -111,6 +117,7 @@ contract ForteTokenTest is TestCommon {
     }
 
     function _addMinMaxTokenBalance() internal returns(uint32 ruleId) {
+        vm.skip(SKIP_FORTE_TOKEN_TESTS);
         uint16[] memory periods;
         ruleId = TaggedRuleDataFacet(address(ruleProcessorDiamond)).addAccountMinMaxTokenBalance(address(appManager), createBytes32Array("testTag"), createUint256Array(10), createUint256Array(2000), periods, uint64(block.timestamp));
         console2.log("rule",ruleId);

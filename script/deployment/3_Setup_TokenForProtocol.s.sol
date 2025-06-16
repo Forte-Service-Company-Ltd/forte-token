@@ -55,7 +55,7 @@ contract TokenForProtocolDeployScript is DeployScriptUtil {
         
         vm.startBroadcast(ruleAdminKey);
         // Pause Token for everyone else
-        applicationAppManager.addPauseRule(uint64(block.timestamp)+30, END_PAUSE);
+        applicationAppManager.addPauseRule(uint64(block.timestamp)+120, END_PAUSE);
         
         vm.stopBroadcast();
     }
