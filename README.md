@@ -5,12 +5,25 @@ Upgradeable token solution for cross platform gaming liquidity.
 ### Deployment with FREV1 enabled 
 
 Deployment can be done by doing the following:
-1. Checkout Forte Rules Engine v1
-2. Deploy an AppManager for the application
-3. Deploy ERC20Handler for the token
-4. Checkout Forte-Token repo
+1. Checkout [Forte Rules Engine v1](https://github.com/thrackle-io/forte-rules-engine-v1.git)
+   1. Checkout branch: SE-1373-Deploy-Forte-Token-to-Eth-Sepolia-and-test
+2. Set the following .env variables
+      1. RULE_PROCESSOR_DIAMOND
+      2. DEPLOYMENT_OWNER
+      3. DEPLOYMENT_OWNER_KEY
+      4. APP_ADMIN
+      5. APP_ADMIN_PRIVATE_KEY
+      6. RULE_ADMIN
+      7. RULE_ADMIN_PRIVATE_KEY
+3. Deploy an AppManager and ERC20Handler for the token 
+
+```
+   sh script/clientScripts/DeployForForteToken.sh 
+```
+
+4. Checkout [Forte-Token](https://github.com/thrackle-io/forte-token.git)
 5. Create .env in the root directory and copy the contents of env.forte into .env
-6. Set the following .env variables
+6. Set the following .env variables 
    1. ETH_RPC_URL
    2. DEPLOYMENT_OWNER
    3. DEPLOYMENT_OWNER_KEY
@@ -28,24 +41,19 @@ Deployment can be done by doing the following:
    15. APPLICATION_APP_MANAGER
    16. APPLICATION_ERC20_HANDLER_ADDRESS
 7.  Invoke the token creation/setup script
-    1.  sh script/deployment/DeployForteTokenAndConfig.sh
-    2. The script will do the following:
+   
+```
+   sh script/deployment/DeployForteTokenAndConfig.sh
+```
+
+    1. The script will do the following:
        1. Deploy Forte Token
        2. Connect Forte Token to FRE
        3. Setup Admins in FRE and pause the token for non-treasurers
  8. In order to test the deployment, do the following:
     1. set SKIP_FORTE_TOKEN_TESTS=false
-    2. 
-    
-    ```
-        forge test --match-contract ForteTokenTest --fork-url $ETH_RPC_URL -vvv
-    ```
+        
+```
+  forge test --match-contract ForteTokenTest --fork-url $ETH_RPC_URL -vvv
+```
 
-
-
-
-Protocol Assets
-
-RULE_PROCESSOR_DIAMOND=0xd0dce3e14af7ffb89537c5b97aafdaf337b842e4
-APPLICATION_APP_MANAGER=0x750d7997c03f99cbc11044283e9274c8c42da925
-APPLICATION_ERC20_HANDLER_ADDRESS
