@@ -6,10 +6,10 @@ Upgradeable token solution for cross platform gaming liquidity.
 
 Deployment can be done by doing the following:
 1. Checkout Forte Rules Engine v1
-2. Create AppManager for the application
-3. Create ERC20Handler for the token
+2. Deploy an AppManager for the application
+3. Deploy ERC20Handler for the token
 4. Checkout Forte-Token repo
-5. Create .env in the root directory
+5. Create .env in the root directory and copy the contents of env.forte into .env
 6. Set the following .env variables
    1. ETH_RPC_URL
    2. DEPLOYMENT_OWNER
@@ -33,6 +33,13 @@ Deployment can be done by doing the following:
        1. Deploy Forte Token
        2. Connec Forte Token to FRE
        3. Setup Admins in FRE and pause the token for non-treasurers
+ 8. In order to test the deployment, do the following:
+    1. set SKIP_FORTE_TOKEN_TESTS=false
+    2. 
+    
+    ```
+        forge test --match-contract ForteTokenTest --fork-url $ETH_RPC_URL -vvv
+    ```
 
 
 
