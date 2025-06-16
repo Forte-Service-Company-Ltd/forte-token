@@ -15,19 +15,29 @@ import "test/token/ERC20UCommonTests.t.sol";
  * Run command forge test --fork-url $ETH_RPC_URL
  */
 contract ForteTokenTest is TestCommon {
-    address TREASURY_1 = vm.envAddress("FRE_TREASURY_1_ADMIN");
-    address TREASURY_2 = vm.envAddress("FRE_TREASURY_2_ADMIN");
-    address RULE_ADMIN = vm.envAddress("FRE_RULE_ADMIN");
-    address APP_ADMIN = vm.envAddress("FRE_APP_ADMIN");
-    address MINT_ADMIN = vm.envAddress("MINTER_ADMIN");
-    address PROXY_OWNER = vm.envAddress("PROXY_OWNER");
-    bool SKIP_FORTE_TOKEN_TESTS = vm.envBool("SKIP_FORTE_TOKEN_TESTS");
-    address USER_1 = address(0xEf485b7F98650a9a545D8E92FAcCf57Fbf4474b6);
-    address USER_2 = address(0xd7770256590771b9f92c3Ae86AB922f20A6ad02e);
+    address TREASURY_1;
+    address TREASURY_2;
+    address RULE_ADMIN;
+    address APP_ADMIN;
+    address MINT_ADMIN;
+    address PROXY_OWNER;
+    bool SKIP_FORTE_TOKEN_TESTS;
+    address USER_1;
+    address USER_2;
     address payable tokenAddress;
     uint256 constant MINT_AMOUNT = 1_000_000_000 * 10E18;
 
     function setUp() public endWithStopPrank {
+        // load env variables
+        TREASURY_1 = vm.envAddress("FRE_TREASURY_1_ADMIN");
+        TREASURY_2 = vm.envAddress("FRE_TREASURY_2_ADMIN");
+        RULE_ADMIN = vm.envAddress("FRE_RULE_ADMIN");
+        APP_ADMIN = vm.envAddress("FRE_APP_ADMIN");
+        MINT_ADMIN = vm.envAddress("MINTER_ADMIN");
+        PROXY_OWNER = vm.envAddress("PROXY_OWNER");
+        SKIP_FORTE_TOKEN_TESTS = vm.envBool("SKIP_FORTE_TOKEN_TESTS");
+        USER_1 = address(0xEf485b7F98650a9a545D8E92FAcCf57Fbf4474b6);
+        USER_2 = address(0xd7770256590771b9f92c3Ae86AB922f20A6ad02e);
         // Load the FRE processor
         ruleProcessorDiamond = RuleProcessorDiamond(
             payable(vm.envAddress("RULE_PROCESSOR_DIAMOND"))

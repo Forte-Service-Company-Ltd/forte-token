@@ -54,5 +54,6 @@ jobs:
         env:
           FORK_TEST: false
           SALT_STRING: "SMELLING_SALTS"
+          SKIP_FORTE_TOKEN_TESTS: true
         run: |
           forge test -vv --ffi
