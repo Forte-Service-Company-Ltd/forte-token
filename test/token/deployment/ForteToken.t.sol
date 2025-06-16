@@ -21,7 +21,7 @@ contract ForteTokenTest is TestCommon {
     address APP_ADMIN;
     address MINT_ADMIN;
     address PROXY_OWNER;
-    bool SKIP_FORTE_TOKEN_TESTS;
+    bool SKIP_FORTE_TOKEN_TESTS = vm.envBool("SKIP_FORTE_TOKEN_TESTS");
     address USER_1;
     address USER_2;
     address payable tokenAddress;
@@ -29,38 +29,40 @@ contract ForteTokenTest is TestCommon {
 
     function setUp() public endWithStopPrank {
         // load env variables
-        TREASURY_1 = vm.envAddress("FRE_TREASURY_1_ADMIN");
-        TREASURY_2 = vm.envAddress("FRE_TREASURY_2_ADMIN");
-        RULE_ADMIN = vm.envAddress("FRE_RULE_ADMIN");
-        APP_ADMIN = vm.envAddress("FRE_APP_ADMIN");
-        MINT_ADMIN = vm.envAddress("MINTER_ADMIN");
-        PROXY_OWNER = vm.envAddress("PROXY_OWNER");
         SKIP_FORTE_TOKEN_TESTS = vm.envBool("SKIP_FORTE_TOKEN_TESTS");
-        USER_1 = address(0xEf485b7F98650a9a545D8E92FAcCf57Fbf4474b6);
-        USER_2 = address(0xd7770256590771b9f92c3Ae86AB922f20A6ad02e);
-        // Load the FRE processor
-        ruleProcessorDiamond = RuleProcessorDiamond(
-            payable(vm.envAddress("RULE_PROCESSOR_DIAMOND"))
-        );
-        // Load the AppManager
-        appManager = AppManager(payable(vm.envAddress("APPLICATION_APP_MANAGER")));
-        vm.startPrank(RULE_ADMIN);
-         // Load the token proxy
-        tokenAddress = payable(vm.envAddress("TOKEN_ADDRESS"));
-        protocolTokenProxy = ProtocolTokenProxy(tokenAddress);
+        if (!SKIP_FORTE_TOKEN_TESTS){
+            TREASURY_1 = vm.envAddress("FRE_TREASURY_1_ADMIN");
+            TREASURY_2 = vm.envAddress("FRE_TREASURY_2_ADMIN");
+            RULE_ADMIN = vm.envAddress("FRE_RULE_ADMIN");
+            APP_ADMIN = vm.envAddress("FRE_APP_ADMIN");
+            MINT_ADMIN = vm.envAddress("MINTER_ADMIN");
+            PROXY_OWNER = vm.envAddress("PROXY_OWNER");
+            USER_1 = address(0xEf485b7F98650a9a545D8E92FAcCf57Fbf4474b6);
+            USER_2 = address(0xd7770256590771b9f92c3Ae86AB922f20A6ad02e);
+            // Load the FRE processor
+            ruleProcessorDiamond = RuleProcessorDiamond(
+                payable(vm.envAddress("RULE_PROCESSOR_DIAMOND"))
+            );
+            // Load the AppManager
+            appManager = AppManager(payable(vm.envAddress("APPLICATION_APP_MANAGER")));
+            vm.startPrank(RULE_ADMIN);
+            // Load the token proxy
+            tokenAddress = payable(vm.envAddress("TOKEN_ADDRESS"));
+            protocolTokenProxy = ProtocolTokenProxy(tokenAddress);
 
-        vm.stopPrank();
-        // Load the token handler
-        handlerDiamond = HandlerDiamond(
-            payable(vm.envAddress("APPLICATION_ERC20_HANDLER_ADDRESS"))
-        );
-        vm.startPrank(TREASURY_1);
-        ProtocolToken(tokenAddress).mint(TREASURY_1, MINT_AMOUNT);
-        vm.warp(block.timestamp+100);
+            vm.stopPrank();
+            // Load the token handler
+            handlerDiamond = HandlerDiamond(
+                payable(vm.envAddress("APPLICATION_ERC20_HANDLER_ADDRESS"))
+            );
+            vm.startPrank(TREASURY_1);
+            ProtocolToken(tokenAddress).mint(TREASURY_1, MINT_AMOUNT);
+            vm.warp(block.timestamp+100);
+        }
     }
 
     // Make sure that the treasury accounts may transfer
-    function testTransferPositive() public {
+    function testTransferPositive() public ifForteTestsEnabled {
         vm.skip(SKIP_FORTE_TOKEN_TESTS);
         vm.startPrank(TREASURY_1);
         ProtocolToken(tokenAddress).transfer(USER_1, 1);
@@ -68,7 +70,7 @@ contract ForteTokenTest is TestCommon {
     }
 
     // Ensure that non treasury accounts cannot transfer
-    function testTransferNegativeNonTreasury() public {
+    function testTransferNegativeNonTreasury() public ifForteTestsEnabled {
         vm.skip(SKIP_FORTE_TOKEN_TESTS);
         vm.startPrank(TREASURY_1);
         ProtocolToken(tokenAddress).transfer(USER_1, 1);
@@ -84,7 +86,7 @@ contract ForteTokenTest is TestCommon {
     }
 
     // Ensure that the token can be upgraded
-    function testUpgrade() public {
+    function testUpgrade() public ifForteTestsEnabled {
         vm.skip(SKIP_FORTE_TOKEN_TESTS);
         vm.stopPrank();
         vm.startPrank(PROXY_OWNER); 
@@ -96,7 +98,7 @@ contract ForteTokenTest is TestCommon {
     }
 
     // Ensure that a rule may be added and functions
-    function testRule() public {
+    function testRule() public ifForteTestsEnabled {
         vm.skip(SKIP_FORTE_TOKEN_TESTS);
         vm.startPrank(TREASURY_1);
         ProtocolToken(tokenAddress).transfer(USER_1, 1000);
@@ -162,5 +164,11 @@ contract ForteTokenTest is TestCommon {
     function createUint256Array(uint256 arg1) public pure returns (uint256[] memory array) {
         array = new uint256[](1);
         array[0] = arg1;
+    }
+
+    modifier ifForteTestsEnabled() {
+        if(!SKIP_FORTE_TOKEN_TESTS){
+            _;
+        }
     }
 }
