@@ -31,7 +31,7 @@ Deployment can be done by doing the following:
     1.  sh script/deployment/DeployForteTokenAndConfig.sh
     2. The script will do the following:
        1. Deploy Forte Token
-       2. Connec Forte Token to FRE
+       2. Connect Forte Token to FRE
        3. Setup Admins in FRE and pause the token for non-treasurers
  8. In order to test the deployment, do the following:
     1. set SKIP_FORTE_TOKEN_TESTS=false
