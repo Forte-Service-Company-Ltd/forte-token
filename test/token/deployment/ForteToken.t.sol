@@ -25,7 +25,7 @@ contract ForteTokenTest is TestCommon {
     address USER_1;
     address USER_2;
     address payable tokenAddress;
-    uint256 constant MINT_AMOUNT = 1_000_000_000 * 10E18;
+    uint256 constant MINT_AMOUNT = 1_000_000_000 * 1e18;
 
     function setUp() public endWithStopPrank {
         // load env variables
