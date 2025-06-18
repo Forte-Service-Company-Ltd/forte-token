@@ -17,7 +17,7 @@ Deployment can be done by doing the following:
       4. DEPLOYMENT_OWNER_KEY
          1. `This is the private key for the Deployment Owner`
       5. APP_ADMIN
-         1. `This the Application Administrator for the FREV1 assets`
+         1. `This is the Application Administrator for the FREV1 assets`
       6. APP_ADMIN_PRIVATE_KEY
          1. `This is the Application Administrator private key`
       7. RULE_ADMIN
