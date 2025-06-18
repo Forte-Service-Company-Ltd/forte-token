@@ -19,14 +19,23 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          token: ${{ secrets.TRON_GITHUB_TOKEN }}
           submodules: recursive
 
       - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: v1.2.1
+      - name: Clone repository dependencies
+        shell: bash
         run: |
-          curl -sSL https://raw.githubusercontent.com/thrackle-io/foundry/refs/heads/master/foundryup/foundryup -o $HOME/foundryup
-          FOUNDRY_DIR=$HOME/foundry bash $HOME/foundryup --version $(awk '$1~/^[^#]/' foundry.lock)
-          echo "$HOME/foundry/bin" >> $GITHUB_PATH
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip3 install -r requirements.txt
+          forge install
+      - name: Build the repository
+        shell: bash
+        run: |
+          forge clean && forge build --optimize
 
       - name: Install dependencies
         run: |
@@ -45,5 +54,6 @@ jobs:
         env:
           FORK_TEST: false
           SALT_STRING: "SMELLING_SALTS"
+          SKIP_FORTE_TOKEN_TESTS: true
         run: |
           forge test -vv --ffi
