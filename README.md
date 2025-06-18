@@ -40,12 +40,12 @@ Deployment can be done by doing the following:
    sh script/clientScripts/DeployForForteToken.sh 
 ```
 
-4. Pull the following addresses from the .env
+6. Pull the following addresses from the .env
    1. APPLICATION_APP_MANAGER
    2. APPLICATION_ERC20_HANDLER_ADDRESS
-5. Checkout [Forte-Token](https://github.com/thrackle-io/forte-token.git)
-6. Create .env in the root directory and copy the contents of env.forte into .env
-7. Set the following variables in the .env 
+7. Checkout [Forte-Token](https://github.com/thrackle-io/forte-token.git)
+8. Create .env in the root directory and copy the contents of env.forte into .env
+9. Set the following variables in the .env 
    1. ETH_RPC_URL
       1. `This is the URL of the deployment chain`
    2. DEPLOYMENT_OWNER
@@ -81,13 +81,13 @@ Deployment can be done by doing the following:
 
    NOTE: DEPLOYMENT_OWNER, MINTER_ADMIN, FRE_APP_ADMIN, FRE_RULE_ADMIN, and FRE_TREASURY_1_ADMIN may all be the same address. PROXY_OWNER_ADDRESS **must** be a different address.
 
-9.  Source the .env 
+10.  Source the .env 
 
 ```
    source .env
 ```
 
-9.  Invoke the token creation/setup script
+11.  Invoke the token creation/setup script
    
 ```
    sh script/deployment/DeployForteTokenAndConfig.sh
@@ -97,7 +97,7 @@ Deployment can be done by doing the following:
        1. Deploy Forte Token
        2. Connect Forte Token to FRE
        3. Setup Admins in FRE and pause the token for non-treasurers
- 8. In order to test the deployment, do the following:
+ 12. In order to test the deployment, do the following:
     1. set SKIP_FORTE_TOKEN_TESTS=false
         
 ```
