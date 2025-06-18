@@ -13,7 +13,7 @@ Deployment can be done by doing the following:
       2. RULE_PROCESSOR_DIAMOND
          1. `This is the address of the FREV1 Rule Processor`
       3. DEPLOYMENT_OWNER
-         1. `This is the address of that will be the initial owner of the FREV1 assets`
+         1. `This is the address that will be the initial owner of the FREV1 assets`
       4. DEPLOYMENT_OWNER_KEY
          1. `This is the private key for the Deployment Owner`
       5. APP_ADMIN
