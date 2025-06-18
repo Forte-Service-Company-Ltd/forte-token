@@ -7,7 +7,7 @@ Upgradeable token solution for cross platform gaming liquidity.
 Deployment can be done by doing the following:
 1. Checkout [Forte Rules Engine v1](https://github.com/thrackle-io/forte-rules-engine-v1.git)
    1. Checkout branch: SE-1373-Deploy-Forte-Token-to-Eth-Sepolia-and-test
-2. Set the following .env variables
+2. Set the following variables in the .env file
       1. ETH_RPC_URL
       2. RULE_PROCESSOR_DIAMOND
       3. DEPLOYMENT_OWNER
@@ -16,15 +16,25 @@ Deployment can be done by doing the following:
       6. APP_ADMIN_PRIVATE_KEY
       7. RULE_ADMIN
       8. RULE_ADMIN_PRIVATE_KEY
-3. Deploy an AppManager and ERC20Handler for the token 
+3. Open a terminal
+4. Source the .env 
+
+```
+   source .env
+```
+
+5. Deploy an AppManager and ERC20Handler for the token 
 
 ```
    sh script/clientScripts/DeployForForteToken.sh 
 ```
 
-4. Checkout [Forte-Token](https://github.com/thrackle-io/forte-token.git)
-5. Create .env in the root directory and copy the contents of env.forte into .env
-6. Set the following .env variables 
+4. Pull the following addresses from the .env
+   1. APPLICATION_APP_MANAGER
+   2. APPLICATION_ERC20_HANDLER_ADDRESS
+5. Checkout [Forte-Token](https://github.com/thrackle-io/forte-token.git)
+6. Create .env in the root directory and copy the contents of env.forte into .env
+7. Set the following variables in the .env 
    1. ETH_RPC_URL
    2. DEPLOYMENT_OWNER
    3. DEPLOYMENT_OWNER_KEY
@@ -41,7 +51,13 @@ Deployment can be done by doing the following:
    14. RULE_PROCESSOR_DIAMOND
    15. APPLICATION_APP_MANAGER
    16. APPLICATION_ERC20_HANDLER_ADDRESS
-7.  Invoke the token creation/setup script
+8.  Source the .env 
+
+```
+   source .env
+```
+
+9.  Invoke the token creation/setup script
    
 ```
    sh script/deployment/DeployForteTokenAndConfig.sh
@@ -58,3 +74,6 @@ Deployment can be done by doing the following:
   forge test --match-contract ForteTokenTest --fork-url $ETH_RPC_URL -vvv
 ```
 
+## Licensing
+
+The primary license for Forte Token is the MIT License, see [`LICENSE`](./LICENSE). 
