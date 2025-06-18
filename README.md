@@ -49,7 +49,7 @@ Deployment can be done by doing the following:
    1. ETH_RPC_URL
       1. `This is the URL of the deployment chain`
    2. DEPLOYMENT_OWNER
-      1. `This is the address of that will be the initial owner of the Forte Token contracts`
+      1. `This is the address that will be the initial owner of the Forte Token contracts`
    3. DEPLOYMENT_OWNER_KEY
       1. `This is the private key of the Deployment Owner`
    4. MINTER_ADMIN
