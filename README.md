@@ -57,7 +57,7 @@ Deployment can be done by doing the following:
    5. MINTER_ADMIN_KEY
       1. `This is the private key of the Minter Admin`
    6. PROXY_OWNER_ADDRESS   
-      1. `This is the address that will be the owner Forte Token proxy contract. It must be separate from other admins since it will never be passed through to access the token's standard logic.`
+      1. `This is the address that will be the owner of the Forte Token proxy contract. It must be separate from other admins since it will never be passed through to access the token's standard logic.`
    7. FRE_APP_ADMIN
       1. `This is the FREV1 Application Administrator used prior`
    8. FRE_APP_ADMIN_PRIVATE_KEY
