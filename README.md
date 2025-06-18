@@ -8,13 +8,14 @@ Deployment can be done by doing the following:
 1. Checkout [Forte Rules Engine v1](https://github.com/thrackle-io/forte-rules-engine-v1.git)
    1. Checkout branch: SE-1373-Deploy-Forte-Token-to-Eth-Sepolia-and-test
 2. Set the following .env variables
-      1. RULE_PROCESSOR_DIAMOND
-      2. DEPLOYMENT_OWNER
-      3. DEPLOYMENT_OWNER_KEY
-      4. APP_ADMIN
-      5. APP_ADMIN_PRIVATE_KEY
-      6. RULE_ADMIN
-      7. RULE_ADMIN_PRIVATE_KEY
+      1. ETH_RPC_URL
+      2. RULE_PROCESSOR_DIAMOND
+      3. DEPLOYMENT_OWNER
+      4. DEPLOYMENT_OWNER_KEY
+      5. APP_ADMIN
+      6. APP_ADMIN_PRIVATE_KEY
+      7. RULE_ADMIN
+      8. RULE_ADMIN_PRIVATE_KEY
 3. Deploy an AppManager and ERC20Handler for the token 
 
 ```
