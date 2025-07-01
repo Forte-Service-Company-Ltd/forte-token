@@ -41,7 +41,6 @@ contract TokenForProtocolDeployScript is DeployScriptUtil {
         address ruleAdmin = vm.envAddress("FRE_RULE_ADMIN");
         uint256 ruleAdminKey = vm.envUint("FRE_RULE_ADMIN_PRIVATE_KEY");
         address treasuryAdmin1 = vm.envAddress("FRE_TREASURY_1_ADMIN");
-        address treasuryAdmin2 = vm.envAddress("FRE_TREASURY_2_ADMIN");
 
         vm.startBroadcast(appAdminKey);
         ApplicationAppManager applicationAppManager = ApplicationAppManager(appManagerAddress);
@@ -49,7 +48,6 @@ contract TokenForProtocolDeployScript is DeployScriptUtil {
         applicationAppManager.registerToken(symbol, tokenAddress);
         // set forte foundation as Treasury accounts
         applicationAppManager.addTreasuryAccount(treasuryAdmin1);
-        applicationAppManager.addTreasuryAccount(treasuryAdmin2);
         applicationAppManager.addRuleAdministrator(ruleAdmin);
         vm.stopBroadcast();
         

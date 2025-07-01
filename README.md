@@ -23,7 +23,9 @@ Deployment can be done by doing the following:
       7. RULE_ADMIN
          1. `This is the Rule Administrator for the FREV1 assets. It is used to create/enable/disable rules for the application`
       8. RULE_ADMIN_PRIVATE_KEY
-         1. `This is the Rule Administrator private key`
+         1. `This is the Rule Adminstrator private key`
+      9. ETHERSCAN_API_KEY
+       1.  `This is the api key for the contract verification`
    
    NOTE: DEPLOYMENT_OWNER, APP_ADMIN, and RULE_ADMIN may all be the same address.
 
@@ -70,14 +72,14 @@ Deployment can be done by doing the following:
        1.  `This is the FREV1 Treasury admin account. It will bypass all configured rules and should be the same as the Minter Admin`
    12. FRE_TREASURY_1_ADMIN_PRIVATE_KEY
        1.  `This is the private key for the FREV1 Treasury Admin`
-   13. FRE_TREASURY_2_ADMIN
-       1.  `This is a second FREV1 Treasury Admin account. It will also bypass all configured rules.`
-   14. RULE_PROCESSOR_DIAMOND
+   13. RULE_PROCESSOR_DIAMOND
        1.  `This is the address of the FREV1 Rule Processor`
-   15. APPLICATION_APP_MANAGER
+   14. APPLICATION_APP_MANAGER
        1.  `This is the address of the FREV1 Application Manager`
-   16. APPLICATION_ERC20_HANDLER_ADDRESS
+   15. APPLICATION_ERC20_HANDLER_ADDRESS
        1.  `This is the address of the FREV1 ERC20 Token Handler`
+   16. ETHERSCAN_API_KEY
+       1.  `This is the api key for the contract verification`
 
    NOTE: DEPLOYMENT_OWNER, MINTER_ADMIN, FRE_APP_ADMIN, FRE_RULE_ADMIN, and FRE_TREASURY_1_ADMIN may all be the same address. PROXY_OWNER_ADDRESS **must** be a different address.
 
