@@ -5,6 +5,9 @@
       },
       {
         "pattern": "^https://github.com/Forte-Service-Company-Ltd/forte-token"
+      },
+      {
+        "pattern": "^https://github.com/OpenZeppelin/"
       }
     ],
     "replacementPatterns": [
