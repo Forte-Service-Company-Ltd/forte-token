@@ -43,7 +43,7 @@ Deployment can be done by doing the following:
 6. Pull the following addresses from the .env
    1. APPLICATION_APP_MANAGER
    2. APPLICATION_ERC20_HANDLER_ADDRESS
-7. Checkout [Forte-Token](https://github.com/thrackle-io/forte-token.git)
+7. Checkout [Forte-Token](https://github.com/Forte-Service-Company-Ltd/forte-token.git)
 8. Create .env in the root directory and copy the contents of env.forte into .env
 9. Set the following variables in the .env 
    1. ETH_RPC_URL

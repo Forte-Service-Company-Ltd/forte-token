@@ -13,7 +13,7 @@ This repository utilized Foundry documentation generation for files using NatSpe
 (Note: This is currently performed by CI/CD processes and not manually run.)
 The root of the documentation can be found [here](./src/SUMMARY.md).
 ```
-foundryup --version $(awk '$1~/^[^#]/' foundry.lock)
+foundryup --install v1.2.1
 forge doc
 ```
 
@@ -26,4 +26,4 @@ forge doc
 <!-- These are the body links -->
 [userGuide-url]: ./userGuides/README.md
 [version-image]: https://img.shields.io/badge/Version-1.0.0-brightgreen?style=for-the-badge&logo=appveyor
-[version-url]: https://github.com/thrackle-io/wave
+[version-url]: https://github.com/Forte-Service-Company-Ltd/forte-token

@@ -9,7 +9,7 @@ We're so glad you would want to come and contribute! We are a small team and we 
 
 ## Code of Conduct
 
-The following are our code of conduct. Violations of this code of conduct can be reported to the [Team](mailto:engineering@thrackle.io). 
+The following are our code of conduct. Violations of this code of conduct can be reported to the [Team](mailto:support@fortefoundation.io). 
 
 * We are committed to providing a friendly, safe and welcoming environment for all, regardless of level of experience, gender identity and expression, sexual orientation, disability, personal appearance, body size, race, ethnicity, age, religion, nationality, or other similar characteristic.
 * Please avoid using overtly sexual aliases or other nicknames that might detract from a friendly, safe and welcoming environment for all.
@@ -22,11 +22,11 @@ The following are our code of conduct. Violations of this code of conduct can be
 
 ## Asking For Help
 
-If you have reviewed existing documentation and still have questions or are having problems, we are always a message away. You can reach out to the [Team](mailto:engineering@thrackle.io). Opening an issue is also a great way to get help for particularly complex issues. 
+If you have reviewed existing documentation and still have questions or are having problems, we are always a message away. You can reach out to the [Team](mailto:support@fortefoundation.io). Opening an issue is also a great way to get help for particularly complex issues. 
 
 ## Submitting a Bug Report
 
-If you feel you have stumbled upon a particularly severe bug, please quietly message the [Team](mailto:engineering@thrackle.io) as soon as possible and keep the bug report private so the incident response team can react accordingly. If you have found a bug that is not severe or an optimization potential, please open an issue on the repository, and (if possible) a PR with a solution, and a test to show the bug and the fix.  
+If you feel you have stumbled upon a particularly severe bug, please quietly message the [Team](mailto:support@fortefoundation.io) as soon as possible and keep the bug report private so the incident response team can react accordingly. If you have found a bug that is not severe or an optimization potential, please open an issue on the repository, and (if possible) a PR with a solution, and a test to show the bug and the fix.  
 
 The most important pieces of information we need in a bug report are:
 
@@ -82,4 +82,4 @@ Always make sure your commits messages are informative and describe the changes 
 
 <!-- These are the header links -->
 [version-image]: https://img.shields.io/badge/Version-1.0.0-brightgreen?style=for-the-badge&logo=appveyor
-[version-url]: https://github.com/thrackle-io/forte-token
+[version-url]: https://github.com/Forte-Service-Company-Ltd/forte-token

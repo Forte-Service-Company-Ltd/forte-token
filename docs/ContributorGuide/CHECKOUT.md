@@ -29,9 +29,9 @@
 
 <!-- These are the body links -->
 [foundry-url]: https://book.getfoundry.sh/getting-started/installation
-[repository-url]: https://github.com/thrackle-io/wave
+[repository-url]: https://github.com/Forte-Service-Company-Ltd/forte-token
 [upgradeSubmodules-url]: ./SUBMODULE-UPGRADE.md
 
 <!-- These are the header links -->
 [version-image]: https://img.shields.io/badge/Version-1.0.0-brightgreen?style=for-the-badge&logo=appveyor
-[version-url]: https://github.com/thrackle-io/wave
+[version-url]: https://github.com/Forte-Service-Company-Ltd/forte-token

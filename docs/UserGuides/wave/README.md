@@ -51,4 +51,4 @@ FOREIGN_APPLICATION_APP_MANAGER - Address of the App Manager on the foreign chai
 FOREIGN_APPLICATION_ERC20_HANDLER_ADDRESS - Address of the token handler on the foreign chain
 
 [version-image]: https://img.shields.io/badge/Version-1.0.0-brightgreen?style=for-the-badge&logo=appveyor
-[version-url]: https://github.com/thrackle-io/wave
+[version-url]: https://github.com/Forte-Service-Company-Ltd/forte-token

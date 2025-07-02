@@ -21,7 +21,7 @@ Wave is an ERC20 Upgradeable token and allows for the logic contract to be updat
 
 ## Ownership of Token
 
-Wave will be owned by a multi-signature safe contract owned by the [Team](mailto:engineering@thrackle.io).
+Wave will be owned by a multi-signature safe contract owned by the [Team](mailto:support@fortefoundation.io).
 
 ## Token Information
 - Deployments: 
@@ -37,7 +37,7 @@ Wave will be owned by a multi-signature safe contract owned by the [Team](mailto
 ## Integration with Rule Processor Diamond 
 Wave token utilizes the Rules Procotol `_checkAllRules()` hook in the `_beforeTokenTransfer()` of the token. Wave token will be connected to its own asset handler diamond. The [Wave Token](../../../src/token/ProtocolToken.sol) contract inherhits both the `IProtocolTokenHandler.sol` and `IProtocolERC20UMin.sol` interfaces.
 
-The `IProtocolTokenHandler.sol` interface is for the token to call the `_checkAllRules()` hook. Once an asset handler diamond address has been connected to the token, any [rules](https://github.com/thrackle-io/tron/tree/main/docs/userGuides/rules) that are set to active within that asset handler diamond will be checked upon transfer of the token. 
+The `IProtocolTokenHandler.sol` interface is for the token to call the `_checkAllRules()` hook. Once an asset handler diamond address has been connected to the token, any rules that are set to active within that asset handler diamond will be checked upon transfer of the token. 
 
 ## Token Permissions
 Wave token utilizes the [Access Control Upgradeable](https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable/blob/master/contracts/access/AccessControlUpgradeable.sol) for role based access controls.
@@ -124,4 +124,4 @@ Wave token inherits and has all standard ERC20 functions as defined in the [ERC2
 
 <!-- These are the header links -->
 [version-image]: https://img.shields.io/badge/Version-1.0.0-brightgreen?style=for-the-badge&logo=appveyor
-[version-url]: https://github.com/thrackle-io/wave
+[version-url]: https://github.com/Forte-Service-Company-Ltd/forte-token
