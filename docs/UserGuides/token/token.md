@@ -61,7 +61,7 @@ The token utilizes an Upgradeable Proxy Pattern that adheres to the [ERC1967 sta
 The Token Proxy will first check if the calling address is the admin for the contract. If the caller is not the admin, the call is then passed to the logic contract via a `delegateCall`. If the caller is the admin of the token proxy, they must call one of the functions within the Proxy contract and cannot call functions inside of the logic contract. Calls to the logic contract by the proxy admin will revert with "TransparentUpgradeableProxy: admin cannot fallback to proxy target". 
 
 ### Token Proxy Permissions 
-The token proxy utilizes a proxy admin role set at contruction of the proxy contract. This address is passed into the constructor as an address parameter and granted the role of `admin` for the proxy. This role may be changed through the function: 
+The token proxy utilizes a proxy admin role set at construction of the proxy contract. This address is passed into the constructor as an address parameter and granted the role of `admin` for the proxy. This role may be changed through the function: 
 
 ```solidity
 function changeAdmin(address newAdmin) external virtual ifAdmin
