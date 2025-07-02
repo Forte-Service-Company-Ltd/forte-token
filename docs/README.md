@@ -10,12 +10,11 @@ The manually generated documentation root can be found [here][userGuide-url].
 
 ## Auto-generated Documentation
 This repository utilized Foundry documentation generation for files using NatSpec comments. The commands to generate this documentation and to keep them up to date are:
-(Note: This is currently performed by CI/CD processes and not manually run.)
-The root of the documentation can be found [here](./src/SUMMARY.md).
 ```
 foundryup --install v1.2.1
 forge doc
 ```
+The root of the documentation will be found under ./src/SUMMARY.md.
 
 # Token 
 - [Token](./UserGuides/token/token.md) is an ERC20 Upgradeable token and allows for the logic contract to be updated overtime. The token will utilize existing rules protocol architecure: the asset handler, application manager and handler, and the rule processor diamond. The token uses Access Control Upgradeable for the admin roles that guard certain functions within the token.
