@@ -35,7 +35,7 @@ The token will be owned by a multi-signature safe contract owned by the [Team](m
 - Access Control Upgradeable RBAC Roles 
 
 ## Integration with Rule Processor Diamond 
-The token utilizes the Rules Procotol `_checkAllRules()` hook in the `_beforeTokenTransfer()` of the token. The token will be connected to its own asset handler diamond. The [Token](../../../src/token/ProtocolToken.sol) contract inherhits both the `IProtocolTokenHandler.sol` and `IProtocolERC20UMin.sol` interfaces.
+The token utilizes the Rules Procotol `_checkAllRules()` hook in the `_beforeTokenTransfer()` of the token. The token will be connected to its own asset handler diamond. The [Token](../../../src/token/ProtocolToken.sol) contract inherits both the `IProtocolTokenHandler.sol` and `IProtocolERC20UMin.sol` interfaces.
 
 The `IProtocolTokenHandler.sol` interface is for the token to call the `_checkAllRules()` hook. Once an asset handler diamond address has been connected to the token, any rules that are set to active within that asset handler diamond will be checked upon transfer of the token. 
 
