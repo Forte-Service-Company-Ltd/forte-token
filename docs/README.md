@@ -17,10 +17,10 @@ foundryup --install v1.2.1
 forge doc
 ```
 
-# Wave Token 
-- [Wave Token](./UserGuides/wave/WAVE.md) is an ERC20 Upgradeable token and allows for the logic contract to be updated overtime. Wave token will utilize existing rules protocol architecure: the asset handler, application manager and handler, and the rule processor diamond. Wave token uses Access Control Upgradeable for the admin roles that guard certain functions within the token.
+# Token 
+- [Token](./UserGuides/token/token.md) is an ERC20 Upgradeable token and allows for the logic contract to be updated overtime. The token will utilize existing rules protocol architecure: the asset handler, application manager and handler, and the rule processor diamond. The token uses Access Control Upgradeable for the admin roles that guard certain functions within the token.
 - [Token Information][userGuide-url]
-- [Testing](./UserGuides/wave/ERC20_UPGRADEABLE_TESTING_METHODOLOGY.md)
+- [Testing](./UserGuides/token/ERC20_UPGRADEABLE_TESTING_METHODOLOGY.md)
 
 
 <!-- These are the body links -->

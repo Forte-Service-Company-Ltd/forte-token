@@ -2,7 +2,7 @@
 [![Project Version][version-image]][version-url]
 
 ## Purpose 
-Outline of the functional testing for the ERC20 Upgradeable Wave token. 
+Outline of the functional testing for the ERC20 Upgradeable token. 
 
 A full test suite can be run with the following command: 
 

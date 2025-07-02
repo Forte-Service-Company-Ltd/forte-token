@@ -4,7 +4,7 @@
 
 ## Introduction
 
-This guide is intended to be a user-friendly introduction to [Forte token](./wave/README.md). It provides a walkthrough of how to get started with the token.
+This guide is intended to be a user-friendly introduction to [Forte token](./token/README.md). It provides a walkthrough of how to get started with the token.
 
 ## Installation and Tooling
 
@@ -28,11 +28,11 @@ Now that you have the dependencies installed, you are ready to build the project
 
 And you are done!
 
-## Wave Token Information
-[Wave Token](./wave/WAVE.md)    
-[Deploying Wave Token](./wave/README.md)        
-[Testing Methodologies](./wave/ERC20_UPGRADEABLE_TESTING_METHODOLOGY.md)    
-[Fork Testing Information](./wave/ERC20_UPGRADEABLE_TESTING_METHODOLOGY.md#fork-tests)  
+## Token Information
+[Token](./token/token.md)    
+[Deploying the Token](./token/README.md)        
+[Testing Methodologies](./token/ERC20_UPGRADEABLE_TESTING_METHODOLOGY.md)    
+[Fork Testing Information](./token/ERC20_UPGRADEABLE_TESTING_METHODOLOGY.md#fork-tests)  
 [Invariant Tests](./invariants/ERC20_UPGRADEABLE_INVARIANTS.md)
 
 
