@@ -8,7 +8,7 @@
       },
       {
         "pattern": "^https://github.com/Forte-Service-Company-Ltd/forte-token"
-      },
+      }
     ],
     "replacementPatterns": [
       {
