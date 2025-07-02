@@ -1,8 +1,8 @@
 # ProtocolToken
-[Git Source](https://github.com/Forte-Service-Company-Ltd/forte-token/blob/08f0c72272e84003db52dec3b8b914a0f3d12a67/src/token/ProtocolToken.sol)
+[Git Source](https://github.com/Forte-Service-Company-Ltd/forte-token/blob/8c2cfc24c58aaa71a578fa8d6ded19ef06315058/src/token/ProtocolToken.sol)
 
 **Inherits:**
-Initializable, ERC20Upgradeable, ERC20BurnableUpgradeable, OwnableUpgradeable, ERC20PermitUpgradeable, UUPSUpgradeable, ProtocolTokenCommonU
+Initializable, UUPSUpgradeable, ERC20Upgradeable, ERC20BurnableUpgradeable, ERC20PermitUpgradeable, OwnableUpgradeable, AccessControlUpgradeable, IProtocolToken
 
 **Author:**
 @ShaneDuncan602, @TJ-Everett, @VoR0220, @Palmerg4
@@ -11,6 +11,20 @@ Protocol ERC20 Upgradeable to provide liquidity for Web3 economies
 
 
 ## State Variables
+### TOKEN_ADMIN_ROLE
+
+```solidity
+bytes32 constant TOKEN_ADMIN_ROLE = keccak256("TOKEN_ADMIN_ROLE");
+```
+
+
+### MINTER_ROLE
+
+```solidity
+bytes32 constant MINTER_ROLE = keccak256("MINTER_ROLE");
+```
+
+
 ### handlerAddress
 
 ```solidity
@@ -28,12 +42,15 @@ IProtocolTokenHandler handler;
 ### reservedStorage
 
 ```solidity
-uint256[50] reservedStorage;
+uint256[48] reservedStorage;
 ```
 
 
 ## Functions
 ### constructor
+
+**Note:**
+oz-upgrades-unsafe-allow: constructor
 
 
 ```solidity
@@ -50,10 +67,7 @@ It is critical to ensure your deploy process mitigates this risk.
 
 
 ```solidity
-function initialize(string memory _nameProto, string memory _symbolProto, address _appManagerAddress)
-    external
-    appAdministratorOnly(_appManagerAddress)
-    initializer;
+function initialize(string memory _nameProto, string memory _symbolProto, address _tokenAdmin) external initializer;
 ```
 **Parameters**
 
@@ -61,22 +75,7 @@ function initialize(string memory _nameProto, string memory _symbolProto, addres
 |----|----|-----------|
 |`_nameProto`|`string`|Name of the Token|
 |`_symbolProto`|`string`|Symbol for the Token|
-|`_appManagerAddress`|`address`|Address of App Manager|
-
-
-### _initializeProtocol
-
-*Private Initializer sets the the App Manager Address*
-
-
-```solidity
-function _initializeProtocol(address _appManagerAddress) private onlyInitializing;
-```
-**Parameters**
-
-|Name|Type|Description|
-|----|----|-----------|
-|`_appManagerAddress`|`address`|Address of App Manager|
+|`_tokenAdmin`|`address`|address to be granted the token admin role for the Token|
 
 
 ### _authorizeUpgrade
@@ -96,7 +95,7 @@ Add appAdministratorOnly modifier to restrict minting privilages
 
 
 ```solidity
-function mint(address to, uint256 amount) public appAdministratorOnly(appManagerAddress);
+function mint(address to, uint256 amount) public onlyRole(MINTER_ROLE);
 ```
 **Parameters**
 
@@ -104,6 +103,24 @@ function mint(address to, uint256 amount) public appAdministratorOnly(appManager
 |----|----|-----------|
 |`to`|`address`|Address of recipient|
 |`amount`|`uint256`|Number of tokens to mint|
+
+
+### burn
+
+Add appAdministratorOnly modifier to restrict burning privilages
+
+*Function burns tokens from a user, presumably for cross chain transfer*
+
+
+```solidity
+function burn(address from, uint256 amount) public onlyRole(MINTER_ROLE);
+```
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`from`|`address`|Address of burner|
+|`amount`|`uint256`|Number of tokens to burn|
 
 
 ### _beforeTokenTransfer
@@ -125,8 +142,6 @@ function _beforeTokenTransfer(address from, address to, uint256 amount) internal
 
 ### getHandlerAddress
 
-Rule Processor Module Check
-
 *This function returns the handler address*
 
 
@@ -146,7 +161,7 @@ function getHandlerAddress() external view returns (address);
 
 
 ```solidity
-function connectHandlerToToken(address _deployedHandlerAddress) external appAdministratorOnly(appManagerAddress);
+function connectHandlerToToken(address _deployedHandlerAddress) external onlyRole(TOKEN_ADMIN_ROLE);
 ```
 **Parameters**
 

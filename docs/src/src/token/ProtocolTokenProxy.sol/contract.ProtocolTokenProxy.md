@@ -1,5 +1,5 @@
 # ProtocolTokenProxy
-[Git Source](https://github.com/Forte-Service-Company-Ltd/forte-token/blob/08f0c72272e84003db52dec3b8b914a0f3d12a67/src/token/ProtocolTokenProxy.sol)
+[Git Source](https://github.com/Forte-Service-Company-Ltd/forte-token/blob/8c2cfc24c58aaa71a578fa8d6ded19ef06315058/src/token/ProtocolTokenProxy.sol)
 
 **Inherits:**
 ERC1967Proxy
@@ -86,7 +86,7 @@ function changeAdmin(address newAdmin) external virtual ifAdmin;
 ### upgradeTo
 
 *Upgrade the implementation of the proxy.
-NOTE: Only the admin can call this function. See [ProxyAdmin-upgrade](/lib/openzeppelin-foundry-upgrades/src/internal/interfaces/IProxyAdmin.sol/interface.IProxyAdmin.md#upgrade).*
+NOTE: Only the admin can call this function. See [ProxyAdmin-upgrade](/lib/ruleEngine/lib/openzeppelin-contracts/contracts/proxy/transparent/ProxyAdmin.sol/contract.ProxyAdmin.md#upgrade).*
 
 
 ```solidity
@@ -98,7 +98,7 @@ function upgradeTo(address newImplementation) external ifAdmin;
 *Upgrade the implementation of the proxy, and then call a function from the new implementation as specified
 by `data`, which should be an encoded function call. This is useful to initialize new storage variables in the
 proxied contract.
-NOTE: Only the admin can call this function. See [ProxyAdmin-upgradeAndCall](/lib/openzeppelin-foundry-upgrades/src/internal/interfaces/IProxyAdmin.sol/interface.IProxyAdmin.md#upgradeandcall).*
+NOTE: Only the admin can call this function. See [ProxyAdmin-upgradeAndCall](/lib/ruleEngine/lib/openzeppelin-contracts/contracts/proxy/transparent/ProxyAdmin.sol/contract.ProxyAdmin.md#upgradeandcall).*
 
 
 ```solidity
