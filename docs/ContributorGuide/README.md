@@ -77,7 +77,7 @@ Always make sure your commits messages are informative and describe the changes 
 2. [Upgrade Submodules][upgradeSubmodules-url]
 
 <!-- These are the body links -->
-[checkoutRepo-url]: ./CHECKOUT-REPO.md
+[checkoutRepo-url]: ./CHECKOUT.md
 [upgradeSubmodules-url]: ./SUBMODULE-UPGRADE.md
 
 <!-- These are the header links -->

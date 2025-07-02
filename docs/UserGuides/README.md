@@ -33,7 +33,7 @@ And you are done!
 [Deploying the Token](./token/README.md)        
 [Testing Methodologies](./token/ERC20_UPGRADEABLE_TESTING_METHODOLOGY.md)    
 [Fork Testing Information](./token/ERC20_UPGRADEABLE_TESTING_METHODOLOGY.md#fork-tests)  
-[Invariant Tests](./invariants/ERC20_UPGRADEABLE_INVARIANTS.md)
+[Invariant Tests](./Invariants/ERC20_UPGRADEABLE_INVARIANTS.md)
 
 
 <!-- These are the header links -->

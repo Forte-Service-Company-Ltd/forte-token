@@ -1,9 +1,6 @@
 {
     "ignorePatterns": [
       {
-        "pattern": "^https://www.infura.io"
-      },
-      {
         "pattern": "^http://localhost"
       },
       {
@@ -20,8 +17,8 @@
         "replacement": ""
       },
       {
-        "pattern": "\/blob\/(.*)\/",
-        "replacement": "/"
+        "pattern": "forte-token\/blob\/(.*)\/",
+        "replacement": "forte-token/"
       }
     ],
     "httpHeaders": [
