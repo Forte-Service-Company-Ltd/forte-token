@@ -10,20 +10,19 @@ The manually generated documentation root can be found [here][userGuide-url].
 
 ## Auto-generated Documentation
 This repository utilized Foundry documentation generation for files using NatSpec comments. The commands to generate this documentation and to keep them up to date are:
-(Note: This is currently performed by CI/CD processes and not manually run.)
-The root of the documentation can be found [here](./src/SUMMARY.md).
 ```
-foundryup --version $(awk '$1~/^[^#]/' foundry.lock)
+foundryup --install v1.2.1
 forge doc
 ```
+The root of the documentation will be found under ./src/SUMMARY.md.
 
-# Wave Token 
-- [Wave Token](./UserGuides/wave/WAVE.md) is an ERC20 Upgradeable token and allows for the logic contract to be updated overtime. Wave token will utilize existing rules protocol architecure: the asset handler, application manager and handler, and the rule processor diamond. Wave token uses Access Control Upgradeable for the admin roles that guard certain functions within the token.
+# Token 
+- [Token](./UserGuides/token/token.md) is an ERC20 Upgradeable token and allows for the logic contract to be updated overtime. The token will utilize existing rules protocol architecure: the asset handler, application manager and handler, and the rule processor diamond. The token uses Access Control Upgradeable for the admin roles that guard certain functions within the token.
 - [Token Information][userGuide-url]
-- [Testing](./UserGuides/wave/ERC20_UPGRADEABLE_TESTING_METHODOLOGY.md)
+- [Testing](./UserGuides/token/ERC20_UPGRADEABLE_TESTING_METHODOLOGY.md)
 
 
 <!-- These are the body links -->
-[userGuide-url]: ./userGuides/README.md
+[userGuide-url]: ./UserGuides/README.md
 [version-image]: https://img.shields.io/badge/Version-1.0.0-brightgreen?style=for-the-badge&logo=appveyor
-[version-url]: https://github.com/thrackle-io/wave
+[version-url]: https://github.com/Forte-Service-Company-Ltd/forte-token

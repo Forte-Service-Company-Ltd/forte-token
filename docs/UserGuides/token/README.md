@@ -1,19 +1,19 @@
-# Wave Token 
+# Token 
 [![Project Version][version-image]][version-url]
 
 ## Purpose 
-Wave is an ERC20 Upgradeable token and allows for the logic contract to be updated overtime. Wave token will utilize existing rules protocol architecure: the asset handler, application manager and handler, and the rule processor diamond. Wave token uses Access Control Upgradeable for the admin roles that guard certain functions within the token.
+The token is an ERC20 Upgradeable token and allows for the logic contract to be updated overtime. The token will utilize existing rules protocol architecure: the asset handler, application manager and handler, and the rule processor diamond. The token uses Access Control Upgradeable for the admin roles that guard certain functions within the token.
 
-[Token Information](./WAVE.md#token-information)    
+[Token Information](./token.md#token-information)    
 
-[Token Permissions](./WAVE.md#token-permissions)
+[Token Permissions](./token.md#token-permissions)
 
-## Deploying Wave Token 
+## Deploying the Token 
 [![Project Version][version-image]][version-url]
 
-### Utilize the Wave Token Deployment Script 
+### Utilize the Token Deployment Script 
 
-The Wave token deployment script requires the .env file addresses to be set prior to deployment. The Rule Processor Diamond, Application Manager, and Application Handler contracts should already be deployed to the chain you wish to deploy to. Run the following command from the root of the repo to deploy:
+The token deployment script requires the .env file addresses to be set prior to deployment. The Rule Processor Diamond, Application Manager, and Application Handler contracts should already be deployed to the chain you wish to deploy to. Run the following command from the root of the repo to deploy:
 
 ```bash
 sh script/deployTokens.sh
@@ -51,4 +51,4 @@ FOREIGN_APPLICATION_APP_MANAGER - Address of the App Manager on the foreign chai
 FOREIGN_APPLICATION_ERC20_HANDLER_ADDRESS - Address of the token handler on the foreign chain
 
 [version-image]: https://img.shields.io/badge/Version-1.0.0-brightgreen?style=for-the-badge&logo=appveyor
-[version-url]: https://github.com/thrackle-io/wave
+[version-url]: https://github.com/Forte-Service-Company-Ltd/forte-token

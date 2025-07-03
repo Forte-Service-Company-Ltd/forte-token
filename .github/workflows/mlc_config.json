@@ -1,27 +1,27 @@
 {
     "ignorePatterns": [
       {
-        "pattern": "^https://www.infura.io"
-      },
-      {
         "pattern": "^http://localhost"
       },
       {
-        "pattern": "^https://github.com/thrackle-io/forte-token"
+        "pattern": "^https://github.com/Forte-Service-Company-Ltd/forte-token"
       },
+      {
+        "pattern": "^https://github.com/OpenZeppelin/"
+      }
     ],
     "replacementPatterns": [
       {
-        "pattern": "https://github.com/thrackle-io/forte-token",
+        "pattern": "https://github.com/Forte-Service-Company-Ltd/forte-token",
         "replacement": ""
       },
       {
-        "pattern": "https://github.com/thrackle-io/forte-token",
+        "pattern": "https://github.com/Forte-Service-Company-Ltd/forte-token",
         "replacement": ""
       },
       {
-        "pattern": "\/blob\/(.*)\/",
-        "replacement": "/"
+        "pattern": "forte-token\/blob\/(.*)\/",
+        "replacement": "forte-token/"
       }
     ],
     "httpHeaders": [

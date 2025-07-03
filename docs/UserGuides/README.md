@@ -4,11 +4,11 @@
 
 ## Introduction
 
-This guide is intended to be a user-friendly introduction to [Wave token](./wave/README.md). It provides a walkthrough of how to get started with the token.
+This guide is intended to be a user-friendly introduction to [Forte token](./token/README.md). It provides a walkthrough of how to get started with the token.
 
 ## Installation and Tooling
 
-##### This is designed to be tested and deployed with Foundry. Install Python 3.11, Homebrew, and then install [foundry using Thrackle's `foundryup`](https://github.com/thrackle-io/foundry). This applies numbered versions to upstream Foundry releases.
+##### This is designed to be tested and deployed with Foundry. Install Python 3.11, Homebrew, and then install [foundry](https://github.com/foundry-rs/foundry) v1.2.1.
 
 ```
 pip3 install -r requirements.txt
@@ -16,13 +16,10 @@ brew install jq
 ```
 
 ```
-mkdir -p ~/.foundry/bin/
-curl -sSL https://raw.githubusercontent.com/thrackle-io/foundry/refs/heads/master/foundryup/foundryup -o ~/.foundry/bin/foundryup
-chmod +x ~/.foundry/bin/foundryup
-~/.foundry/bin/foundryup --version $(awk '$1~/^[^#]/' foundry.lock)
+curl -L https://foundry.paradigm.xyz | bash
+foundryup --install v1.2.1
 ```
 
-_Note: `awk` in the above command is used to ignore comments in `foundry.lock`_
 
 
 Now that you have the dependencies installed, you are ready to build the project. Do:
@@ -31,14 +28,14 @@ Now that you have the dependencies installed, you are ready to build the project
 
 And you are done!
 
-## Wave Token Information
-[Wave Token](./wave/WAVE.md)    
-[Deploying Wave Token](./wave/README.md)        
-[Testing Methodologies](./wave/ERC20_UPGRADEABLE_TESTING_METHODOLOGY.md)    
-[Fork Testing Information](./wave/ERC20_UPGRADEABLE_TESTING_METHODOLOGY.md#fork-tests)  
-[Invariant Tests](./invariants/ERC20_UPGRADEABLE_INVARIANTS.md)
+## Token Information
+[Token](./token/token.md)    
+[Deploying the Token](./token/README.md)        
+[Testing Methodologies](./token/ERC20_UPGRADEABLE_TESTING_METHODOLOGY.md)    
+[Fork Testing Information](./token/ERC20_UPGRADEABLE_TESTING_METHODOLOGY.md#fork-tests)  
+[Invariant Tests](./Invariants/ERC20_UPGRADEABLE_INVARIANTS.md)
 
 
 <!-- These are the header links -->
 [version-image]: https://img.shields.io/badge/Version-1.0.0-brightgreen?style=for-the-badge&logo=appveyor
-[version-url]: https://github.com/thrackle-io/wave
+[version-url]: https://github.com/Forte-Service-Company-Ltd/forte-token

@@ -6,7 +6,8 @@ title = ""
 no-section-label = true
 additional-js = ["solidity.min.js"]
 additional-css = ["book.css"]
-git-repository-url = "https://github.com/thrackle-io/forte-token"
+mathjax-support = true
+git-repository-url = "https://github.com/Forte-Service-Company-Ltd/forte-token"
 
 [output.html.fold]
 enable = true
