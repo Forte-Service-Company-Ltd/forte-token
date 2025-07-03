@@ -17,7 +17,7 @@ import "script/deployUtil.s.sol";
  * ** Requires .env variables to be set with correct addresses **
  */
 
-contract TokenForProtocolDeployScript is DeployScriptUtil {
+contract TokenForProtocolDeployScript_3 is DeployScriptUtil {
     uint256 privateKey;
     address ownerAddress;
     uint256 minterAdminKey;
