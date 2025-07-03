@@ -62,7 +62,7 @@ Deployment can be done by doing the following:
       1. `This is the address that will be the owner of the Forte Token proxy contract. It must be separate from other admins since it will never be passed through to access the token's standard logic.`
    7. FRE_APP_ADMIN
       1. `This is the FREV1 Application Administrator used prior`
-   8. FRE_APP_ADMIN_PRIVATE_KEY
+   8.  FRE_APP_ADMIN_PRIVATE_KEY
       1. `This is the Application Administrator private key`
    9.  FRE_RULE_ADMIN
        1. `This is the FREV1 Rule Administrator used prior`
