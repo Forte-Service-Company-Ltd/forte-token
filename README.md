@@ -23,7 +23,7 @@ Deployment can be done by doing the following:
       7. RULE_ADMIN
          1. `This is the Rule Administrator for the FREV1 assets. It is used to create/enable/disable rules for the application`
       8. RULE_ADMIN_PRIVATE_KEY
-         1. `This is the Rule Adminstrator private key`
+         1. `This is the Rule Administrator private key`
       9. ETHERSCAN_API_KEY
        1.  `This is the api key for the contract verification`
    
