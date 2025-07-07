@@ -6,6 +6,7 @@ import "src/token/ProtocolToken.sol";
 import "src/token/ProtocolTokenProxy.sol";
 import {HandlerDiamond} from "rulesEngine/client/token/handler/diamond/HandlerDiamond.sol";
 import {ERC20HandlerMainFacet} from "rulesEngine/client/token/handler/diamond/ERC20HandlerMainFacet.sol";
+import {ApplicationAppManager} from "rulesEngine/example/application/ApplicationAppManager.sol";
 import "script/deployUtil.s.sol";
 
 /**
@@ -16,7 +17,7 @@ import "script/deployUtil.s.sol";
  * ** Requires .env variables to be set with correct addresses **
  */
 
-contract TokenForProtocolDeployScript is DeployScriptUtil {
+contract TokenForProtocolDeployScript_2 is DeployScriptUtil {
 
     function setUp() public {}
 
@@ -39,7 +40,7 @@ contract TokenForProtocolDeployScript is DeployScriptUtil {
                 appManagerAddress,
                 tokenAddress
             );
-        uint256 freAppAdminKey = vm.envUint("FRE_APP_ADMIN_PRIVATE_KEY");
+        uint256 freAppAdminKey = vm.envUint("MINTER_ADMIN_KEY");
         vm.stopBroadcast();
         vm.startBroadcast(freAppAdminKey);
         ProtocolToken(tokenAddress).connectHandlerToToken(

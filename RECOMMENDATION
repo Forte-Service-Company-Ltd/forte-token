@@ -1,0 +1,51 @@
+## forte-token Recommended configuration
+
+This upgradeable token solution allows for many different roles that within the token contract and the Forte Rules Engine. For a simpler deployment, you can opt for a minimal number of configuration addresses.
+
+### Minimal Required Addresses
+1. ADDRESS 1: Proxy address for upgrading FREv1 contracts
+   1. Mapped to FRE: Deployment Owner 
+2. ADDRESS 2: FREv1 configuration account
+   1. Mapped to FRE: App Admin
+3. ADDRESS 3: Proxy address for upgrading token contracts
+   1. Forte Token:  Proxy Owner
+4. ADDRESS 4: Token configuration account
+   1. Mapped to Forte Token: Deployment Owner
+
+
+## COMMON COMMANDS
+
+### MINT TOKENS
+
+```
+   cast send $TOKEN_ADDRESS "mint(address,uint256)" $FRE_TREASURY_1_ADMIN 1000000000000000000000
+  --private-key $MINTER_ADMIN_KEY --rpc-url $ETH_RPC_URL 
+```
+
+### ADD TREASURY ACCOUNT
+
+```
+   cast send $APPLICATION_APP_MANAGER "addTreasuryAccount(address)" $$$$$$NEW_TREASURY
+  --private-key $FRE_APP_ADMIN_KEY --rpc-url $ETH_RPC_URL 
+```
+
+### REMOVE TREASURY ACCOUNT
+
+```
+   cast send $APPLICATION_APP_MANAGER "revokeRole(bytes32,address)" 6ec7f14f5bb307db04b8741f0dfa1605098831d97aae193f99400b1357d4bb95 $$$$$$OLD_TREASURY
+  --private-key $FRE_APP_ADMIN_KEY --rpc-url $ETH_RPC_URL 
+```
+
+### ADD MINTER ROLE
+
+```
+   cast send $TOKEN_ADDRESS "grantRole(bytes32,address)" 9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6 $$$$$$NEW_MINTER
+  --private-key $DEPLOYMENT_OWNER_KEY --rpc-url $ETH_RPC_URL 
+```
+
+### REMOVE MINTER ROLE
+
+```
+   cast send $TOKEN_ADDRESS "revokeRole(bytes32,address)" 9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6 $$$$$$OLD_MINTER
+  --private-key $DEPLOYMENT_OWNER_KEY --rpc-url $ETH_RPC_URL 
+```

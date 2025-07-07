@@ -14,7 +14,7 @@ import "script/deployUtil.s.sol";
  * ** Requires .env variables to be set with correct addresses **
  */
 
-contract TokenForProtocolDeployScript is DeployScriptUtil {
+contract TokenForProtocolDeployScript_1 is DeployScriptUtil {
     uint256 privateKey;
     address ownerAddress;
     uint256 minterAdminKey;
@@ -42,7 +42,6 @@ contract TokenForProtocolDeployScript is DeployScriptUtil {
         ProtocolToken token = new ProtocolToken{salt: keccak256(abi.encodePacked(vm.envString("SALT_STRING")))}();
         ProtocolTokenProxy tokenProxy = new ProtocolTokenProxy{salt: keccak256(abi.encode(vm.envString("SALT_STRING")))}(address(token), proxyOwnerAddress, "");
         ProtocolToken(address(tokenProxy)).initialize(name, symbol, address(ownerAddress)); 
-        console.log("Token Proxy Address: ", address(tokenProxy));
 
         ProtocolToken(address(tokenProxy)).grantRole(MINTER_ROLE, minterAdminAddress);
         setENVAddress("TOKEN_ADDRESS", vm.toString(address(tokenProxy)));

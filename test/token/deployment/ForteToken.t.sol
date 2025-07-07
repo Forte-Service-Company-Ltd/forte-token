@@ -16,7 +16,6 @@ import "test/token/ERC20UCommonTests.t.sol";
  */
 contract ForteTokenTest is TestCommon {
     address TREASURY_1;
-    address TREASURY_2;
     address RULE_ADMIN;
     address APP_ADMIN;
     address MINT_ADMIN;
@@ -32,7 +31,6 @@ contract ForteTokenTest is TestCommon {
         SKIP_FORTE_TOKEN_TESTS = vm.envBool("SKIP_FORTE_TOKEN_TESTS");
         if (!SKIP_FORTE_TOKEN_TESTS){
             TREASURY_1 = vm.envAddress("FRE_TREASURY_1_ADMIN");
-            TREASURY_2 = vm.envAddress("FRE_TREASURY_2_ADMIN");
             RULE_ADMIN = vm.envAddress("FRE_RULE_ADMIN");
             APP_ADMIN = vm.envAddress("FRE_APP_ADMIN");
             MINT_ADMIN = vm.envAddress("MINTER_ADMIN");
