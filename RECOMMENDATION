@@ -29,9 +29,23 @@ This upgradeable token solution allows for many different roles that within the 
   --private-key $FRE_APP_ADMIN_KEY --rpc-url $ETH_RPC_URL 
 ```
 
+### REMOVE TREASURY ACCOUNT
+
+```
+   cast send $APPLICATION_APP_MANAGER "revokeRole(bytes32,address)" 6ec7f14f5bb307db04b8741f0dfa1605098831d97aae193f99400b1357d4bb95 $$$$$$OLD_TREASURY
+  --private-key $FRE_APP_ADMIN_KEY --rpc-url $ETH_RPC_URL 
+```
+
 ### ADD MINTER ROLE
 
 ```
    cast send $TOKEN_ADDRESS "grantRole(bytes32,address)" 9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6 $$$$$$NEW_MINTER
+  --private-key $DEPLOYMENT_OWNER_KEY --rpc-url $ETH_RPC_URL 
+```
+
+### REMOVE MINTER ROLE
+
+```
+   cast send $TOKEN_ADDRESS "revokeRole(bytes32,address)" 9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6 $$$$$$OLD_MINTER
   --private-key $DEPLOYMENT_OWNER_KEY --rpc-url $ETH_RPC_URL 
 ```
