@@ -40,9 +40,10 @@ contract TokenForProtocolDeployScript_2 is DeployScriptUtil {
                 appManagerAddress,
                 tokenAddress
             );
-        uint256 freAppAdminKey = vm.envUint("MINTER_ADMIN_KEY");
+        // uint256 freAppAdminKey = vm.envUint("MINTER_ADMIN_KEY");
+        uint256 tokenAdminKey = vm.envUint("DEPLOYMENT_OWNER_KEY");
         vm.stopBroadcast();
-        vm.startBroadcast(freAppAdminKey);
+        vm.startBroadcast(tokenAdminKey);
         ProtocolToken(tokenAddress).connectHandlerToToken(
             address(applicationCoinHandlerDiamond)
         );
