@@ -35,7 +35,7 @@ contract TokenForProtocolDeployScript_1 is DeployScriptUtil {
         vm.startBroadcast(privateKey);
 
         /// switch to the config admin
-        minterAdminKey = vm.envUint("MINTER_ADMIN_KEY");
+        // minterAdminKey = vm.envUint("MINTER_ADMIN_KEY");
         minterAdminAddress = vm.envAddress("MINTER_ADMIN");
 
         /// Create ERC20 Upgradeable and Proxy 
