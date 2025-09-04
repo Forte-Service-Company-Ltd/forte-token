@@ -10,48 +10,19 @@ on:
 
 env:
   FOUNDRY_PROFILE: ci
+  FORK_TEST: false
+  SALT_STRING: "SMELLING_SALTS"
+  SKIP_FORTE_TOKEN_TESTS: true
 
 jobs:
-  build-test:
+  check:
     name: Build and Test
-    runs-on: ubuntu-22.04
-
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           submodules: recursive
-
-      - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@v1
-        with:
-          version: v1.2.1
-      - name: Clone repository dependencies
-        shell: bash
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-pip
-          pip3 install -r requirements.txt
-          forge install
-      - name: Build the repository
-        shell: bash
-        run: |
-          forge clean && forge build --optimize
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-pip
-          pip3 install eth_abi
-          forge install dapphub/ds-test 
-
-      - name: Build
-        run: |
-          forge clean && forge build --optimize
-
-      - name: Test
-        env:
-          FORK_TEST: false
-          SALT_STRING: "SMELLING_SALTS"
-          SKIP_FORTE_TOKEN_TESTS: true
-        run: |
-          forge test -vv --ffi
+      - name: Build and Test
+        id: build-and-test
+        uses: Forte-Service-Company-Ltd/infrastructure-tooling/.github/actions/onchain-build-and-test@INF-263-Onchain-Build-and-Test
