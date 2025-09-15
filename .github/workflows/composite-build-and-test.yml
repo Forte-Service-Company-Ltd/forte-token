@@ -16,7 +16,7 @@ env:
 
 jobs:
   test:
-    uses: Forte-Service-Company-Ltd/infrastructure-tooling/.github/workflows/onchain-build-test-report.yaml@staging-forte-token
+    uses: Forte-Service-Company-Ltd/infrastructure-tooling/.github/workflows/onchain-build-test-report.yaml@staging
     secrets: inherit
     with:
       markdown-file-path: "./README.md"
