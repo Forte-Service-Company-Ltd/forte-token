@@ -20,3 +20,4 @@ jobs:
     secrets: inherit
     with:
       markdown-file-path: "./README.md"
+      is-forte-token-project: true
