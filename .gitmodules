@@ -23,3 +23,6 @@
 	path = lib/ruleEngine
 	url = https://github.com/thrackle-io/forte-rules-engine-v1
 	branch = main
+[submodule "lib/ds-test"]
+	path = lib/ds-test
+	url = https://github.com/dapphub/ds-test
