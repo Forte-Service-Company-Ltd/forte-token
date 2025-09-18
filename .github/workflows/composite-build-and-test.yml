@@ -8,16 +8,12 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, edited, ready_for_review]
 
-env:
-  FOUNDRY_PROFILE: ci
-  FORK_TEST: false
-  SALT_STRING: "SMELLING_SALTS"
-  SKIP_FORTE_TOKEN_TESTS: true
-
 jobs:
   test:
     uses: Forte-Service-Company-Ltd/infrastructure-tooling/.github/workflows/onchain-build-test-report.yaml@staging
     secrets: inherit
     with:
       markdown-file-path: "./README.md"
-      is-forte-token-project: true
+      salt-string: "SMELLING_SALTS"
+      skip-forte-token-tests: true
+      fork-test: false
