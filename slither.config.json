@@ -4,5 +4,8 @@
     "exclude_medium": false,
     "exclude_high": false,
     "disable_color": false,
-    "filter_paths": "(lib/)"
+    "filter_paths": "(lib/|test/)",
+    "exclude_dependencies": true,
+    "exclude_optimization": false,
+    "skip_assembly": false
 }
