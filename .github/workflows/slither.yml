@@ -1,9 +1,9 @@
-name: Slither Analysis
+name: Slither Analysis (DEPRECATED)
 
 on:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
   workflow_dispatch:
     inputs:
       CONFIG:
@@ -11,8 +11,8 @@ on:
         description: Path to slither config file
         required: false
         default: ./slither.config.json
-  pull_request:
-    types: [ opened, synchronize, reopened, edited, ready_for_review ]
+  # pull_request:
+  #   types: [ opened, synchronize, reopened, edited, ready_for_review ]
 
 jobs:
   analyze:
