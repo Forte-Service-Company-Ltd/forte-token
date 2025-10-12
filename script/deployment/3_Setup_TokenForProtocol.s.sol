@@ -27,7 +27,7 @@ contract TokenForProtocolDeployScript_3 is DeployScriptUtil {
     bytes32 constant MINTER_ROLE = keccak256("MINTER_ROLE");
     uint64 constant END_PAUSE = 9999999999;
     string name = "Forte"; // Change Name here 
-    string symbol = "FOR"; // Change Symbol here  
+    string symbol = "FORTE"; // Change Symbol here  
         
 
     function setUp() public {}

@@ -23,7 +23,7 @@ contract TokenForProtocolDeployScript_1 is DeployScriptUtil {
     bytes32 constant MINTER_ROLE = keccak256("MINTER_ROLE");
     uint64 constant END_PAUSE = 9999999999;
     string name = "Forte"; // Change Name here 
-    string symbol = "FOR"; // Change Symbol here  
+    string symbol = "FORTE"; // Change Symbol here  
         
 
     function setUp() public {}
@@ -35,7 +35,7 @@ contract TokenForProtocolDeployScript_1 is DeployScriptUtil {
         vm.startBroadcast(privateKey);
 
         /// switch to the config admin
-        minterAdminKey = vm.envUint("MINTER_ADMIN_KEY");
+        // minterAdminKey = vm.envUint("MINTER_ADMIN_KEY");
         minterAdminAddress = vm.envAddress("MINTER_ADMIN");
 
         /// Create ERC20 Upgradeable and Proxy 
