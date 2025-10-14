@@ -6,4 +6,4 @@ rulesEngine/=lib/ruleEngine/src
 axelar-gmp-sdk-solidity/=lib/axelar-gmp-sdk-solidity/contracts/
 interchain-token-service/=lib/interchain-token-service/contracts/
 @axelar-network/axelar-cgp-solidity=lib/interchain-token-service/node_modules/@axelar-network/axelar-cgp-solidity/
-
+forte-rules-engine/=lib/forte-rules-engine/src/

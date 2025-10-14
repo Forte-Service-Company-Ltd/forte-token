@@ -3,7 +3,7 @@ pragma solidity ^0.8.24;
 
 import "forge-std/Test.sol";
 
-import {ProtocolToken} from "src/token/ProtocolToken.sol";
+import {ProtocolTokenv2} from "src/token/ProtocolTokenv2.sol";
 // note: needed to avoid conflict with ERC20 interface in OpenZeppelin
 import {InterchainTokenService} from "interchain-token-service/InterchainTokenService.sol";
 import {ITokenManagerType} from "interchain-token-service/interfaces/ITokenManagerType.sol";
@@ -18,7 +18,7 @@ contract BridgeTokenTest is TestCommon {
     bytes32 tokenId;
     bytes32 salt;
 
-    ProtocolToken pToken;
+    ProtocolTokenv2 pToken;
     InterchainTokenService tokenService;
 
     function setUp() public {
@@ -33,7 +33,7 @@ contract BridgeTokenTest is TestCommon {
 
             bytes32 expectedTokenId = tokenService.interchainTokenId(ownerAddress, salt);
             
-            setUpTokenWithHandler();
+            setUpTokenWithEngine();
 
             bytes memory ownerAddressBytes = abi.encodePacked(ownerAddress);
             bytes memory params = abi.encode(ownerAddressBytes, address(protocolTokenProxy));
@@ -57,8 +57,8 @@ contract BridgeTokenTest is TestCommon {
 
             assertEq(tokenId2, tokenId);
 
-            switchToAppAdministrator();
-            ProtocolToken(address(protocolTokenProxy)).mint(ownerAddress, 100 ether);
+            switchToTokenAdmin();
+            ProtocolTokenv2(address(protocolTokenProxy)).mint(ownerAddress, 100 ether);
             vm.stopPrank();
         testDeployments = true;
         } else {
@@ -72,7 +72,7 @@ contract BridgeTokenTest is TestCommon {
         uint amount = 1 ether; // 10^18
 
         vm.startPrank(ownerAddress);
-        ProtocolToken(address(protocolTokenProxy)).approve(address(tokenService), amount);
+        ProtocolTokenv2(address(protocolTokenProxy)).approve(address(tokenService), amount);
         tokenService.interchainTransfer(
             tokenId,
             destinationChain,

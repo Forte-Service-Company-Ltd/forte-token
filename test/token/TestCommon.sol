@@ -3,55 +3,33 @@ pragma solidity ^0.8.24;
 
 ///NOTE: Testing methodology for Protocol Token: 
 /// ERC20 Upgradeable functions are tested locally and ensure proper functionallity 
-/// AppManager and App Handler are needed for RBAC controls testing through token and upgrades 
 /// Protocol integration will be tested with fork testing: Tests using testnet deployed Rule Processor 
 
 
-import "test/token/TestUtils.sol";
-import "src/token/ProtocolToken.sol";
+import "src/token/ProtocolTokenv2.sol";
 import "src/token/ProtocolTokenProxy.sol";
 import "test/token/EndWithStopPrank.sol"; 
-import "rulesEngine/client/pricing/ProtocolERC721Pricing.sol";
-import "rulesEngine/client/pricing/ProtocolERC20Pricing.sol";
-import "rulesEngine/example/OracleApproved.sol";
-import "rulesEngine/example/OracleDenied.sol";
-import {AppManager} from "rulesEngine/client/application/AppManager.sol";
-import {ProtocolApplicationHandler} from "rulesEngine/client/application/ProtocolApplicationHandler.sol";
 import {DummyAMM} from "rulesEngineTest/client/token/TestTokenCommon.sol";
-
+import "forte-rules-engine/utils/DiamondMine.sol";
 
 /**
  * @title Test Common 
  * @dev This abstract contract is to be used by other tests 
  */
-abstract contract TestCommon is TestUtils, EndWithStopPrank {
+abstract contract TestCommon is DiamondMine, EndWithStopPrank {
 
-    ProtocolToken public protocolToken; 
-    ProtocolToken public protocolTokenUpgraded;
+    ProtocolTokenv2 public protocolToken; 
+    ProtocolTokenv2 public protocolTokenUpgraded;
     ProtocolTokenProxy public protocolTokenProxy; 
-    RuleProcessorDiamond public ruleProcessorDiamond; 
-    AppManager public appManager;
-    ProtocolApplicationHandler public appHandler; 
-    DummyAssetHandler public assetHandlerTest; 
-    OracleApproved public oracleApproved; 
-    OracleDenied public oracleDenied; 
+    // OracleApproved public oracleApproved; 
+    // OracleDenied public oracleDenied; 
     DummyAMM public tokenAmm;
-    ProtocolToken public testToken; 
+    ProtocolTokenv2 public testToken; 
     ProtocolTokenProxy public testTokenProxy; 
-    ProtocolERC20Pricing public erc20Pricer;
-    ProtocolERC721Pricing public erc721Pricer;
 
     bool public testDeployments;
 
     // common addresses
-    address superAdmin = address(0xDaBEEF);
-    address appAdministrator = address(0xDEAD);
-    address minterAdmin = address(0xF00D);
-    address treasuryAccount = address(0xAAA);
-    address ruleAdmin = address(0xACDC);
-    address accessLevelAdmin = address(0xBBB);
-    address riskAdmin = address(0xCCC);
-    address feeSink = address(0xDDF);
     address user1 = address(11);
     address user2 = address(22);
     address user3 = address(33);
@@ -62,7 +40,16 @@ abstract contract TestCommon is TestUtils, EndWithStopPrank {
     address user8 = address(88);
     address user9 = address(99);
     address user10 = address(100);
-    address proxyOwner = address(787);
+    address minterAdmin = address(800);
+    address proxyAdmin = address(600);
+    address RED_OWNER = address(500);
+    address PROXY_OWNER = address(600);
+    address TOKEN_ADMIN = address(700);
+    address MINTER_ADMIN = address(800);
+    address USER_1 = address(100);
+    address policyAdmin;
+    address tokenAdmin = address(700);
+    address callingContractAdmin;
 
     address[] ADDRESSES = [address(0xFF1), address(0xFF2), address(0xFF3), address(0xFF4), address(0xFF5), address(0xFF6), address(0xFF7), address(0xFF8)];
 
@@ -78,117 +65,60 @@ abstract contract TestCommon is TestUtils, EndWithStopPrank {
         }
     }
 
-    function _deployERC20Upgradeable() public returns (ProtocolToken _protocolToken){
-        return new ProtocolToken{salt: keccak256(abi.encode(vm.envString("SALT_STRING")))}();
+    function _deployERC20UpgradeableV2() public returns (ProtocolTokenv2 _protocolToken){
+        return new ProtocolTokenv2{salt: keccak256(abi.encode(vm.envString("SALT_STRING")))}();
     }
 
-    function _deployERC20UpgradeableProxy(address _protocolToken, address _proxyOwner) public returns (ProtocolTokenProxy _tokenProxy){
-        return new ProtocolTokenProxy{salt: keccak256(abi.encode(vm.envString("SALT_STRING")))}(_protocolToken, _proxyOwner, "");
+    function _deployERC20Upgradeable() public returns (ProtocolTokenv2 _protocolToken){
+        return new ProtocolTokenv2{salt: keccak256(abi.encode(vm.envString("SALT_STRING")))}();
     }
 
-    function _deployERC20UpgradeableNonDeterministic() public returns (ProtocolToken _protocolToken){
-        return new ProtocolToken();
+    function _deployERC20UpgradeableProxy(address _protocolToken, address _proxyAdmin) public returns (ProtocolTokenProxy _tokenProxy){
+        return new ProtocolTokenProxy{salt: keccak256(abi.encode(vm.envString("SALT_STRING")))}(_protocolToken, _proxyAdmin, "");
     }
 
-    function _deployERC20UpgradeableProxyNonDeterministic(address _protocolToken, address _proxyOwner) public returns (ProtocolTokenProxy _tokenProxy){
-        return new ProtocolTokenProxy(_protocolToken, _proxyOwner, "");
+    function _deployERC20UpgradeableNonDeterministic() public returns (ProtocolTokenv2 _protocolToken){
+        return new ProtocolTokenv2();
     }
 
-    function _deployAppManagerAndHandler() public  returns (AppManager _appManager, ProtocolApplicationHandler _appHandler) {
-        // This is needed for setting the permissions on the token intialize function 
-        _appManager = new AppManager(superAdmin, "Token", false);
-        _appHandler = new ProtocolApplicationHandler(address(ruleProcessorDiamond), address(_appManager));
-        return (_appManager, _appHandler);
+    function _deployERC20UpgradeableProxyNonDeterministic(address _protocolToken, address _proxyAdmin) public returns (ProtocolTokenProxy _tokenProxy){
+        return new ProtocolTokenProxy(_protocolToken, _proxyAdmin, "");
     }
 
-    function _deployAppManagerAndHandlerFork(address _ruleProcessorDiamond) public  returns (AppManager _appManager, ProtocolApplicationHandler _appHandler) {
-        // This is needed for setting the permissions on the token intialize function 
-        _appManager = new AppManager(superAdmin, "Token", false);
-        _appHandler = new ProtocolApplicationHandler(address(_ruleProcessorDiamond), address(_appManager));
-        return (_appManager, _appHandler);
-    }
 
-    function _deployTokenHandler() public returns (HandlerDiamond _handlerDiamond){
-        return _createERC20HandlerDiamond(); 
-    }
-
-    function setUpTokenWithHandler() public endWithStopPrank {
-        vm.startPrank(superAdmin);
-        // set a non zero address as rule processor for local testing
-        ruleProcessorDiamond = _createRulesProcessorDiamond();
-        // Deploy app manager and handler
-        (appManager, appHandler) = _deployAppManagerAndHandler();
-        // set app admin 
-        appManager.addAppAdministrator(appAdministrator);
+    function setUpTokenWithEngine() public endWithStopPrank {
+        policyAdmin = MINTER_ADMIN;
+        callingContractAdmin = TOKEN_ADMIN;
+        vm.startPrank(tokenAdmin);
+        red = createRulesEngineDiamond(RED_OWNER);
         // deploy token 
-        protocolToken = _deployERC20Upgradeable(); 
+        protocolToken = _deployERC20UpgradeableV2(); 
         // deploy proxy 
-        protocolTokenProxy = _deployERC20UpgradeableProxy(address(protocolToken), proxyOwner); 
-        // deploy handler diamond 
-        handlerDiamond = _deployTokenHandler();
-        ERC20HandlerMainFacet(address(handlerDiamond)).initialize(address(ruleProcessorDiamond), address(appManager), address(protocolTokenProxy));
-        // connect everything 
-        switchToAppAdministrator(); 
-        appManager.setNewApplicationHandlerAddress(address(appHandler));
-        ProtocolToken(address(protocolTokenProxy)).initialize("Token", "TOK", address(appAdministrator)); 
-        ProtocolToken(address(protocolTokenProxy)).grantRole(MINTER_ROLE, minterAdmin);
-        ProtocolToken(address(protocolTokenProxy)).connectHandlerToToken(address(handlerDiamond)); 
-        appManager.registerToken("TOK", address(protocolTokenProxy));
-
-        oracleApproved = new OracleApproved();
-        oracleDenied = new OracleDenied();
-
-        erc20Pricer = new ProtocolERC20Pricing();
-        erc20Pricer.setSingleTokenPrice(address(protocolTokenProxy), 1 * (10 ** 18));
-        erc721Pricer = new ProtocolERC721Pricing();
-        switchToRuleAdmin();
-        appHandler.setERC20PricingAddress(address(erc20Pricer)); 
-        appHandler.setNFTPricingAddress(address(erc721Pricer)); 
-        vm.warp(Blocktime);
+        protocolTokenProxy = _deployERC20UpgradeableProxy(address(protocolToken), PROXY_OWNER); 
+        // Connect proxy to token
+        ProtocolTokenv2(address(protocolTokenProxy)).initialize("Token", "TOK", TOKEN_ADMIN); 
+        vm.startPrank(TOKEN_ADMIN);
+        ProtocolTokenv2(address(protocolTokenProxy)).grantRole(MINTER_ROLE, MINTER_ADMIN);
+        // Connect token to Fore Rules Engine
+        vm.startPrank(TOKEN_ADMIN);
+        ProtocolTokenv2(address(protocolTokenProxy)).connectHandlerToToken(address(red));
+        ProtocolTokenv2(address(protocolTokenProxy)).setCallingContractAdmin(callingContractAdmin);
     }
     
 
     // USER SWITCHING 
-
-    function switchToAppAdministrator() public {
-        vm.stopPrank();
-        switchToSuperAdmin();
-        appManager.addAppAdministrator(appAdministrator); //set a app administrator
+    function switchToProxyAdmin() public {
         vm.stopPrank(); //stop interacting as the app admin
-        vm.startPrank(appAdministrator); //interact as the created app administrator
+        vm.startPrank(proxyAdmin); //interact as the created app administrator
     }
-
     function switchToMinterAdmin() public {
         vm.stopPrank(); //stop interacting as the app admin
         vm.startPrank(minterAdmin); //interact as the created app administrator
     }
 
-    function switchToAccessLevelAdmin() public {
-        switchToAppAdministrator(); // create a app administrator and make it the sender.
-        appManager.addAccessLevelAdmin(accessLevelAdmin); //add AccessLevel admin
-        vm.stopPrank(); //stop interacting as the access level admin
-        vm.startPrank(accessLevelAdmin); //interact as the created AccessLevel admin
-    }
-
-    function switchToTreasuryAccount() public {
-        switchToAppAdministrator();
-        appManager.addTreasuryAccount(treasuryAccount);
-        vm.stopPrank();
-        vm.startPrank(treasuryAccount);
-    }
-
-    function switchToRiskAdmin() public {
-        switchToAppAdministrator(); // create a app administrator and make it the sender.
-        appManager.addRiskAdmin(riskAdmin); //add Risk admin
-        vm.stopPrank(); //stop interacting as the risk admin
-        vm.startPrank(riskAdmin); //interact as the created Risk admin
-    }
-
-    function switchToRuleAdmin() public {
-        switchToAppAdministrator(); // create a app administrator and make it the sender.
-        appManager.addRuleAdministrator(ruleAdmin); //add Rule admin
-        vm.stopPrank(); //stop interacting as the rule admin
-        vm.startPrank(ruleAdmin); //interact as the created Rule admin
+    function switchToTokenAdmin() public {
+        vm.stopPrank(); //stop interacting as the token admin
+        vm.startPrank(tokenAdmin); //interact as the created app administrator
     }
 
     function switchToUser() public {
@@ -204,15 +134,6 @@ abstract contract TestCommon is TestUtils, EndWithStopPrank {
     function switchToUser3() public {
         vm.stopPrank(); //stop interacting as the previous admin
         vm.startPrank(user3); //interact as the user
-    }
-
-    /**
-     * @dev Function to set the super admin as the calling address. It stores the current address for future resetting
-     *
-     */
-    function switchToSuperAdmin() public {
-        vm.stopPrank();
-        vm.startPrank(superAdmin);
     }
 
     function _get4RandomAddresses(uint8 _addressIndex) internal view returns (address, address, address, address) {
@@ -258,4 +179,7 @@ abstract contract TestCommon is TestUtils, EndWithStopPrank {
         }
         return false;
     }
+
+
+
 }

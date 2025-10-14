@@ -23,3 +23,6 @@
 	path = lib/ruleEngine
 	url = https://github.com/thrackle-io/forte-rules-engine-v1
 	branch = main
+[submodule "lib/forte-rules-engine"]
+	path = lib/forte-rules-engine
+	url = https://github.com/Forte-Service-Company-Ltd/forte-rules-engine
