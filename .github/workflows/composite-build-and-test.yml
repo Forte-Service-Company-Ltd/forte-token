@@ -17,5 +17,5 @@ jobs:
     with:
       markdown-file-path: "./README.md"
       salt-string: "SMELLING_SALTS"
-      skip-forte-token-tests: true
+      skip-forte-token-test: "true"
       fork-test: false
