@@ -56,7 +56,6 @@ contract ProtocolTokenv2 is Initializable, UUPSUpgradeable, ERC20Upgradeable, ER
         _grantRole(TOKEN_ADMIN_ROLE, _tokenAdmin); 
         _setRoleAdmin(TOKEN_ADMIN_ROLE, TOKEN_ADMIN_ROLE);
         _setRoleAdmin(MINTER_ROLE, TOKEN_ADMIN_ROLE);
-        _pause();
     }
 
     /**

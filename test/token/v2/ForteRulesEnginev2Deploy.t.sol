@@ -17,6 +17,7 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
     string callingFunction = "transfer(address,uint256)";
     bytes32 public constant EVENTTEXT = bytes32("Rules Engine Event");
     AllowList allowListFC;
+    bool skipTest;
 
     uint256[][] ruleIds;
     bytes4[] callingFunctions;
@@ -32,19 +33,22 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
     address constant SELF_CUSTODY_ADDR_1 = address(8);
     address constant SELF_CUSTODY_ADDR_2 = address(9);
 
-    function setUp() public {
-        policyId = vm.envUint("POLICY_ID");
-        policyAdminDeployed = vm.envAddress("DEPLOYMENT_OWNER");
-        fcAdminDeployed = vm.envAddress("ALLOWLIST_OWNER");
-        callingContractAdmin = TOKEN_ADMIN;
-        red = ForteRulesEngine(payable(vm.envAddress("FORTE_RULES_ENGINE_ADDRESS")));
-        // deployed proxy 
-        protocolTokenProxy = ProtocolTokenProxy(payable(vm.envAddress("TOKEN_ADDRESS")));  
-        _setupAddressList();
-        // mint tokens
-        vm.startPrank(policyAdminDeployed);
-        ProtocolTokenv2(address(protocolTokenProxy)).mint(TREASURY_ADDR_1, 1_000_000);
-        allowListFC = AllowList(vm.envAddress("ALLOWLIST_ADDRESS"));
+    function setUp() public {        
+        skipTest = vm.envBool("SKIP_FORTE_TOKEN_TEST");
+        if (!skipTest){
+            policyId = vm.envUint("POLICY_ID");
+            policyAdminDeployed = vm.envAddress("DEPLOYMENT_OWNER");
+            fcAdminDeployed = vm.envAddress("ALLOWLIST_OWNER");
+            callingContractAdmin = TOKEN_ADMIN;
+            red = ForteRulesEngine(payable(vm.envAddress("FORTE_RULES_ENGINE_ADDRESS")));
+            // deployed proxy 
+            protocolTokenProxy = ProtocolTokenProxy(payable(vm.envAddress("TOKEN_ADDRESS")));  
+            _setupAddressList();
+            // mint tokens
+            vm.startPrank(policyAdminDeployed);
+            ProtocolTokenv2(address(protocolTokenProxy)).mint(TREASURY_ADDR_1, 1_000_000);
+            allowListFC = AllowList(vm.envAddress("ALLOWLIST_ADDRESS"));
+        }
     }
 
     function _setupAddressList() internal {
@@ -75,27 +79,27 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
     }
 
     /// TRANSFER    
-    function testV2TransferPositiveTtoT() public {
+    function testV2TransferPositiveTtoT() public skipTestIfEnabled {
         vm.startPrank(TREASURY_ADDR_1);
         
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(TREASURY_ADDR_2, 1);
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(TREASURY_ADDR_2), 1);
     }
 
-    function testV2TransferPositiveTtoM() public {
+    function testV2TransferPositiveTtoM() public skipTestIfEnabled {
         vm.startPrank(TREASURY_ADDR_1);
         
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(MULTISIG_ADDR_1, 1);
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(MULTISIG_ADDR_1), 1);
     }
 
-    function testV2TransferPositiveTtoE() public {
+    function testV2TransferPositiveTtoE() public skipTestIfEnabled {
         vm.startPrank(TREASURY_ADDR_1);
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(EXCHANGE_ADDR_1, 1);
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(EXCHANGE_ADDR_1), 1);
     }
     /// Staking can send/receive any address that is kyc'd
-     function testV2TransferPositiveStaking() public {
+     function testV2TransferPositiveStaking() public skipTestIfEnabled {
         vm.startPrank(fcAdminDeployed);
         bytes memory value = RulesEngineComponentFacet(address(red)).getMappedTrackerValue(
                 policyId,
@@ -120,7 +124,7 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
     }
 
     // Multi sig can send to S and E
-    function testV2TransferPositiveMultiSig() public {
+    function testV2TransferPositiveMultiSig() public skipTestIfEnabled {
         vm.startPrank(fcAdminDeployed);
         bytes memory value = RulesEngineComponentFacet(address(red)).getMappedTrackerValue(
                 policyId,
@@ -139,7 +143,7 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
     }
 
     /// Exchanges can send to other exchanges, multisigs, and Self custody
-    function testV2TransferPositiveExchange() public {
+    function testV2TransferPositiveExchange() public skipTestIfEnabled {
         vm.startPrank(fcAdminDeployed);
         bytes memory value = RulesEngineComponentFacet(address(red)).getMappedTrackerValue(
                 policyId,
@@ -154,13 +158,10 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         vm.startPrank(EXCHANGE_ADDR_1);
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(SELF_CUSTODY_ADDR_1, 1);
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(SELF_CUSTODY_ADDR_1), 1);
-        // Exchange to Exchange
-        // ProtocolTokenv2(address(protocolTokenProxy)).transfer(EXCHANGE_ADDR_2, 1);
-        // assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(EXCHANGE_ADDR_2), 1);
     }
 
     /// Self-Custody can only send to Staking 
-    function testV2TransferPositiveSelfCustody() public {
+    function testV2TransferPositiveSelfCustody() public skipTestIfEnabled {
         vm.startPrank(fcAdminDeployed);
         bytes memory value = RulesEngineComponentFacet(address(red)).getMappedTrackerValue(
                 policyId,
@@ -180,7 +181,7 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(STAKING_ADDR), 1);
     }
 
-    function testV2TransferPositiveGas() public {
+    function testV2TransferPositiveGas() public skipTestIfEnabled {
        
         vm.startPrank(TREASURY_ADDR_1);
         uint256 checkpointGasLeft = gasleft();
@@ -189,14 +190,9 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         // Subtract 100 to account for the warm SLOAD in startMeasuringGas.
         uint256 gasDelta = checkpointGasLeft - checkpointGasLeft2 - 100;
         console2.log("GAS USED", gasDelta);
-        
-       
     }
 
-
-   
-
-    function testV2TransferNegative_MtoNotAllowed() public {
+    function testV2TransferNegative_MtoNotAllowed() public skipTestIfEnabled {
         vm.startPrank(fcAdminDeployed);
         bytes memory value = RulesEngineComponentFacet(address(red)).getMappedTrackerValue(
                 policyId,
@@ -213,7 +209,7 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(address(0xFF1), 1);
     }
 
-    function testV2TransferNegative_EtoNotAllowed() public {
+    function testV2TransferNegative_EtoNotAllowed() public skipTestIfEnabled {
         vm.startPrank(fcAdminDeployed);
         bytes memory value = RulesEngineComponentFacet(address(red)).getMappedTrackerValue(
                 policyId,
@@ -230,7 +226,7 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(user1), 0);
     }
 
-    function testV2TransferNegative_StakingToNotAllowed() public {
+    function testV2TransferNegative_StakingToNotAllowed() public skipTestIfEnabled {
         vm.startPrank(TREASURY_ADDR_1);
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(STAKING_ADDR, 1);
         
@@ -240,7 +236,7 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(user1), 0);
     }
 
-    function testV2TransferNegative_NotAllowedToNotAllowed() public {
+    function testV2TransferNegative_NotAllowedToNotAllowed() public skipTestIfEnabled {
         vm.startPrank(TREASURY_ADDR_1);
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(user1, 1);
         
@@ -250,7 +246,7 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(user2), 0);
     }
 
-    function testV2TransferNegative_MultiToNotAllowed() public {
+    function testV2TransferNegative_MultiToNotAllowed() public skipTestIfEnabled {
         vm.startPrank(TREASURY_ADDR_1);
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(MULTISIG_ADDR_1, 1);
         
@@ -261,7 +257,7 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
     }
 
     /// PAUSE
-    function testV2PauseNegative() public {
+    function testV2PauseNegative() public skipTestIfEnabled {
         vm.startPrank(policyAdminDeployed);
         ProtocolTokenv2(address(protocolTokenProxy)).pause();
         vm.startPrank(policyAdminDeployed);
@@ -271,28 +267,28 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
     }
 
     /// TRANSFER FROM
-    function testV2TransferFromPositive_TtoT() public {
+    function testV2TransferFromPositive_TtoT() public skipTestIfEnabled {
         vm.startPrank(TREASURY_ADDR_1);
         ProtocolTokenv2(address(protocolTokenProxy)).approve(TREASURY_ADDR_1, 1);
         ProtocolTokenv2(address(protocolTokenProxy)).transferFrom(TREASURY_ADDR_1,TREASURY_ADDR_2, 1);
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(TREASURY_ADDR_2), 1);
     }
 
-    function testV2TransferFromPositive_TtoM() public {
+    function testV2TransferFromPositive_TtoM() public skipTestIfEnabled {
         vm.startPrank(TREASURY_ADDR_1);
         ProtocolTokenv2(address(protocolTokenProxy)).approve(TREASURY_ADDR_1, 1);
         ProtocolTokenv2(address(protocolTokenProxy)).transferFrom(TREASURY_ADDR_1,MULTISIG_ADDR_1, 1);
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(MULTISIG_ADDR_1), 1);
     }
 
-    function testV2TransferFromPositive_TtoE() public {
+    function testV2TransferFromPositive_TtoE() public skipTestIfEnabled {
         vm.startPrank(TREASURY_ADDR_1);
         ProtocolTokenv2(address(protocolTokenProxy)).approve(TREASURY_ADDR_1, 1);
         ProtocolTokenv2(address(protocolTokenProxy)).transferFrom(TREASURY_ADDR_1,EXCHANGE_ADDR_1, 1);
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(EXCHANGE_ADDR_1), 1);
     }
 
-    function testV2TransferFromPositive_MtoS() public {
+    function testV2TransferFromPositive_MtoS() public skipTestIfEnabled {
         vm.startPrank(TREASURY_ADDR_1);
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(MULTISIG_ADDR_1, 1);
         
@@ -302,7 +298,7 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(SELF_CUSTODY_ADDR_1), 1);
     }
 
-    function testV2TransferFromPositive_MtoE() public {
+    function testV2TransferFromPositive_MtoE() public skipTestIfEnabled {
         vm.startPrank(TREASURY_ADDR_1);
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(MULTISIG_ADDR_1, 1);
         
@@ -312,7 +308,7 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(EXCHANGE_ADDR_1), 1);
     }
 
-    function testV2TransferFromPositive_EtoE() public {
+    function testV2TransferFromPositive_EtoE() public skipTestIfEnabled {
         vm.startPrank(TREASURY_ADDR_1);
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(EXCHANGE_ADDR_1, 1);
         
@@ -322,7 +318,7 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(EXCHANGE_ADDR_2), 1);
     }
 
-    function testV2TransferFromPositive_EtoM() public {
+    function testV2TransferFromPositive_EtoM() public skipTestIfEnabled {
         vm.startPrank(TREASURY_ADDR_1);
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(EXCHANGE_ADDR_1, 1);
         
@@ -333,7 +329,7 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
     }
 
 
-    function testV2TransferFromPositive_StoStaking() public {
+    function testV2TransferFromPositive_StoStaking() public skipTestIfEnabled {
         vm.startPrank(fcAdminDeployed);
         bytes memory value = RulesEngineComponentFacet(address(red)).getMappedTrackerValue(
                 policyId,
@@ -354,7 +350,7 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(STAKING_ADDR), 1);
     }
 
-    function testV2TransferFromPositive_StakingToS() public {
+    function testV2TransferFromPositive_StakingToS() public skipTestIfEnabled {
         // Add self custody 1 to the kyc list.
         vm.startPrank(fcAdminDeployed);
         allowListFC.allow(SELF_CUSTODY_ADDR_1);
@@ -367,7 +363,7 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(SELF_CUSTODY_ADDR_1), 1);
     }
 
-    function testV2TransferFromNegative_StakingToNotAllowed() public {
+    function testV2TransferFromNegative_StakingToNotAllowed() public skipTestIfEnabled {
         vm.startPrank(TREASURY_ADDR_1);
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(STAKING_ADDR, 1);
         
@@ -376,5 +372,12 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         vm.expectRevert("Transfer Not Authorized");
         ProtocolTokenv2(address(protocolTokenProxy)).transferFrom(STAKING_ADDR,user1, 1);
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(user1), 0);
+    }
+
+    modifier skipTestIfEnabled() {
+        if (skipTest) {
+            vm.skip(true);
+        }
+        _;
     }
 }
