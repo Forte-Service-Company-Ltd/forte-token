@@ -1,0 +1,17 @@
+name: Composite Code Quality
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  code-quality:
+    uses: Forte-Service-Company-Ltd/infrastructure-tooling/.github/workflows/onchain-code-quality.yaml@v0.0.3
+    secrets: inherit
+    with:
+      gh-app-id: ${{ vars.GH_APP_ID }}
+      project-repositories: "forte-token"
