@@ -23,8 +23,8 @@ contract DeployLogicContract is DeployScriptUtil {
     function setUp() public {}
 
     function run() public {
-        privateKey = vm.envUint("DEPLOYMENT_OWNER_KEY");
         ownerAddress = vm.envAddress("DEPLOYMENT_OWNER");
+        privateKey = vm.envUint("DEPLOYMENT_OWNER_KEY");
         vm.startBroadcast(privateKey);
 
         /// Create ERC20 Upgradeable logic contract

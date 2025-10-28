@@ -12,7 +12,6 @@ import "openzeppelin-contracts-upgradeable/contracts/access/AccessControlUpgrade
 import "rulesEngine/client/token/IProtocolTokenHandler.sol";
 // deprecated import left to preserve storage layout
 import "rulesEngine/client/token/IProtocolToken.sol";
-
 import "forte-rules-engine/client/IRulesEngine.sol";
 
 /**
@@ -28,8 +27,11 @@ contract ProtocolTokenv2 is Initializable, UUPSUpgradeable, ERC20Upgradeable, ER
     // Variable is used to store the forte-rules-engine address
     address public handlerAddress;
     // deprecated variable left to preserve storage layout
-    IProtocolTokenHandler handler;  
+    IProtocolTokenHandler handler;
+    event Paused(address account);
+    event Unpaused(address account);
     uint256[48] reservedStorage;
+    bool private _paused;  
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -54,6 +56,7 @@ contract ProtocolTokenv2 is Initializable, UUPSUpgradeable, ERC20Upgradeable, ER
         _grantRole(TOKEN_ADMIN_ROLE, _tokenAdmin); 
         _setRoleAdmin(TOKEN_ADMIN_ROLE, TOKEN_ADMIN_ROLE);
         _setRoleAdmin(MINTER_ROLE, TOKEN_ADMIN_ROLE);
+        _pause();
     }
 
     /**
@@ -116,6 +119,65 @@ contract ProtocolTokenv2 is Initializable, UUPSUpgradeable, ERC20Upgradeable, ER
         return true;
     }
 
+    /**
+     * @dev See {ERC20-_beforeTokenTransfer}.
+     *
+     * Requirements:
+     *
+     * - the contract must not be paused.
+     */
+    function _beforeTokenTransfer(address from, address to, uint256 amount) internal override(ERC20Upgradeable) {
+        super._beforeTokenTransfer(from, to, amount);
+
+        require(!paused(), "ERC20Pausable: token transfer while paused");
+    }
+
+     /**
+     * @dev Returns true if the contract is paused, and false otherwise.
+     */
+    function paused() public view virtual returns (bool) {
+        return _paused;
+    }
+
+    /**
+     * @dev Returns to normal state.
+     *
+     * Requirements:
+     *
+     * - The contract must be paused.
+     */
+    function pause() external onlyRole(TOKEN_ADMIN_ROLE) {
+        _pause();
+    }
+
+    function unpause() external onlyRole(TOKEN_ADMIN_ROLE) {
+        _unpause();
+    }
+
+    /**
+     * @dev Triggers stopped state.
+     *
+     * Requirements:
+     *
+     * - The contract must not be paused.
+     */
+    function _pause() internal virtual {
+        _paused = true;
+        emit Paused(_msgSender());
+    }
+
+    /**
+     * @dev Returns to normal state.
+     *
+     * Requirements:
+     *
+     * - The contract must be paused.
+     */
+    function _unpause() internal virtual {
+        _paused = false;
+        emit Unpaused(_msgSender());
+    }
+  
     /**
      * @notice Modifier for checking policies before executing the `transferFrom` function.
      * @dev Calls the `_checksPoliciesERC20TransferFrom` function to evaluate policies.
@@ -208,6 +270,6 @@ contract ProtocolTokenv2 is Initializable, UUPSUpgradeable, ERC20Upgradeable, ER
      * @param _encoded The encoded data to be passed to the Rules Engine.
      */
     function _invokeRulesEngine(bytes memory _encoded) internal {
-        if (handlerAddress != address(0)) IRulesEngine(handlerAddress).checkPolicies(_encoded);
+        IRulesEngine(handlerAddress).checkPolicies(_encoded);
     }
 }

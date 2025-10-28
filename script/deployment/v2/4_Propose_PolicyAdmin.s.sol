@@ -23,6 +23,7 @@ contract DeployLogicContract is DeployScriptUtil {
         privateKey = vm.envUint("DEPLOYMENT_OWNER_KEY");
         ownerAddress = vm.envAddress("DEPLOYMENT_OWNER");
         freAddress = vm.envAddress("FORTE_RULES_ENGINE_ADDRESS");
+        tams = vm.envAddress("TAMS");
         vm.startBroadcast(privateKey);
 
         /// Propose TAMS as new policy Admin

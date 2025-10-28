@@ -51,6 +51,7 @@ contract ForteRulesEngineV2Test is TestCommon {
         vm.startPrank(TOKEN_ADMIN);
         ProtocolTokenv2(address(protocolTokenProxy)).connectHandlerToToken(address(red));
         ProtocolTokenv2(address(protocolTokenProxy)).setCallingContractAdmin(callingContractAdmin);
+        ProtocolTokenv2(address(protocolTokenProxy)).unpause();
         // mint tokens
         vm.startPrank(MINTER_ADMIN);
         ProtocolTokenv2(address(protocolTokenProxy)).mint(MINTER_ADMIN, 1_000_000);
@@ -200,6 +201,28 @@ contract ForteRulesEngineV2Test is TestCommon {
         vm.expectRevert("Not Authorized");
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(user1, 1);
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(user1), 0);
+    }
+
+    /// PAUSE
+    function testV2PauseTransferNegative() public {
+        vm.startPrank(TOKEN_ADMIN);
+        ProtocolTokenv2(address(protocolTokenProxy)).pause();
+        vm.startPrank(MINTER_ADMIN);
+        vm.expectRevert("ERC20Pausable: token transfer while paused");
+        ProtocolTokenv2(address(protocolTokenProxy)).transfer(USER_1, 1);
+        assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(USER_1), 0);
+    }
+
+    function testV2PauseTransferFromNegative() public {
+        vm.startPrank(MINTER_ADMIN);
+        ProtocolTokenv2(address(protocolTokenProxy)).transfer(TREASURY_ADDR_1, 1);
+        vm.startPrank(TOKEN_ADMIN);
+        ProtocolTokenv2(address(protocolTokenProxy)).pause();
+        vm.startPrank(TREASURY_ADDR_1);
+        ProtocolTokenv2(address(protocolTokenProxy)).approve(TREASURY_ADDR_1, 1);
+        vm.expectRevert("ERC20Pausable: token transfer while paused");
+        ProtocolTokenv2(address(protocolTokenProxy)).transferFrom(TREASURY_ADDR_1,TREASURY_ADDR_2, 1);
+        assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(TREASURY_ADDR_2), 0);
     }
 
     /// TRANSFER FROM
