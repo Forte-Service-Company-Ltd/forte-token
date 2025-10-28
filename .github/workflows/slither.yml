@@ -33,6 +33,7 @@ jobs:
           pip3 install eth_abi
           forge install dapphub/ds-test 
           forge install OpenZeppelin/openzeppelin-contracts
+          forge install https://github.com/Forte-Service-Company-Ltd/forte-rules-engine
           npm install
 
       ## Prevent `crytic/slither-action` from installing Foundry:<latest>. 
