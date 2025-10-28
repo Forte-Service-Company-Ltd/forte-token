@@ -34,7 +34,7 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
     address constant SELF_CUSTODY_ADDR_2 = address(9);
 
     function setUp() public {        
-        skipTest = vm.envBool("SKIP_FORTE_TOKEN_TEST");
+        skipTest = vm.envBool("SKIP_FORTE_TOKEN_TESTS");
         if (!skipTest){
             policyId = vm.envUint("POLICY_ID");
             policyAdminDeployed = vm.envAddress("DEPLOYMENT_OWNER");
