@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import "forge-std/Test.sol";
+import "forge-std/src/Test.sol";
 import "test/token/TestCommon.sol"; 
 import "test/token/TestArrays.sol";
 import {DummyAMM} from "test/token/TestTokenCommon.sol";

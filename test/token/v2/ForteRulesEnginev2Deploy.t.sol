@@ -2,7 +2,7 @@
 pragma solidity ^0.8.24;
 
 import "test/token/TestCommon.sol"; 
-import "src/foreignCall/AllowList.sol";
+import {AllowList} from "src/foreignCall/AllowList.sol";
 
 
 /**

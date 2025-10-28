@@ -1,7 +1,7 @@
 /// SPDX-License-Identifier: BUSL-1.1
 pragma solidity ^0.8.24;
 
-import "forge-std/console2.sol";
+import "forge-std/src/console2.sol";
 
 /**
  * @title Example contract for testing the Foreign Call Encoding
