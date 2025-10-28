@@ -9,7 +9,7 @@ pragma solidity ^0.8.24;
 import "src/token/ProtocolTokenv2.sol";
 import "src/token/ProtocolTokenProxy.sol";
 import "test/token/EndWithStopPrank.sol"; 
-import {DummyAMM} from "rulesEngineTest/client/token/TestTokenCommon.sol";
+import {DummyAMM} from "test/token/TestTokenCommon.sol";
 import "forte-rules-engine/utils/DiamondMine.sol";
 
 /**

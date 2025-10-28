@@ -9,9 +9,9 @@ import "openzeppelin-contracts-upgradeable/contracts/token/ERC20/extensions/ERC2
 import "openzeppelin-contracts-upgradeable/contracts/access/OwnableUpgradeable.sol";
 import "openzeppelin-contracts-upgradeable/contracts/access/AccessControlUpgradeable.sol";
 // deprecated import left to preserve storage layout
-import "rulesEngine/client/token/IProtocolTokenHandler.sol";
+import "src/legacy_interfaces/IProtocolTokenHandler.sol";
 // deprecated import left to preserve storage layout
-import "rulesEngine/client/token/IProtocolToken.sol";
+import "src/legacy_interfaces/IProtocolToken.sol";
 import "forte-rules-engine/client/IRulesEngine.sol";
 
 /**
