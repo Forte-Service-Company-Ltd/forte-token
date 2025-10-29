@@ -1,9 +1,15 @@
-forge-std/=lib/forge-std/src/
+forge-std/=lib/forge-std/
+diamond-std/=lib/diamond-std/
 ds-test/=lib/forge-std/lib/ds-test/src/
 rulesEngine/=lib/ruleEngine/src
 @openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
+openzeppelin-contracts-upgradeable/contracts/=lib/openzeppelin-contracts-upgradeable/contracts/
+@openzeppelin/=lib/forte-rules-engine/lib/openzeppelin-contracts/contracts/
+@openzeppelin/utils=lib/forte-rules-engine/lib/openzeppelin-contracts/contracts/utils/
+@openzeppelin/access=lib/forte-rules-engine/lib/openzeppelin-contracts/contracts/access/
+@openzeppelin4.9/contracts/=lib/openzeppelin-contracts/contracts/
 @openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/
 axelar-gmp-sdk-solidity/=lib/axelar-gmp-sdk-solidity/contracts/
 interchain-token-service/=lib/interchain-token-service/contracts/
 @axelar-network/axelar-cgp-solidity=lib/interchain-token-service/node_modules/@axelar-network/axelar-cgp-solidity/
-
+forte-rules-engine/=lib/forte-rules-engine/src/

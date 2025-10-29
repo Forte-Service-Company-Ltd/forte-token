@@ -19,7 +19,6 @@
 [submodule "lib/interchain-token-service"]
 	path = lib/interchain-token-service
 	url = https://github.com/axelarnetwork/interchain-token-service
-[submodule "lib/rulesEngine"]
-	path = lib/ruleEngine
-	url = https://github.com/thrackle-io/forte-rules-engine-v1
-	branch = main
+[submodule "lib/forte-rules-engine"]
+	path = lib/forte-rules-engine
+	url = https://github.com/Forte-Service-Company-Ltd/forte-rules-engine

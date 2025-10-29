@@ -19,14 +19,14 @@ abstract contract ERC20UCommon is TestCommon {
     address USER3;
     
     function prepERC20AndEnvironment() public {
-        setUpTokenWithHandler();
-        switchToAppAdministrator();
+        setUpTokenWithEngine();
+        switchToTokenAdmin();
         (USER1, USER2, USER3, target) = _get4RandomAddresses(uint8(block.timestamp % ADDRESSES.length));
         amount = block.timestamp;
         switchToMinterAdmin();
-        ProtocolToken(address(protocolTokenProxy)).mint(USER1, 10 * ATTO);
-        ProtocolToken(address(protocolTokenProxy)).mint(USER2, 10 * ATTO);
-        ProtocolToken(address(protocolTokenProxy)).mint(USER3, 10 * ATTO);
+        ProtocolTokenv2(address(protocolTokenProxy)).mint(USER1, 10 * ATTO);
+        ProtocolTokenv2(address(protocolTokenProxy)).mint(USER2, 10 * ATTO);
+        ProtocolTokenv2(address(protocolTokenProxy)).mint(USER3, 10 * ATTO);
         vm.stopPrank();
         targetSender(USER1);
         targetSender(USER2);

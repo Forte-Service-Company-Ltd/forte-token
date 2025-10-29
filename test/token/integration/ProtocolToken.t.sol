@@ -10,7 +10,7 @@ import "test/token/ERC20UCommonTests.t.sol";
 
 contract ProtocolTokenTest is TestCommon, ERC20UCommonTests {
     function setUp() public endWithStopPrank {
-        setUpTokenWithHandler();
+        setUpTokenWithEngine();
         testDeployments = true;
     }
 }

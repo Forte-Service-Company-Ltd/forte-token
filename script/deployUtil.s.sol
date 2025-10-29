@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-import "forge-std/Script.sol";
+import "forge-std/src/Script.sol";
 
 contract DeployScriptUtil is Script {
     function setENVAddress(string memory variable, string memory value) internal {

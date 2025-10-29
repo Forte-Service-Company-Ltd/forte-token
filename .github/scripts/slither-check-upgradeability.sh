@@ -5,7 +5,7 @@ ENDBLUE="\e[0m"
 # Helper script for running the slither-check-upgradeability tool
 
 # ****** ERC20 Upgradeable Contract ******
-erc20uContracts=(ProtocolToken)
+erc20uContracts=(ProtocolTokenv2)
 
 for c in "${erc20uContracts[@]}"; do
   printf "${BLUE}***** Contract: $c Proxy: ProtocolTokenProxy *****${ENDBLUE}\n"

@@ -1,13 +1,15 @@
 [profile.local]
 eth-rpc-url = 'http://localhost:8545'
+auto_detect_remappings = false
 
 [profile.default]
 src = "src"
 out = "out"
 libs = ["lib"]
+auto_detect_remappings = false
 
 remappings = [
-    "forge-std/=lib/forge-std/src/",
+    "forge-std/=lib/forge-std/",
     "ds-test/=lib/forge-std/lib/ds-test/src/",
     "@openzeppelin/=lib/openzeppelin-contracts/",
     "@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
@@ -16,7 +18,8 @@ remappings = [
     "rulesEngineTest/=lib/ruleEngine/test",
     "rulesEngineScripts/=lib/ruleEngine/script",
     "axelar-gmp-sdk-solidity/=lib/axelar-gmp-sdk-solidity/contracts/",
-    "@axelar-network/axelar-gmp-sdk-solidity/=lib/axelar-gmp-sdk-solidity"
+    "@axelar-network/axelar-gmp-sdk-solidity/=lib/axelar-gmp-sdk-solidity",
+    "forte-rules-engine/=lib/forte-rules-engine/src/"
 ]
 
 

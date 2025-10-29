@@ -1,0 +1,29 @@
+{
+  "lib/axelar-gmp-sdk-solidity": {
+    "rev": "9dae93af0b799e536005951ddc36284132813579"
+  },
+  "lib/forge-std": {
+    "rev": "52715a217dc51d0de15877878ab8213f6cbbbab5"
+  },
+  "lib/forte-rules-engine": {
+    "rev": "8f122c55d4ff7dc9bb6e4858e046c58152bba8ec"
+  },
+  "lib/interchain-token-service": {
+    "rev": "cd8f7be582eaa86a7de9a098fcfc5121e3a39af1"
+  },
+  "lib/openzeppelin-contracts": {
+    "branch": {
+      "name": "release-v4.9",
+      "rev": "dc44c9f1a4c3b10af99492eed84f83ed244203f6"
+    }
+  },
+  "lib/openzeppelin-contracts-upgradeable": {
+    "branch": {
+      "name": "release-v4.9",
+      "rev": "2d081f24cac1a867f6f73d512f2022e1fa987854"
+    }
+  },
+  "lib/openzeppelin-foundry-upgrades": {
+    "rev": "4cd15fc50b141c77d8cc9ff8efb44d00e841a299"
+  }
+}
