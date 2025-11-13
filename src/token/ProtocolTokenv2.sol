@@ -89,6 +89,7 @@ contract ProtocolTokenv2 is Initializable, UUPSUpgradeable, ERC20Upgradeable, ER
      * @param _rulesEngineAddress Address of FRE
      */
     function connectHandlerToToken(address _rulesEngineAddress) onlyRole(TOKEN_ADMIN_ROLE) external{
+        if (_rulesEngineAddress == address(0)) revert("RulesEngine Address Cannot Be Zero");
         handlerAddress = _rulesEngineAddress;
     }
     
