@@ -98,7 +98,7 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(EXCHANGE_ADDR_1, 1);
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(EXCHANGE_ADDR_1), 1);
     }
-    /// Staking can send/receive any address that is kyc'd
+    /// Staking can send/receive any S,E,or M address that is kyc'd
      function testV2TransferPositiveStaking() public skipTestIfEnabled {
         vm.startPrank(fcAdminDeployed);
         bytes memory value = RulesEngineComponentFacet(address(red)).getMappedTrackerValue(
@@ -107,19 +107,121 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
                 abi.encode(address(STAKING_ADDR))
             );
         assertEq(value, abi.encode("STK"));
+        // Add SELF_CUSTODY_ADDR_1 to the kyc list.
+        allowListFC.allow(SELF_CUSTODY_ADDR_1);
+        vm.startPrank(TREASURY_ADDR_1);
+        assertTrue(allowListFC.isAllowed(SELF_CUSTODY_ADDR_1));
+        ProtocolTokenv2(address(protocolTokenProxy)).transfer(SELF_CUSTODY_ADDR_1, 1);
+        // SELF_CUSTODY_ADDR_1 --> Staking 
+        vm.startPrank(SELF_CUSTODY_ADDR_1);
+        ProtocolTokenv2(address(protocolTokenProxy)).transfer(STAKING_ADDR, 1);
+        assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(STAKING_ADDR), 1);
+        // Staking --> SELF_CUSTODY_ADDR_1
+        vm.startPrank(STAKING_ADDR);
+        ProtocolTokenv2(address(protocolTokenProxy)).transfer(SELF_CUSTODY_ADDR_1, 1);
+        assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(SELF_CUSTODY_ADDR_1), 1);
+
+    }
+
+    /// Staking can only send/receive any S,E,or M address that is kyc'd
+     function testV2TransferNegativeStakingOnlyKYC() public skipTestIfEnabled {
+        vm.startPrank(fcAdminDeployed);
+        bytes memory value = RulesEngineComponentFacet(address(red)).getMappedTrackerValue(
+                policyId,
+                1,
+                abi.encode(address(STAKING_ADDR))
+            );
+        assertEq(value, abi.encode("STK"));
+        value = RulesEngineComponentFacet(address(red)).getMappedTrackerValue(
+                policyId,
+                1,
+                abi.encode(address(TREASURY_ADDR_1))
+            );
+        assertEq(value, abi.encode("T"));
         // Add user 1 to the kyc list.
         allowListFC.allow(USER_1);
+        // allowListFC.allow(STAKING_ADDR);
         vm.startPrank(TREASURY_ADDR_1);
         assertTrue(allowListFC.isAllowed(USER_1));
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(USER_1, 1);
+        ProtocolTokenv2(address(protocolTokenProxy)).transfer(STAKING_ADDR, 1);
         // USER_1 --> Staking 
         vm.startPrank(USER_1);
+        vm.expectRevert("Transfer Not Authorized");
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(STAKING_ADDR, 1);
-        assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(STAKING_ADDR), 1);
         // Staking --> User_1
         vm.startPrank(STAKING_ADDR);
+        vm.expectRevert("Transfer Not Authorized");
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(USER_1, 1);
-        assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(USER_1), 1);
+
+    }
+
+    /// Exchange to exchange
+     function testV2TransferPositiveEtoE() public skipTestIfEnabled {
+        vm.startPrank(fcAdminDeployed);
+        bytes memory value = RulesEngineComponentFacet(address(red)).getMappedTrackerValue(
+                policyId,
+                1,
+                abi.encode(address(EXCHANGE_ADDR_1))
+            );
+        assertEq(value, abi.encode("E"));
+        value = RulesEngineComponentFacet(address(red)).getMappedTrackerValue(
+                policyId,
+                1,
+                abi.encode(address(EXCHANGE_ADDR_2))
+            );
+        assertEq(value, abi.encode("E"));
+        vm.startPrank(TREASURY_ADDR_1);
+        ProtocolTokenv2(address(protocolTokenProxy)).transfer(EXCHANGE_ADDR_1, 1);
+        // EXCHANGE_ADDR_1 --> EXCHANGE_ADDR_2 
+        vm.startPrank(EXCHANGE_ADDR_1);
+        ProtocolTokenv2(address(protocolTokenProxy)).transfer(EXCHANGE_ADDR_2, 1);
+
+    }
+
+    /// Exchange to multisig
+     function testV2TransferPositiveEtoM() public skipTestIfEnabled {
+        vm.startPrank(fcAdminDeployed);
+        bytes memory value = RulesEngineComponentFacet(address(red)).getMappedTrackerValue(
+                policyId,
+                1,
+                abi.encode(address(EXCHANGE_ADDR_1))
+            );
+        assertEq(value, abi.encode("E"));
+        value = RulesEngineComponentFacet(address(red)).getMappedTrackerValue(
+                policyId,
+                1,
+                abi.encode(address(MULTISIG_ADDR_1))
+            );
+        assertEq(value, abi.encode("M"));
+        vm.startPrank(TREASURY_ADDR_1);
+        ProtocolTokenv2(address(protocolTokenProxy)).transfer(EXCHANGE_ADDR_1, 1);
+        // EXCHANGE_ADDR_1 --> MULTISIG_ADDR_1 
+        vm.startPrank(EXCHANGE_ADDR_1);
+        ProtocolTokenv2(address(protocolTokenProxy)).transfer(MULTISIG_ADDR_1, 1);
+
+    }
+
+    /// multisig to exchange
+     function testV2TransferPositiveMtoE() public skipTestIfEnabled {
+        vm.startPrank(fcAdminDeployed);
+        bytes memory value = RulesEngineComponentFacet(address(red)).getMappedTrackerValue(
+                policyId,
+                1,
+                abi.encode(address(EXCHANGE_ADDR_1))
+            );
+        assertEq(value, abi.encode("E"));
+        value = RulesEngineComponentFacet(address(red)).getMappedTrackerValue(
+                policyId,
+                1,
+                abi.encode(address(MULTISIG_ADDR_1))
+            );
+        assertEq(value, abi.encode("M"));
+        vm.startPrank(TREASURY_ADDR_1);
+        ProtocolTokenv2(address(protocolTokenProxy)).transfer(MULTISIG_ADDR_1, 1);
+        // MULTISIG_ADDR_1 --> EXCHANGE_ADDR_1 
+        vm.startPrank(MULTISIG_ADDR_1);
+        ProtocolTokenv2(address(protocolTokenProxy)).transfer(EXCHANGE_ADDR_1, 1);
 
     }
 
@@ -160,7 +262,7 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(SELF_CUSTODY_ADDR_1), 1);
     }
 
-    /// Self-Custody can only send to Staking 
+    /// Self-Custody can only send to Staking and only if they are KYC'd
     function testV2TransferPositiveSelfCustody() public skipTestIfEnabled {
         vm.startPrank(fcAdminDeployed);
         bytes memory value = RulesEngineComponentFacet(address(red)).getMappedTrackerValue(
@@ -256,6 +358,62 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(user2), 0);
     }
 
+    function testV2TransferNegative_KYCOnlyToStaking() public skipTestIfEnabled {
+        vm.stopPrank();
+        vm.startPrank(TREASURY_ADDR_1);
+        ProtocolTokenv2(address(protocolTokenProxy)).transfer(USER_1, 10);
+        vm.startPrank(fcAdminDeployed);               
+        // Add self custody 1 to the kyc list.
+        allowListFC.allow(USER_1);
+        
+        // user to Staking
+        vm.startPrank(USER_1);
+        vm.expectRevert("Transfer Not Authorized");
+        ProtocolTokenv2(address(protocolTokenProxy)).transfer(STAKING_ADDR, 1);
+    }
+
+    function testV2TransferNegative_KYCOnlyToMulti() public skipTestIfEnabled {
+        vm.stopPrank();
+        vm.startPrank(TREASURY_ADDR_1);
+        ProtocolTokenv2(address(protocolTokenProxy)).transfer(USER_1, 10);
+        vm.startPrank(fcAdminDeployed);               
+        // Add self custody 1 to the kyc list.
+        allowListFC.allow(USER_1);
+        
+        // user to multi
+        vm.startPrank(USER_1);
+        vm.expectRevert("Transfer Not Authorized");
+        ProtocolTokenv2(address(protocolTokenProxy)).transfer(MULTISIG_ADDR_1, 1);
+    }
+
+    function testV2TransferNegative_MultiToKYCOnly() public skipTestIfEnabled {
+        vm.stopPrank();
+        vm.startPrank(TREASURY_ADDR_1);
+        ProtocolTokenv2(address(protocolTokenProxy)).transfer(MULTISIG_ADDR_1, 10);
+        vm.startPrank(fcAdminDeployed);               
+        // Add self custody 1 to the kyc list.
+        allowListFC.allow(USER_1);
+        
+        // MULTISIG_ADDR_1 to kyc'd only
+        vm.startPrank(MULTISIG_ADDR_1);
+        vm.expectRevert("Transfer Not Authorized");
+        ProtocolTokenv2(address(protocolTokenProxy)).transfer(USER_1, 1);
+    }
+
+    function testV2TransferNegative_ExchangeToKYCOnly() public skipTestIfEnabled {
+        vm.stopPrank();
+        vm.startPrank(TREASURY_ADDR_1);
+        ProtocolTokenv2(address(protocolTokenProxy)).transfer(EXCHANGE_ADDR_1, 10);
+        vm.startPrank(fcAdminDeployed);               
+        // Add self custody 1 to the kyc list.
+        allowListFC.allow(USER_1);
+        
+        // EXCHANGE_ADDR_1 to kyc'd only
+        vm.startPrank(EXCHANGE_ADDR_1);
+        vm.expectRevert("Transfer Not Authorized");
+        ProtocolTokenv2(address(protocolTokenProxy)).transfer(USER_1, 1);
+    }
+
     /// PAUSE
     function testV2PauseNegative() public skipTestIfEnabled {
         vm.startPrank(policyAdminDeployed);
@@ -339,14 +497,14 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         assertEq(value, abi.encode("STK"));
         // Add self custody 1 to the kyc list.
         vm.startPrank(fcAdminDeployed);
-        allowListFC.allow(USER_1);
-        assertTrue(allowListFC.isAllowed(USER_1));
+        allowListFC.allow(SELF_CUSTODY_ADDR_1);
+        assertTrue(allowListFC.isAllowed(SELF_CUSTODY_ADDR_1));
         vm.startPrank(TREASURY_ADDR_1);
-        ProtocolTokenv2(address(protocolTokenProxy)).transfer(USER_1, 1);
+        ProtocolTokenv2(address(protocolTokenProxy)).transfer(SELF_CUSTODY_ADDR_1, 1);
         
-        vm.startPrank(USER_1);
-        ProtocolTokenv2(address(protocolTokenProxy)).approve(USER_1, 1);
-        ProtocolTokenv2(address(protocolTokenProxy)).transferFrom(USER_1,STAKING_ADDR, 1);
+        vm.startPrank(SELF_CUSTODY_ADDR_1);
+        ProtocolTokenv2(address(protocolTokenProxy)).approve(SELF_CUSTODY_ADDR_1, 1);
+        ProtocolTokenv2(address(protocolTokenProxy)).transferFrom(SELF_CUSTODY_ADDR_1,STAKING_ADDR, 1);
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(STAKING_ADDR), 1);
     }
 
