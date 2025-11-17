@@ -107,6 +107,7 @@ contract ProtocolTokenv2 is Initializable, UUPSUpgradeable, ERC20Upgradeable, ER
     function transfer(address to, uint256 amount) public virtual override checksPoliciesERC20TransferBefore(to, amount, balanceOf(msg.sender), balanceOf(to), block.timestamp) returns(bool){
         address owner = _msgSender();
         _transfer(owner, to, amount);
+        return true;
     }
 
     function transferFrom(address from, address to, uint256 amount) public virtual override checksPoliciesERC20TransferFromBefore(from, to, amount, balanceOf(from), balanceOf(to), block.timestamp)
