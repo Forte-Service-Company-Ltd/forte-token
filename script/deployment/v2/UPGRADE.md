@@ -53,7 +53,7 @@
     forge install
 
     RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
-    PRIV_KEY=`Enter Your Private Key Here`
+    PRIV_KEY=your-private-key-here
     RULES_ENGINE_ADDRESS=0xd3f47489ba52d03f26f43b66a78d5e9002c1cf08
     
     cp .env.v2 .env
