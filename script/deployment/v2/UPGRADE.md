@@ -111,19 +111,31 @@
         ```
         cast send $TOKEN_ADDRESS "setCallingContractAdmin(address)" $TAMS --rpc-url $ETH_RPC_URL --private-key $DEPLOYMENT_OWNER_KEY
         ```
-    c. TAMS--Apply the policy to v2 `Forte Token Contract` via `Forte Rules Engine`
+    c. TAMS--Add the Token as an approved subscriber via `Forte Rules Engine`
+        Using the SAFE Transaction Builder GUI
+        ```
+        addClosedPolicySubscriber(uint256 policyId, address subscriber) $POLICY_ID $TOKEN_ADDRESS 
+        ```
+        Using GUI with calldata only(fill in the $ variables manually). Then run the cast command in a terminal. Then put that into the calldata of the SAFE Transaction Builder GUI with the `Custom Data` toggled on
+        ```
+        cast calldata "addClosedPolicySubscriber(uint256, address) $POLICY_ID $TOKEN_ADDRESS"
+        ```
+        ```
+        cast send $FORTE_RULES_ENGINE_ADDRESS "addClosedPolicySubscriber(uint256, address)" $POLICY_ID $TOKEN_ADDRESS --rpc-url $ETH_RPC_URL --private-key $TAMS_PK
+        ```
+    d. TAMS--Apply the policy to v2 `Forte Token Contract` via `Forte Rules Engine`
         Using the SAFE Transaction Builder GUI
         ```
         applyPolicy(address,uint256[]) $TOKEN_ADDRESS [$POLICY_ID]
         ```
         Using GUI with calldata only(fill in the $ variables manually). Then run the cast command in a terminal. Then put that into the calldata of the SAFE Transaction Builder GUI with the `Custom Data` toggled on
         ```
-        "applyPolicy(address,uint256[])" $TOKEN_ADDRESS "[$POLICY_ID]"
+        cast calldata "applyPolicy(address,uint256[])" $TOKEN_ADDRESS "[$POLICY_ID]"
         ```
         ```
         cast send $FORTE_RULES_ENGINE_ADDRESS "applyPolicy(address,uint256[])" $TOKEN_ADDRESS "[$POLICY_ID]" --rpc-url $ETH_RPC_URL --private-key $TAMS_PK
         ```
-    d. TAMS--unpause the token `Forte Token Contract`
+    e. TAMS--unpause the token `Forte Token Contract`
         Using the SAFE Transaction Builder GUI
         ```
         unpause() 
