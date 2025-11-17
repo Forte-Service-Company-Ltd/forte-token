@@ -270,6 +270,9 @@ contract ProtocolTokenv2 is Initializable, UUPSUpgradeable, ERC20Upgradeable, ER
      * @param _encoded The encoded data to be passed to the Rules Engine.
      */
     function _invokeRulesEngine(bytes memory _encoded) internal {
-        IRulesEngine(handlerAddress).checkPolicies(_encoded);
+        // if the address is address(0), skip the policy check.
+        if (handlerAddress != address(0)){
+            IRulesEngine(handlerAddress).checkPolicies(_encoded);
+        }
     }
 }
