@@ -66,7 +66,7 @@
    ```
    Take note of the Policy Id created and load it as an environment variable
    ```
-   export POLICY_ID=????
+   export POLICY_ID=<enter policy id here>
    npx tsx index.ts updatePolicy policyAdd.json $POLICY_ID  
    ```   
 11. Navigate back to forte-token repo, add the POLICY_ID to the .env and 
