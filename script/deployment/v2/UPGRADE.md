@@ -59,7 +59,7 @@
     cp .env.v2 .env
     source .env
     ```
-9. Fill in the policy.json with the KYC oracle and address designations.
+9. Fill in the policy.json with the KYC oracle address and address designations.
 10. Create the policy using the Quickstart
    ```
    npx tsx index.ts setupPolicy policy.json   
@@ -75,7 +75,7 @@
    ```
 
 13. MS commands, they must be run from the SAFE UI. Go to the transaction builder, enter in the address, and the function list will display:
-	a. TAMS--Accept the policy admin role by calling a function in FRE
+	1. TAMS--Accept the policy admin role by calling a function in FRE
         Using the SAFE Transaction Builder GUI
         ```
         confirmNewPolicyAdmin(uint256)
@@ -87,7 +87,7 @@
         ```
         cast send $FORTE_RULES_ENGINE_ADDRESS "confirmNewPolicyAdmin(uint256)" $POLICY_ID --rpc-url $ETH_RPC_URL --private-key $TAMS_PK
         ```
-    b. TAMS--Set the FRE Address within the token `Forte Token Contract`
+    2. TAMS--Set the FRE Address within the token `Forte Token Contract`
         Using the SAFE Transaction Builder GUI
         ```
         connectHandlerToToken(address) $FORTE_RULES_ENGINE_ADDRESS
@@ -99,7 +99,7 @@
         ```
         cast send $TOKEN_ADDRESS "connectHandlerToToken(address)" $FORTE_RULES_ENGINE_ADDRESS --rpc-url $ETH_RPC_URL --private-key $DEPLOYMENT_OWNER_KEY
         ```
-    c. TAMS--Set the TAMS as CallingContractAdmin `Forte Token Contract`
+    3. TAMS--Set the TAMS as CallingContractAdmin `Forte Token Contract`
         Using the SAFE Transaction Builder GUI
         ```
         setCallingContractAdmin(address) 0x8faa75C89558FC4082740524475c7933D9716530
@@ -111,19 +111,31 @@
         ```
         cast send $TOKEN_ADDRESS "setCallingContractAdmin(address)" $TAMS --rpc-url $ETH_RPC_URL --private-key $DEPLOYMENT_OWNER_KEY
         ```
-    c. TAMS--Apply the policy to v2 `Forte Token Contract` via `Forte Rules Engine`
+    4. TAMS--Add the TAMS as an approved subscriber via `Forte Rules Engine`
+        Using the SAFE Transaction Builder GUI
+        ```
+        addClosedPolicySubscriber(uint256 policyId, address subscriber) $POLICY_ID $TAMS 
+        ```
+        Using GUI with calldata only(fill in the $ variables manually). Then run the cast command in a terminal. Then put that into the calldata of the SAFE Transaction Builder GUI with the `Custom Data` toggled on
+        ```
+        cast calldata "addClosedPolicySubscriber(uint256, address) $POLICY_ID $TAMS"
+        ```
+        ```
+        cast send $FORTE_RULES_ENGINE_ADDRESS "addClosedPolicySubscriber(uint256, address)" $POLICY_ID $TAMS --rpc-url $ETH_RPC_URL --private-key $TAMS_PK
+        ```
+    5. TAMS--Apply the policy to v2 `Forte Token Contract` via `Forte Rules Engine`
         Using the SAFE Transaction Builder GUI
         ```
         applyPolicy(address,uint256[]) $TOKEN_ADDRESS [$POLICY_ID]
         ```
         Using GUI with calldata only(fill in the $ variables manually). Then run the cast command in a terminal. Then put that into the calldata of the SAFE Transaction Builder GUI with the `Custom Data` toggled on
         ```
-        "applyPolicy(address,uint256[])" $TOKEN_ADDRESS "[$POLICY_ID]"
+        cast calldata "applyPolicy(address,uint256[])" $TOKEN_ADDRESS "[$POLICY_ID]"
         ```
         ```
         cast send $FORTE_RULES_ENGINE_ADDRESS "applyPolicy(address,uint256[])" $TOKEN_ADDRESS "[$POLICY_ID]" --rpc-url $ETH_RPC_URL --private-key $TAMS_PK
         ```
-    d. TAMS--unpause the token `Forte Token Contract`
+    6. TAMS--unpause the token `Forte Token Contract`
         Using the SAFE Transaction Builder GUI
         ```
         unpause() 
@@ -135,3 +147,13 @@
         ```
         cast send $TOKEN_ADDRESS "unpause()" --rpc-url $ETH_RPC_URL --private-key $DEPLOYMENT_OWNER_KEY       
         ```
+14. Optional, run fork tests to ensure that the token is functioning properly.
+    1.  Set these values in the .env
+    ```
+    SKIP_FORTE_TOKEN_TESTS=false
+    FORK_TEST=true
+    ```
+    2. Run the test command:
+    ```
+    forge test --match-contract ForteRulesEngineV2TestDeploy --fork-url $ETH_RPC_URL
+    ```
