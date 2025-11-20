@@ -140,7 +140,6 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         assertEq(value, abi.encode("T"));
         // Add user 1 to the kyc list.
         allowListFC.allow(USER_1);
-        // allowListFC.allow(STAKING_ADDR);
         vm.startPrank(TREASURY_ADDR_1);
         assertTrue(allowListFC.isAllowed(USER_1));
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(USER_1, 1);
