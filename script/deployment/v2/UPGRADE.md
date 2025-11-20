@@ -62,9 +62,13 @@
 9. Fill in the policy.json with the KYC oracle address and address designations.
 10. Create the policy using the Quickstart
    ```
-   npx tsx index.ts setupPolicy policy.json   
+   npx tsx index.ts setupPolicy policy.json
+   ```
+   Take note of the Policy Id created and load it as an environment variable
+   ```
+   export POLICY_ID=<enter policy id here>
+   npx tsx index.ts updatePolicy policyAdd.json $POLICY_ID  
    ```   
-   Take note of the Policy Id created
 11. Navigate back to forte-token repo, add the POLICY_ID to the .env and 
     ```
     source .env
