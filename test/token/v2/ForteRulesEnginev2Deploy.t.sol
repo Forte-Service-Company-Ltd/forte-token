@@ -54,6 +54,8 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
     function _setupAddressList() internal {
         bytes[] memory addresses = new bytes[](9);
         bytes[] memory types = new bytes[](9);
+        bytes[] memory addressesX = new bytes[](6);
+        bytes[] memory typesX = new bytes[](6);
         addresses[0] = abi.encode(TREASURY_ADDR_1);
         types[0] = abi.encode("T");
         addresses[1] = abi.encode(TREASURY_ADDR_2);
@@ -76,6 +78,22 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         vm.startPrank(policyAdminDeployed);
         Trackers memory returnedTracker = RulesEngineComponentFacet(address(red)).getTracker(vm.envUint("POLICY_ID"), 1);
         RulesEngineComponentFacet(address(red)).updateTracker(vm.envUint("POLICY_ID"), 1, returnedTracker, addresses, types);
+
+        addressesX[0] = abi.encode(EXCHANGE_ADDR_1);
+        typesX[0] = abi.encode(true);
+        addressesX[1] = abi.encode(EXCHANGE_ADDR_2);
+        typesX[1] = abi.encode(true);
+        addressesX[2] = abi.encode(MULTISIG_ADDR_1);
+        typesX[2] = abi.encode(true);
+        addressesX[3] = abi.encode(MULTISIG_ADDR_2);
+        typesX[3] = abi.encode(true);
+        addressesX[4] = abi.encode(SELF_CUSTODY_ADDR_1);
+        typesX[4] = abi.encode(true);
+        addressesX[5] = abi.encode(SELF_CUSTODY_ADDR_2);
+        typesX[5] = abi.encode(true);
+        returnedTracker = RulesEngineComponentFacet(address(red)).getTracker(vm.envUint("POLICY_ID"), 2);
+        RulesEngineComponentFacet(address(red)).updateTracker(vm.envUint("POLICY_ID"), 2, returnedTracker, addressesX, typesX);
+
     }
 
     /// TRANSFER    
@@ -109,17 +127,22 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         assertEq(value, abi.encode("STK"));
         // Add SELF_CUSTODY_ADDR_1 to the kyc list.
         allowListFC.allow(SELF_CUSTODY_ADDR_1);
+        allowListFC.allow(MULTISIG_ADDR_1);
         vm.startPrank(TREASURY_ADDR_1);
         assertTrue(allowListFC.isAllowed(SELF_CUSTODY_ADDR_1));
-        ProtocolTokenv2(address(protocolTokenProxy)).transfer(SELF_CUSTODY_ADDR_1, 1);
+        assertTrue(allowListFC.isAllowed(MULTISIG_ADDR_1));
+        ProtocolTokenv2(address(protocolTokenProxy)).transfer(SELF_CUSTODY_ADDR_1, 2);
         // SELF_CUSTODY_ADDR_1 --> Staking 
         vm.startPrank(SELF_CUSTODY_ADDR_1);
-        ProtocolTokenv2(address(protocolTokenProxy)).transfer(STAKING_ADDR, 1);
-        assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(STAKING_ADDR), 1);
+        ProtocolTokenv2(address(protocolTokenProxy)).transfer(STAKING_ADDR, 2);
+        assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(STAKING_ADDR), 2);
         // Staking --> SELF_CUSTODY_ADDR_1
         vm.startPrank(STAKING_ADDR);
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(SELF_CUSTODY_ADDR_1, 1);
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(SELF_CUSTODY_ADDR_1), 1);
+        // Staking --> MULTISIG_ADDR_1
+        ProtocolTokenv2(address(protocolTokenProxy)).transfer(MULTISIG_ADDR_1, 1);
+        assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(MULTISIG_ADDR_1), 1);
 
     }
 
@@ -252,6 +275,12 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
                 abi.encode(address(EXCHANGE_ADDR_1))
             );
         assertEq(value, abi.encode("E"));
+        value = RulesEngineComponentFacet(address(red)).getMappedTrackerValue(
+                policyId,
+                2,
+                abi.encode(address(EXCHANGE_ADDR_1))
+            );
+        assertEq(value, abi.encode(true));
         vm.startPrank(TREASURY_ADDR_1);
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(EXCHANGE_ADDR_1, 10);
         
