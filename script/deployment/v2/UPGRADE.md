@@ -178,7 +178,7 @@ forge script script/deployment/v2/4_Propose_PolicyAdmin.s.sol \
 ⚠️ **Important:** These commands must be run from the SAFE UI. Go to the transaction builder, enter the address, and the function list will display:
 
 #### 14.1 TAMS - Accept Policy Admin Role
-**Accept the policy admin role by calling a function in FRE**
+**Accept the policy admin role by calling a function in FRE $FORTE_RULES_ENGINE_ADDRESS**
 
 **Option A: Using SAFE Transaction Builder GUI**
 ```solidity

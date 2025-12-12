@@ -100,22 +100,26 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
     /// TRANSFER    
     function testV2TransferPositiveTtoT() public skipTestIfEnabled {
         vm.startPrank(TREASURY_ADDR_1);
-        
+        uint256 begBalance = ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(TREASURY_ADDR_1);
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(TREASURY_ADDR_2, 1);
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(TREASURY_ADDR_2), 1);
+        assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(TREASURY_ADDR_1),begBalance - 1);
     }
 
     function testV2TransferPositiveTtoM() public skipTestIfEnabled {
         vm.startPrank(TREASURY_ADDR_1);
-        
+        uint256 begBalance = ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(TREASURY_ADDR_1);
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(MULTISIG_ADDR_1, 1);
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(MULTISIG_ADDR_1), 1);
+        assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(TREASURY_ADDR_1),begBalance - 1);
     }
 
     function testV2TransferPositiveTtoE() public skipTestIfEnabled {
         vm.startPrank(TREASURY_ADDR_1);
+        uint256 begBalance = ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(TREASURY_ADDR_1);
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(EXCHANGE_ADDR_1, 1);
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(EXCHANGE_ADDR_1), 1);
+        assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(TREASURY_ADDR_1),begBalance - 1);
     }
     /// Staking can send/receive any S,E,or M address that is kyc'd
      function testV2TransferPositiveStaking() public skipTestIfEnabled {
@@ -198,8 +202,9 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(EXCHANGE_ADDR_1, 1);
         // EXCHANGE_ADDR_1 --> EXCHANGE_ADDR_2 
         vm.startPrank(EXCHANGE_ADDR_1);
+        uint256 begBalance = ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(EXCHANGE_ADDR_1);
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(EXCHANGE_ADDR_2, 1);
-
+        assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(EXCHANGE_ADDR_1),begBalance - 1);
     }
 
     /// Exchange to multisig
@@ -221,8 +226,9 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(EXCHANGE_ADDR_1, 1);
         // EXCHANGE_ADDR_1 --> MULTISIG_ADDR_1 
         vm.startPrank(EXCHANGE_ADDR_1);
+        uint256 begBalance = ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(EXCHANGE_ADDR_1);
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(MULTISIG_ADDR_1, 1);
-
+        assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(EXCHANGE_ADDR_1),begBalance - 1);
     }
 
     /// multisig to exchange
@@ -244,8 +250,9 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(MULTISIG_ADDR_1, 1);
         // MULTISIG_ADDR_1 --> EXCHANGE_ADDR_1 
         vm.startPrank(MULTISIG_ADDR_1);
+        uint256 begBalance = ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(MULTISIG_ADDR_1);
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(EXCHANGE_ADDR_1, 1);
-
+        assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(MULTISIG_ADDR_1),begBalance - 1);
     }
 
     // Multi sig can send to S and E
@@ -261,10 +268,13 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(MULTISIG_ADDR_1, 10);
         
         vm.startPrank(MULTISIG_ADDR_1);
+        uint256 begBalance = ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(MULTISIG_ADDR_1);
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(SELF_CUSTODY_ADDR_1, 1);
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(SELF_CUSTODY_ADDR_1), 1);
+        assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(MULTISIG_ADDR_1),begBalance - 1);
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(EXCHANGE_ADDR_1, 1);
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(EXCHANGE_ADDR_1), 1);
+        assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(MULTISIG_ADDR_1),begBalance - 2);
     }
 
     /// Exchanges can send to other exchanges, multisigs, and Self custody
@@ -287,8 +297,10 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         
         // Exchange to Self Custody
         vm.startPrank(EXCHANGE_ADDR_1);
+        uint256 begBalance = ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(EXCHANGE_ADDR_1);
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(SELF_CUSTODY_ADDR_1, 1);
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(SELF_CUSTODY_ADDR_1), 1);
+        assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(EXCHANGE_ADDR_1),begBalance - 1);
     }
 
     /// Self-Custody can only send to Staking and only if they are KYC'd
@@ -308,8 +320,10 @@ contract ForteRulesEngineV2TestDeploy is TestCommon {
         
         // Self Custody to Staking
         vm.startPrank(SELF_CUSTODY_ADDR_1);
+        uint256 begBalance = ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(SELF_CUSTODY_ADDR_1);
         ProtocolTokenv2(address(protocolTokenProxy)).transfer(STAKING_ADDR, 1);
         assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(STAKING_ADDR), 1);
+        assertEq(ProtocolTokenv2(address(protocolTokenProxy)).balanceOf(SELF_CUSTODY_ADDR_1),begBalance - 1);
     }
 
     function testV2TransferPositiveGas() public skipTestIfEnabled {
